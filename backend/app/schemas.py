@@ -1,6 +1,32 @@
-from pydantic import BaseModel, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator, model_validator
 from typing import Optional, List, Dict
 from datetime import date, datetime
+
+# D-02: límite de Numeric(15,2) en la base de datos
+MAX_AMOUNT = 9_999_999_999_999.99
+
+
+def _validar_monto(v, mensaje="El monto debe ser mayor a 0"):
+    if v is None:
+        return v
+    if v <= 0:
+        raise ValueError(mensaje)
+    if v > MAX_AMOUNT:
+        raise ValueError("El monto supera el máximo permitido (9.999.999.999.999,99)")
+    return v
+
+
+def _validar_mes(v):
+    # D-03: un mes fuera de 1..12 provocaba ValueError (500) en get_date_range
+    if v is not None and not 1 <= v <= 12:
+        raise ValueError("El mes debe estar entre 1 y 12")
+    return v
+
+
+def _validar_anio(v):
+    if v is not None and not 2000 <= v <= 2100:
+        raise ValueError("El año debe estar entre 2000 y 2100")
+    return v
 
 # Authentication
 class UserCreate(BaseModel):
@@ -108,9 +134,7 @@ class TransactionCreate(BaseModel):
     @field_validator("amount")
     @classmethod
     def amount_must_be_positive(cls, v):
-        if v <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
-        return v
+        return _validar_monto(v)
 
     @field_validator("type")
     @classmethod
@@ -148,9 +172,7 @@ class BudgetBase(BaseModel):
     @field_validator("amount")
     @classmethod
     def amount_must_be_positive(cls, v):
-        if v <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
-        return v
+        return _validar_monto(v)
 
     @field_validator("period_type")
     @classmethod
@@ -159,8 +181,25 @@ class BudgetBase(BaseModel):
             raise ValueError("El tipo de período debe ser 'daily', 'weekly', 'monthly' o 'unique'")
         return v
 
+    @field_validator("month")
+    @classmethod
+    def month_must_be_valid(cls, v):
+        return _validar_mes(v)
+
+    @field_validator("year")
+    @classmethod
+    def year_must_be_valid(cls, v):
+        return _validar_anio(v)
+
 class BudgetCreate(BudgetBase):
-    pass
+    @model_validator(mode="after")
+    def unique_requires_dates(self):
+        if self.period_type == "unique":
+            if not self.start_date or not self.end_date:
+                raise ValueError("El período único requiere fecha de inicio y fecha final")
+            if self.start_date > self.end_date:
+                raise ValueError("La fecha de inicio no puede ser posterior a la fecha final")
+        return self
 
 class BudgetUpdate(BaseModel):
     category_id: Optional[int] = None
@@ -176,9 +215,7 @@ class BudgetUpdate(BaseModel):
     @field_validator("amount")
     @classmethod
     def amount_must_be_positive(cls, v):
-        if v is not None and v <= 0:
-            raise ValueError("El monto debe ser mayor a 0")
-        return v
+        return _validar_monto(v)
 
     @field_validator("period_type")
     @classmethod
@@ -186,6 +223,16 @@ class BudgetUpdate(BaseModel):
         if v is not None and v not in ("daily", "weekly", "monthly", "unique"):
             raise ValueError("El tipo de período debe ser 'daily', 'weekly', 'monthly' o 'unique'")
         return v
+
+    @field_validator("month")
+    @classmethod
+    def month_must_be_valid(cls, v):
+        return _validar_mes(v)
+
+    @field_validator("year")
+    @classmethod
+    def year_must_be_valid(cls, v):
+        return _validar_anio(v)
 
 class BudgetOut(BudgetBase):
     budget_id: int
@@ -209,9 +256,7 @@ class SavingGoalCreate(BaseModel):
     @field_validator("target_amount")
     @classmethod
     def amount_must_be_positive(cls, v):
-        if v <= 0:
-            raise ValueError("El monto objetivo debe ser mayor a 0")
-        return v
+        return _validar_monto(v, "El monto objetivo debe ser mayor a 0")
 
     @field_validator("name")
     @classmethod
@@ -227,6 +272,12 @@ class SavingGoalCreate(BaseModel):
             raise ValueError("La fecha de fin debe ser hoy o en el futuro")
         return v
 
+    @model_validator(mode="after")
+    def start_before_end(self):
+        if self.start_date and self.end_date and self.start_date > self.end_date:
+            raise ValueError("La fecha de inicio no puede ser posterior a la fecha final")
+        return self
+
 
 class SavingGoalUpdate(BaseModel):
     name: Optional[str] = None
@@ -237,9 +288,7 @@ class SavingGoalUpdate(BaseModel):
     @field_validator("target_amount")
     @classmethod
     def amount_must_be_positive(cls, v):
-        if v is not None and v <= 0:
-            raise ValueError("El monto objetivo debe ser mayor a 0")
-        return v
+        return _validar_monto(v, "El monto objetivo debe ser mayor a 0")
 
     @field_validator("name")
     @classmethod

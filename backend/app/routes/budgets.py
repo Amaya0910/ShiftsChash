@@ -111,7 +111,7 @@ def get_budgets(
             category_name=budget.category.name_cat,
             category_icon=budget.category.icon,
             spent=spent,
-            percentage=min(percentage, 100) if percentage >= 0 else 0  # Capped for visual display, but actual percentage can be > 100
+            percentage=round(percentage, 2)  # D-04: valor real; el frontend limita solo el ancho de la barra
         ))
 
     return result
@@ -178,7 +178,7 @@ def create_budget(
         category_name=nuevo_budget.category.name_cat,
         category_icon=nuevo_budget.category.icon,
         spent=spent,
-        percentage=min(percentage, 100)
+        percentage=round(percentage, 2)
     )
 
 
@@ -262,7 +262,7 @@ def update_budget(
         category_name=budget.category.name_cat,
         category_icon=budget.category.icon,
         spent=spent,
-        percentage=min(percentage, 100)
+        percentage=round(percentage, 2)
     )
 
 

@@ -82,5 +82,15 @@ def delete_category(
     if not category:
         raise HTTPException(status_code=404, detail="Categoría no encontrada o no eliminable")
 
+    # D-05: transactions.category_id es NOT NULL; no se elimina una categoría en uso
+    en_uso = db.query(models.Transaction).filter(
+        models.Transaction.category_id == category_id
+    ).first()
+    if en_uso:
+        raise HTTPException(
+            status_code=409,
+            detail="La categoría tiene transacciones asociadas; reasígnalas antes de eliminarla"
+        )
+
     db.delete(category)
     db.commit()
