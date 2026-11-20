@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
 import api from '../api/axios';
@@ -6,8 +6,28 @@ import logoImg from '../assets/Logo-sinFondo1.png';
 import graficaImg from '../assets/Grafica.png';
 import '../styles/home.css';
 
+// D-10: correo que recibe los mensajes del formulario de contacto (completar)
+const CORREO_CONTACTO = '';
+
 function Home() {
   useTheme();
+  const [estadoContacto, setEstadoContacto] = useState('');
+
+  const handleContacto = (e) => {
+    e.preventDefault();
+    const datos = new FormData(e.currentTarget);
+    if (!CORREO_CONTACTO) {
+      setEstadoContacto('El formulario de contacto aún no está habilitado. Escríbenos por nuestras redes.');
+      return;
+    }
+    const asunto = encodeURIComponent(`Contacto ShiftCash - ${datos.get('nombre')}`);
+    const cuerpo = encodeURIComponent(`${datos.get('mensaje')}
+
+Responder a: ${datos.get('email')}`);
+    window.location.href = `mailto:${CORREO_CONTACTO}?subject=${asunto}&body=${cuerpo}`;
+    setEstadoContacto('Se abrió tu cliente de correo para enviar el mensaje.');
+    e.currentTarget.reset();
+  };
 
   useEffect(() => {
     // Forzamos la recalculación de inmediato
@@ -137,26 +157,27 @@ function Home() {
       
               {/* Columna Derecha: Formulario */}
               <div className="col-lg-6 form-col">
-                <form>
+                <form onSubmit={handleContacto}>
                   <div className="row">
                     <div className="col-md-6 form-group">
-                      <label className="form-label">Nombre</label>
-                      <input type="text" className="form-input" placeholder="Tu nombre" required />
+                      <label className="form-label" htmlFor="contacto-nombre">Nombre</label>
+                      <input id="contacto-nombre" name="nombre" type="text" className="form-input" placeholder="Tu nombre" required />
                     </div>
                     <div className="col-md-6 form-group">
-                      <label className="form-label">Email</label>
-                      <input type="email" className="form-input" placeholder="correo@ejemplo.com" required />
+                      <label className="form-label" htmlFor="contacto-email">Email</label>
+                      <input id="contacto-email" name="email" type="email" className="form-input" placeholder="correo@ejemplo.com" required />
                     </div>
                   </div>
                   
                   <div className="form-group">
-                    <label className="form-label">Mensaje</label>
-                    <textarea className="form-input" rows="4" placeholder="¿Cómo podemos ayudarte hoy?" required></textarea>
+                    <label className="form-label" htmlFor="contacto-mensaje">Mensaje</label>
+                    <textarea id="contacto-mensaje" name="mensaje" className="form-input" rows="4" placeholder="¿Cómo podemos ayudarte hoy?" required></textarea>
                   </div>
       
                   <button type="submit" className="btn-submit">
                     Enviar Mensaje <i className="bi bi-send-fill ms-2"></i>
                   </button>
+                  {estadoContacto && <p className="mt-3" role="status">{estadoContacto}</p>}
                 </form>
               </div>
       

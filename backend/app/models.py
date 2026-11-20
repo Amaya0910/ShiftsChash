@@ -57,7 +57,7 @@ class Transaction(Base):
 
     trans_id     = Column(Integer, primary_key=True, index=True)
     user_id      = Column(Integer, ForeignKey("users.user_id", ondelete="CASCADE"), nullable=False)
-    category_id  = Column(Integer, ForeignKey("category.category_id", ondelete="SET NULL"), nullable=False)
+    category_id  = Column(Integer, ForeignKey("category.category_id", ondelete="RESTRICT"), nullable=False)
     type         = Column(String(15), nullable=False)
     amount       = Column(Numeric(15, 2), nullable=False)
     description  = Column(String(250), nullable=True)

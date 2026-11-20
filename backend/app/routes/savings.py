@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import event
 from sqlalchemy.orm.attributes import flag_modified
 from datetime import date, timedelta
-from decimal import Decimal, ROUND_HALF_UP
+from decimal import Decimal, ROUND_HALF_UP, ROUND_FLOOR
 from .. import models, schemas, auth
 from ..database import get_db
 import json
@@ -76,12 +76,16 @@ def generate_daily_amounts(
 
     # Caso: el target es tan pequeño que no alcanza para dar min_unit a cada día.
     # Se reparte lo que se pueda y el último día lleva el resto.
+    # D-01: el objetivo no alcanza para dar min_unit a cada día. Se asigna min_unit
+    # a los primeros floor(target/min_unit) días y 0 al resto; el último día absorbe
+    # el residuo (siempre >= 0), así ninguna cuota queda negativa.
     if target < num_days * min_unit:
-        base = round_to_unit(target / num_days, min_unit)
+        d_unit = Decimal(str(min_unit))
+        unidades = int((Decimal(str(target)) / d_unit).to_integral_value(rounding=ROUND_FLOOR))
         for i in range(1, num_days):
-            daily_amounts[str(i)] = base
-        last = round_to_unit(target - base * (num_days - 1), min_unit)
-        daily_amounts[str(num_days)] = last
+            daily_amounts[str(i)] = float(d_unit) if i <= unidades else 0.0
+        asignado = sum(daily_amounts.values())
+        daily_amounts[str(num_days)] = round_to_unit(target - asignado, min_unit)
         return daily_amounts
 
     random.seed(int(target))  # Seed determinista para reproducibilidad
@@ -203,13 +207,17 @@ def create_saving_goal(
     db: Session = Depends(get_db)
 ):
     start_dt = goal.start_date or date.today()
+    # D-07: si no llega fecha final se usa la misma regla del plan (30 días) y se guarda
+    end_dt = goal.end_date or (start_dt + timedelta(days=30))
+    if end_dt < start_dt:
+        raise HTTPException(status_code=422, detail="La fecha de inicio no puede ser posterior a la fecha final")
 
-    # currency viene del schema si existe, si no usa el default
-    currency = getattr(goal, "currency", DEFAULT_CURRENCY) or DEFAULT_CURRENCY
+    # D-08: se usa la moneda configurada por el usuario
+    currency = current_user.currency or DEFAULT_CURRENCY
 
     daily_amounts = generate_daily_amounts(
         start_dt,
-        goal.end_date,
+        end_dt,
         Decimal(str(goal.target_amount)),
         currency=currency
     )
@@ -219,7 +227,7 @@ def create_saving_goal(
         name=goal.name,
         target_amount=goal.target_amount,
         start_date=start_dt,
-        end_date=goal.end_date,
+        end_date=end_dt,
         image_url=goal.image_url,
         completed_days=[],
         daily_amounts=daily_amounts
@@ -264,7 +272,7 @@ def update_saving_goal(
         recalculate_daily_amounts = True
 
     if recalculate_daily_amounts:
-        currency = getattr(goal, "currency", DEFAULT_CURRENCY) or DEFAULT_CURRENCY
+        currency = current_user.currency or DEFAULT_CURRENCY
         goal.daily_amounts = generate_daily_amounts(
             goal.start_date,
             goal.end_date,

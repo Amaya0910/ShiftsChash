@@ -1,0 +1,22 @@
+______________ coverage: platform win32, python 3.12.10-final-0 _______________
+
+Name                         Stmts   Miss  Cover
+------------------------------------------------
+app\__init__.py                  0      0   100%
+app\auth.py                     36      3    92%
+app\database.py                 17      5    71%
+app\main.py                     22      1    95%
+app\models.py                   67      0   100%
+app\routes\__init__.py           0      0   100%
+app\routes\budgets.py           93     27    71%
+app\routes\categories.py        37     10    73%
+app\routes\profile.py           77     45    42%
+app\routes\savings.py          149     26    83%
+app\routes\transactions.py      50     19    62%
+app\routes\users.py             50     24    52%
+app\scheduler.py                33      1    97%
+app\schemas.py                 253     17    93%
+------------------------------------------------
+TOTAL                          884    178    80%
+Coverage HTML written to dir ../docs/cobertura_html
+72 passed in 16.02s
