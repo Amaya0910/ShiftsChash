@@ -160,4 +160,4 @@ D-12 & Editar una transacción aceptaba una categoría ajena & \codigo{update_tr
 \tablenote{El registro completo de defectos está en el Apéndice \ref{ap:defectos}. Fuente: elaboración propia.}
 \end{table}
 
-\paragraph{Conclusión.} La integración incremental permitió aislar cada defecto en su capa: D-03 y D-07 en la validación (N2), D-04 en los servicios (N3), D-05 y D-11 en la persistencia (N1) y D-12 en las rutas (N4). Tras las correcciones, los 18 casos pasan con pytest y Cypress. Queda pendiente repetir PI-05 sobre PostgreSQL en Supabase después de aplicar la migración de la clave foránea.
+\paragraph{Conclusión.} La integración incremental permitió aislar cada defecto en su capa: D-03 y D-07 en la validación (N2), D-04 en los servicios (N3), D-05 y D-11 en la persistencia (N1) y D-12 en las rutas (N4). Tras las correcciones, los 18 casos pasan con pytest y Cypress. La migración de la clave foránea ya se aplicó en Supabase, así que la base de producción cumple la misma regla que verifica PI-05.
