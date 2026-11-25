@@ -1,0 +1,68 @@
+
+
+DevTools listening on ws://127.0.0.1:58846/devtools/browser/f4a240c3-3672-400f-af24-ee87bece36c4
+
+====================================================================================================
+
+  (Run Starting)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Cypress:        13.17.0                                                                        │
+  │ Browser:        Electron 118 (headless)                                                        │
+  │ Node Version:   v25.9.0 (C:\Program Files\nodejs\node.exe)                                     │
+  │ Specs:          1 found (integracion.cy.js)                                                    │
+  │ Searched:       C:\Users\amaya\Desktop\Algo\cypress\e2e\integracion.cy.js                      │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────
+                                                                                                    
+  Running:  integracion.cy.js                                                               (1 of 1)
+
+
+  Integración ShiftCash
+    √ PI-01: rechaza una transacción sin token (401) (383ms)
+    √ PI-02: crea un gasto y aparece en el historial (131ms)
+    √ PI-03: rechaza una categoría inexistente o ajena (404) (30ms)
+    √ PI-11: rechaza montos inválidos (422) (69ms)
+    √ PI-04: un presupuesto superado refleja más del 100 % (D-04) (128ms)
+    √ PI-09: un mes fuera de 1–12 responde 422 (D-03) (54ms)
+    √ PI-06, PI-10 y PI-12: meta sin fecha final, sin cuotas negativas, y marcado de días (125ms)
+    √ E2E: el cliente React inicia sesión y muestra Presupuestos (11557ms)
+
+
+  8 passing (13s)
+
+
+  (Results)
+
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ Tests:        8                                                                                │
+  │ Passing:      8                                                                                │
+  │ Failing:      0                                                                                │
+  │ Pending:      0                                                                                │
+  │ Skipped:      0                                                                                │
+  │ Screenshots:  1                                                                                │
+  │ Video:        false                                                                            │
+  │ Duration:     12 seconds                                                                       │
+  │ Spec Ran:     integracion.cy.js                                                                │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+
+
+  (Screenshots)
+
+  -  C:\Users\amaya\Desktop\Algo\cypress\screenshots\integracion.cy.js\pi-e2e-presupu     (1000x660)
+     estos.png                                                                                      
+
+
+====================================================================================================
+
+  (Run Finished)
+
+
+       Spec                                              Tests  Passing  Failing  Pending  Skipped  
+  ┌────────────────────────────────────────────────────────────────────────────────────────────────┐
+  │ ✔  integracion.cy.js                        00:12        8        8        -        -        - │
+  └────────────────────────────────────────────────────────────────────────────────────────────────┘
+    ✔  All specs passed!                        00:12        8        8        -        -        -  
+

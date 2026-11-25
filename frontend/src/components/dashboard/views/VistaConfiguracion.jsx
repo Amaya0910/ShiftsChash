@@ -7,6 +7,7 @@ import "../../../styles/config.css";
 import { useTheme } from "../../../hooks/useTheme";
 import { useAuth } from "../../../hooks/useAuth";
 import { User, Lock, Palette, AlertTriangle, LogOut, Camera, Trash2 } from "lucide-react";
+import { mensajeError } from '../../../api/errores';
 
 const MONEDAS = ["COP", "USD", "EUR", "MXN", "ARS", "BRL"];
 
@@ -112,7 +113,7 @@ export default function VistaConfiguracion() {
       updateUser(updatedConFoto);
       setMsgPerfil({ tipo: "ok", texto: "Perfil actualizado correctamente" });
     } catch (e) {
-      setMsgPerfil({ tipo: "error", texto: e.response?.data?.detail || "Error al actualizar" });
+      setMsgPerfil({ tipo: "error", texto: mensajeError(e, "Error al actualizar") });
     }
   }
 
@@ -128,7 +129,7 @@ export default function VistaConfiguracion() {
       setMsgPass({ tipo: "ok", texto: "Contraseña actualizada correctamente" });
       setPassActual(""); setPassNueva(""); setPassConfirm("");
     } catch (e) {
-      setMsgPass({ tipo: "error", texto: e.response?.data?.detail || "Error al cambiar contraseña" });
+      setMsgPass({ tipo: "error", texto: mensajeError(e, "Error al cambiar contraseña") });
     }
   }
 

@@ -1,0 +1,9 @@
+Lenguaje       Archivos  Físicas   Blanco  Coment.   Código
+CSS                  15     5779      824      217     4738
+JSX                  28     4836      501       92     4243
+Python               14     1657      278       93     1286
+JavaScript           25      903      135       69      699
+JSON                  2       39        0        0       39
+YAML                  1       31        6        3       22
+HTML                  1       18        2        0       16
+Total                86    13263     1746      474    11043

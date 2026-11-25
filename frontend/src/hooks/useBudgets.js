@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { getBudgets, crearBudget, actualizarBudget, eliminarBudget } from '../api/budgets';
 import { getCategorias } from '../api/categories';
+import { mensajeError } from '../api/errores';
 
 export function useBudgets() {
   const [budgets, setBudgets] = useState([]);
@@ -21,7 +22,7 @@ export function useBudgets() {
         setBudgets(presupuestosData);
         setCategorias(categoriasData);
       } catch (err) {
-        setError(err.response?.data?.detail || 'Error al cargar presupuestos');
+        setError(mensajeError(err, 'Error al cargar presupuestos'));
       } finally {
         setLoading(false);
       }
@@ -35,7 +36,7 @@ export function useBudgets() {
       const data = await getBudgets();
       setBudgets(data);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al recargar presupuestos');
+      setError(mensajeError(err, 'Error al recargar presupuestos'));
     }
   };
 
@@ -45,7 +46,7 @@ export function useBudgets() {
       setBudgets(prev => [...prev, nuevoPresupuesto]);
       return { success: true, data: nuevoPresupuesto };
     } catch (err) {
-      const mensajeError = err.response?.data?.detail || 'Error al crear presupuesto';
+      const mensajeError = mensajeError(err, 'Error al crear presupuesto');
       throw new Error(mensajeError);
     }
   };
@@ -58,7 +59,7 @@ export function useBudgets() {
       );
       return { success: true, data: presupuestoActualizado };
     } catch (err) {
-      const mensajeError = err.response?.data?.detail || 'Error al actualizar presupuesto';
+      const mensajeError = mensajeError(err, 'Error al actualizar presupuesto');
       throw new Error(mensajeError);
     }
   };
@@ -69,7 +70,7 @@ export function useBudgets() {
       setBudgets(prev => prev.filter(p => p.budget_id !== budgetId));
       return { success: true };
     } catch (err) {
-      const mensajeError = err.response?.data?.detail || 'Error al eliminar presupuesto';
+      const mensajeError = mensajeError(err, 'Error al eliminar presupuesto');
       throw new Error(mensajeError);
     }
   };

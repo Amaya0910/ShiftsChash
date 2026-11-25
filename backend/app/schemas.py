@@ -4,6 +4,8 @@ from datetime import date, datetime
 
 # D-02: límite de Numeric(15,2) en la base de datos
 MAX_AMOUNT = 9_999_999_999_999.99
+# Frecuencias que entiende scheduler._toca_hoy
+FRECUENCIAS = ("monthly", "weekly", "biweekly", "annual")
 
 
 def _validar_monto(v, mensaje="El monto debe ser mayor a 0"):
@@ -54,10 +56,6 @@ class UserOut(BaseModel):
 
     class Config:
         from_attributes = True
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 class TokenWithUser(BaseModel):
     access_token: str
@@ -142,6 +140,13 @@ class TransactionCreate(BaseModel):
         if v not in ("expense", "income"):
             raise ValueError("El tipo debe ser 'expense' o 'income'")
         return v
+
+    @model_validator(mode="after")
+    def recurring_requires_valid_frequency(self):
+        # D-14: una recurrente sin frecuencia válida se guardaba y nunca se repetía
+        if self.is_recurring and self.frequency not in FRECUENCIAS:
+            raise ValueError("La frecuencia debe ser monthly, weekly, biweekly o annual")
+        return self
 
 class TransactionOut(BaseModel):
     trans_id: int
@@ -313,8 +318,3 @@ class SavingGoalOut(BaseModel):
 
     class Config:
         from_attributes = True
-
-
-class ToggleDayRequest(BaseModel):
-    """Solicitud para alternar un día como completado/no completado"""
-    pass

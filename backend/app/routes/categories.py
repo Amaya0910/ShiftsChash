@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from .. import models, schemas, auth
 from ..database import get_db
+from ..services.category_service import visible_to
 
 router = APIRouter(prefix="/categories", tags=["categories"])
 
@@ -13,12 +13,7 @@ def get_categories(
     current_user: models.User = Depends(auth.get_current_user),
     db: Session = Depends(get_db)
 ):
-    return db.query(models.Category).filter(
-        or_(
-            models.Category.is_default == 1,
-            models.Category.user_id == current_user.user_id
-        )
-    ).all()
+    return db.query(models.Category).filter(visible_to(current_user.user_id)).all()
 
 
 # ── Crear categoría personalizada ──

@@ -1,0 +1,43 @@
+% =====================================================================
+% Apéndices A–E: guiones de prueba y de métricas (tomados del repositorio)
+% =====================================================================
+\setminted{fontsize=\scriptsize, linenos, breaklines, frame=lines}
+
+\section{Pruebas unitarias y de integración (pytest)}\label{ap:unitarias}
+
+Archivos \codigo{backend/tests/conftest.py}, \codigo{test_unitarias.py} y \codigo{test_integracion.py}. Ejecución: \codigo{cd backend \&\& python -m pytest --cov=app}.
+
+\inputminted{python}{../../backend/tests/conftest.py}
+\inputminted{python}{../../backend/tests/test_unitarias.py}
+\inputminted{python}{../../backend/tests/test_integracion.py}
+
+\section{Guion de integración con Cypress}\label{ap:cypress}
+
+Archivos \codigo{cypress.config.js} y \codigo{cypress/e2e/integracion.cy.js}.
+
+\inputminted{javascript}{../../cypress.config.js}
+\inputminted{javascript}{../../cypress/e2e/integracion.cy.js}
+
+\section{Guion de aceptación con Selenium}\label{ap:selenium}
+
+Archivo \codigo{tests/aceptacion_selenium.py}.
+
+\inputminted{python}{../../tests/aceptacion_selenium.py}
+
+\section{Plan de carga con Apache JMeter}\label{ap:jmeter}
+
+Archivo \codigo{tests/carga/shiftcash.jmx}.
+
+\inputminted{xml}{../../tests/carga/shiftcash.jmx}
+
+\section{Script de métricas}\label{ap:metricas}
+
+Archivo \codigo{docs/scripts/metricas.py}. Ejecución: \codigo{python docs/scripts/metricas.py}.
+
+\inputminted{python}{../scripts/metricas.py}
+
+\subsection*{Script de estimación}\label{ap:estimacion}
+
+Archivo \codigo{docs/scripts/estimacion.py}. Ejecución: \codigo{python docs/scripts/estimacion.py}.
+
+\inputminted{python}{../scripts/estimacion.py}

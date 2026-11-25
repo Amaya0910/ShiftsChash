@@ -1,8 +1,10 @@
+import { lazy, Suspense } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Home      from "./pages/Home";
 import AuthPage  from "./pages/AuthPage";
-import Dashboard from "./components/dashboard/Dashboard";
+// El dashboard (con Recharts) se descarga solo al entrar, para que la portada cargue antes (RNF15)
+const Dashboard = lazy(() => import("./components/dashboard/Dashboard"));
 import Navbar    from "./components/Navbar";
 import Footer    from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
@@ -41,7 +43,9 @@ export default function App() {
             path="/dashboard"
             element={
               <PrivateRoute>
-                <Dashboard />
+                <Suspense fallback={null}>
+                  <Dashboard />
+                </Suspense>
               </PrivateRoute>
             }
           />

@@ -1,0 +1,4 @@
+PA-01 OK
+PA-02 OK
+PA-06 captura guardada
+PA-08 OK

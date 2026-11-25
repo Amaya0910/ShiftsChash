@@ -12,8 +12,8 @@ import pytest
 from pydantic import ValidationError
 
 from app import schemas
-from app.routes.budgets import get_date_range
-from app.routes.savings import calculate_progress, generate_daily_amounts
+from app.services.budget_service import get_date_range
+from app.services.saving_service import calculate_progress, generate_daily_amounts
 from app.scheduler import _toca_hoy
 
 
@@ -107,6 +107,26 @@ def test_rango_mensual_permanente_ignora_mes():
     assert ini == date(hoy.year, hoy.month, 1)
 
 
+HOY_FIJO = date(2026, 11, 21)
+
+
+@pytest.mark.parametrize("camino,permanente,mes,anio,esperado", [
+    ("C1", True, 2, 2028, (date(2026, 11, 1), date(2026, 11, 30))),    # permanente: mes y año actuales
+    ("C2", False, 2, 2028, (date(2028, 2, 1), date(2028, 2, 29))),     # mes y año dados (bisiesto)
+    ("C3", False, None, 2027, (date(2027, 11, 1), date(2027, 11, 30))),  # sin mes: mes actual
+    ("C4", False, 4, None, (date(2026, 4, 1), date(2026, 4, 30))),     # sin año: año actual
+    ("C5", False, None, None, (date(2026, 11, 1), date(2026, 11, 30))),  # sin mes ni año
+])
+def test_camino_basico_rango_mensual(camino, permanente, mes, anio, esperado):
+    presupuesto = _b(is_permanent=permanente, month=mes, year=anio)
+    assert get_date_range(presupuesto, HOY_FIJO) == esperado, camino
+
+
+def test_rango_semanal_permanente_usa_semana_actual():
+    assert get_date_range(_b(period_type="weekly", is_permanent=True, start_date=date(2020, 1, 1)), HOY_FIJO) == \
+        (date(2026, 11, 16), date(2026, 11, 22))
+
+
 def test_rango_unico():
     a, b = date(2026, 1, 5), date(2026, 2, 5)
     assert get_date_range(_b(period_type="unique", start_date=a, end_date=b)) == (a, b)
@@ -157,6 +177,14 @@ def test_transaccion_monto_valido(monto):
 def test_transaccion_tipo_invalido():
     with pytest.raises(ValidationError):
         schemas.TransactionCreate(category_id=1, type="otro", amount=10)
+
+
+@pytest.mark.parametrize("frecuencia", [None, "daily", "mensual"])
+def test_d14_recurrente_exige_frecuencia_valida(frecuencia):
+    with pytest.raises(ValidationError):
+        schemas.TransactionCreate(category_id=1, type="income", amount=10, is_recurring=True, frequency=frecuencia)
+    assert schemas.TransactionCreate(category_id=1, type="income", amount=10,
+                                     is_recurring=True, frequency="biweekly").frequency == "biweekly"
 
 
 @pytest.mark.parametrize("mes", [0, 13, -1])

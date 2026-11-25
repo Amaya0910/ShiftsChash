@@ -23,6 +23,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.middleware("http")
+async def cabeceras_de_seguridad(request, call_next):
+    """Evita que el navegador adivine el tipo de contenido (alerta baja de ZAP)."""
+    respuesta = await call_next(request)
+    respuesta.headers["X-Content-Type-Options"] = "nosniff"
+    return respuesta
+
+
 app.include_router(users.router)
 app.include_router(profile.router)
 app.include_router(transactions.router)

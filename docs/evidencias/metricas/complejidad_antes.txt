@@ -1,0 +1,16 @@
+backend/app/auth.py WMC=  8  max= 5
+backend/app/database.py WMC=  1  max= 1
+backend/app/main.py WMC=  1  max= 1
+backend/app/routes/budgets.py WMC= 37  max=13
+backend/app/routes/categories.py WMC=  6  max= 2
+backend/app/routes/profile.py WMC= 16  max= 6
+backend/app/routes/savings.py WMC= 50  max=14
+backend/app/routes/transactions.py WMC= 13  max= 4
+backend/app/routes/users.py WMC= 16  max= 8
+backend/app/scheduler.py WMC= 12  max= 8
+backend/app/schemas.py WMC= 36  max= 4
+
+Funciones con complejidad > 10: 3
+  backend/app/routes/budgets.py:get_date_range = 13
+  backend/app/routes/budgets.py:update_budget = 13
+  backend/app/routes/savings.py:update_saving_goal = 14

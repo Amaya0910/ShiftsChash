@@ -48,3 +48,22 @@ frontend/node_modules/
 # Reportes de cobertura
 .coverage
 htmlcov/
+
+coverage.xml
+
+# Archivos intermedios de LaTeX
+docs/latex/*.aux
+docs/latex/*.log
+docs/latex/*.bbl
+docs/latex/*.bcf
+docs/latex/*.blg
+docs/latex/*.fdb_latexmk
+docs/latex/*.fls
+docs/latex/*.out
+docs/latex/*.run.xml
+docs/latex/*.toc
+docs/latex/_minted*/
+
+# Salidas de Cypress
+cypress/screenshots/
+cypress/videos/

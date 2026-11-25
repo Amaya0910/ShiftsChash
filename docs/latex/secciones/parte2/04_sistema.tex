@@ -1,0 +1,181 @@
+% =====================================================================
+% Segunda parte – 5. Pruebas de sistema
+% =====================================================================
+\section{Pruebas de sistema}
+
+Cada prueba de sistema verifica uno o más requisitos no funcionales de la Tabla \ref{tab:rnf}. Las tablas muestran el resultado de la primera ejecución (25 de octubre) y el de la segunda (21 de noviembre), después de las correcciones.
+
+% \evidencia{archivo}{etiqueta}{título}{nota}
+\newcommand{\evidencia}[4]{%
+\begin{figure}[H]
+\centering
+\caption{#3}
+\label{#2}
+\includegraphics[width=0.85\linewidth, height=0.38\textheight, keepaspectratio]{#1}
+\figurenote{#4}
+\end{figure}}
+
+\subsection{Pruebas de seguridad}
+
+\paragraph{Diseño.} Escaneo pasivo y activo con OWASP ZAP sobre el frontend y la API, verificación del control de acceso y revisión del código según el OWASP Top 10 \parencite{owasp2021}.
+
+{\footnotesize\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{L{1cm} L{3.2cm} L{1.3cm} L{3.8cm} L{3.4cm}}
+\caption{Pruebas de seguridad}\label{tab:seguridad}\\
+\toprule
+ID & Prueba & RNF & 25/10/2026 & 21/11/2026 \\
+\midrule
+\endfirsthead
+\toprule
+ID & Prueba & RNF & 25/10/2026 & 21/11/2026 \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+PS-01 & Abrir \codigo{/dashboard} sin sesión & RNF04 & Redirige a \codigo{/login} (aprobado) & Aprobado (Selenium, PA-01) \\
+PS-02 & Endpoints sin token o con token inválido & RNF02 & 401 (aprobado) & 401 (\codigo{test_pi01_*}, \codigo{test_d06_token_*}) \\
+PS-03 & Credenciales en el código (A07) & RNF13 & \textbf{Fallido}: \codigo{admin@test.com/123} y usuario 999 (D-06, crítica) & Aprobado: eliminados; login con esas credenciales responde 401 (\codigo{test_d06_*}); secretos en \codigo{.env} \\
+PS-04 & Almacenamiento de contraseñas & RNF01 & bcrypt con sal (estático) & Aprobado (\codigo{test_rnf01_*}) \\
+PS-05 & Aislamiento entre usuarios (A01) & RNF12 & Aprobado (estático) & Aprobado en ejecución (\codigo{test_pi15_*}, \codigo{test_*_ajeno_404}) \\
+PS-06 & CORS & RNF03 & Lista blanca (estático) & Aprobado en ejecución (\codigo{test_rnf03_*}) \\
+PS-07 & ZAP sobre la API & RNF13 & 0 altas, 0 medias, 1 baja (falta \codigo{X-Content-Type-Options}) & Cabecera agregada (\codigo{test_ps07_*}); nuevo escaneo: \pendiente{repetir ZAP sobre la API desplegada} \\
+PS-08 & ZAP sobre el frontend & RNF13 & 0 altas, 3 medias (sin CSP, sin anti-clickjacking, falso positivo de la SPA), 2 bajas & Cabeceras \codigo{X-Frame-Options}, \codigo{frame-ancestors}, \codigo{nosniff} y \codigo{Referrer-Policy} en \codigo{vercel.json}; nuevo escaneo: \pendiente{repetir ZAP tras desplegar} \\
+PS-09 & Token en \codigo{localStorage} & — & Riesgo aceptado (observación) & Sin cambios: riesgo aceptado \\
+\end{longtable}
+}
+\vspace{-1em}
+{\small\textit{Nota.} Fuente: elaboración propia.}
+
+\begin{minted}[fontsize=\footnotesize, frame=single]{text}
+docker run -t ghcr.io/zaproxy/zaproxy:stable zap-baseline.py \
+    -t https://shifts-chash-version-amaya.vercel.app/ -r zap_frontend.html
+docker run -t ghcr.io/zaproxy/zaproxy:stable zap-api-scan.py \
+    -t https://shiftschash-api.onrender.com/openapi.json -f openapi -r zap_api.html
+\end{minted}
+
+\evidencia{previo/zap_frontend_resumen.png}{fig:zap-front}{Informe de OWASP ZAP 2.16.1 sobre el frontend (primera ejecución)}{Fuente: elaboración propia.}
+\evidencia{previo/zap_api.png}{fig:zap-api}{Informe de OWASP ZAP sobre la API: una alerta baja (primera ejecución)}{Fuente: elaboración propia.}
+
+\subsection{Pruebas de rendimiento}
+
+\paragraph{Diseño.} El plan de JMeter (\codigo{tests/carga/shiftcash.jmx}, Apéndice \ref{ap:jmeter}) usa 50 usuarios virtuales, 60 s de rampa y 10 iteraciones; cada iteración hace \codigo{GET /transactions/}, \codigo{GET /budgets/} y \codigo{POST /transactions/}, es decir, 1\,500 peticiones. El servidor se elige con propiedades (\codigo{-Jhost}, \codigo{-Jport}, \codigo{-Jprotocol}), de modo que el mismo archivo sirve para la ejecución local y para Render. Criterio (RNF11): percentil 90 $< 2$ s y error $< 1$\,\%.
+
+\paragraph{Corrección de la inconsistencia anterior.} En la primera ejecución el diseño decía 60 s de rampa, con \codigo{POST} y contra Render, pero se ejecutó con 30 s, en local y solo con \codigo{GET}. En la segunda ejecución el plan y la ejecución coinciden: 60 s de rampa e incluye \codigo{POST /transactions/}.
+
+\begin{table}[H]
+\caption{Resultados de rendimiento}
+\label{tab:rendimiento}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{4.2cm} Y Y}
+\toprule
+Medida & 25/10/2026 & 21/11/2026 \\
+\midrule
+Configuración & 50 usuarios, 30 s, 10 iteraciones, solo GET, local & 50 usuarios, 60 s, 10 iteraciones, GET y POST, local \\
+Peticiones & 1\,500 & 1\,500 \\
+Error & 66,7\,\% en la primera corrida (datos inválidos de D-03 y D-07); 0\,\% en la segunda & \textbf{0\,\%} \\
+Tiempo medio & 6,8 ms & 14,5 ms \\
+Percentil 90 & 10 ms & \textbf{22 ms} (objetivo: $< 2\,000$ ms) \\
+Percentil 95 / 99 & — & 24 ms / 45 ms \\
+Máximo & 75 ms & 57 ms \\
+Rendimiento & 50,8 peticiones/s & 25,4 peticiones/s (limitado por la rampa de 60 s) \\
+Por petición (p90) & — & GET budgets 13 ms; GET transactions 25 ms; POST transactions 22 ms \\
+Contra la API en Render & No se ejecutó & \pendiente{ejecutar el mismo plan con \codigo{-Jhost=shiftschash-api.onrender.com} cuando la API responda} \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia con Apache JMeter 5.6.3.}
+\end{table}
+
+\evidencia{../evidencias/jmeter_estadisticas.png}{fig:jmeter}{Estadísticas del reporte HTML de JMeter (segunda ejecución)}{1\,500 muestras, 0 fallos, p90 de 22 ms. Fuente: elaboración propia.}
+
+\paragraph{Rendimiento del frontend.} En la primera ejecución, la portada desplegada tuvo un tiempo hasta el primer byte de 112 ms, \codigo{DOMContentLoaded} en 345 ms y 11 recursos cargados por HTTP/2 (Navigation y Resource Timing). La API en Render no respondió durante más de 7 minutos (D-09), y el 21 de noviembre tampoco respondió en 60 s.
+
+\subsection{Pruebas de usabilidad}
+
+\begin{table}[H]
+\caption{Pruebas de usabilidad}
+\label{tab:usabilidad}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{1cm} L{3.8cm} L{1.2cm} Y Y}
+\toprule
+ID & Criterio & RNF & 25/10/2026 & 21/11/2026 \\
+\midrule
+PU-01 & Idioma del documento declarado & RNF14 & \codigo{lang="es"} (aprobado) & Aprobado \\
+PU-02 & Imágenes con texto alternativo & RNF14 & 2 de 2 (aprobado) & Aprobado \\
+PU-03 & Campos con etiqueta asociada & RNF14 & \textbf{0 de 3} en el formulario de contacto (D-10) & 3 de 3 con \codigo{htmlFor} e \codigo{id} (aprobado) \\
+PU-04 & Formulario de contacto funcional & — & \textbf{Sin manejador} (D-10) & Con manejador; sin correo de destino informa que no está habilitado (decisión del equipo) \\
+PU-05 & Mensajes de error comprensibles & RNF07 & En español (aprobado) & Aprobado; además, los errores 422 ya no rompen la interfaz (D-13) \\
+PU-06 & Tiempo para registrar un gasto (5 usuarios) & RNF07 & Pendiente & \pendiente{mediana, tasa de éxito y observaciones de los 5 usuarios} \\
+PU-07 & Aviso cuando la API está despertando & RNF10 & No existía & «Despertando el servidor» tras 3 s (aprobado, D-09) \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Protocolo de PU-06.} Cada participante, sin ayuda, inicia sesión y registra un gasto de \$25\,000 en «Alimentación» con la descripción «Almuerzo». Se mide el tiempo desde que pulsa «+ Transacción» hasta que el gasto aparece en el resumen, y se anota si lo logra al primer intento. El objetivo es una mediana $\leq 60$ s y una tasa de éxito $\geq 90$\,\% (RNF07). El formato de registro está en el Apéndice \ref{ap:acta}.
+
+\subsection{Pruebas de portabilidad}
+
+\begin{table}[H]
+\caption{Matriz de portabilidad}
+\label{tab:portabilidad}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{4.4cm} L{2.6cm} Y}
+\toprule
+Plataforma & Herramienta & Resultado \\
+\midrule
+Chromium de escritorio (1366 px) & Navegador, Selenium & Correcto (ejecutado en ambas fechas) \\
+Emulación móvil de 375 × 812 px & Navegador & Sin desbordamiento horizontal; barra de navegación inferior (Figura \ref{fig:p-movil}) \\
+Chrome 154 en macOS (1440 × 900) & LambdaTest & Portada correcta (25/10/2026) \\
+Firefox 155 en Windows 11 (1920 × 1080) & LambdaTest & Portada correcta (25/10/2026) \\
+Safari en macOS y Edge en Windows 11 & LambdaTest & \pendiente{ejecutar en LambdaTest (se agotaron las sesiones gratuitas)} \\
+Safari iOS y Chrome Android (dispositivos reales) & LambdaTest & \pendiente{ejecutar en dispositivos reales o con el teléfono de un integrante} \\
+\bottomrule
+\end{tabularx}
+\tablenote{RNF06 exige 0 defectos bloqueantes en Chrome, Firefox, Edge y Safari. Fuente: elaboración propia.}
+\end{table}
+
+\evidencia{previo/lambdatest_firefox_win11.png}{fig:lambdatest}{LambdaTest: ShiftCash en Firefox 155 sobre Windows 11}{Fuente: elaboración propia.}
+
+\subsection{Pruebas de fiabilidad}
+
+\begin{table}[H]
+\caption{Pruebas de fiabilidad}
+\label{tab:fiabilidad}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{1cm} L{3.6cm} L{1.2cm} Y Y}
+\toprule
+ID & Prueba & RNF & 25/10/2026 & 21/11/2026 \\
+\midrule
+PF-01 & Disponibilidad del frontend (Vercel) & RNF10 & Disponible (aprobado) & Disponible (aprobado) \\
+PF-02 & Disponibilidad de la API (Render) & RNF10 & \textbf{Más de 7 min sin respuesta} (D-09) & Mitigación lista (ping cada 10 min y aviso en la interfaz); la API no respondió en 60 s: \pendiente{revisar el servicio en Render y medir la disponibilidad una semana} \\
+PF-03 & Exactitud de los cálculos & RNF08 & 48 de 49 casos (D-01) & 58 de 58 casos \\
+PF-04 & Entradas inválidas que provocan 500 & RNF05 & 2 (D-03 y D-07) & 0 \\
+PF-05 & Tasa de error bajo carga & RNF11 & 66,7\,\% con datos inválidos persistidos; 0\,\% sin ellos & 0\,\% en 1\,500 peticiones \\
+PF-06 & Idempotencia de las recurrencias & — & Solo análisis estático & Aprobado en ejecución (PI-08) \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Pruebas de mantenibilidad}
+
+\begin{table}[H]
+\caption{Pruebas de mantenibilidad}
+\label{tab:mantenibilidad}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{1cm} L{3.4cm} Y Y}
+\toprule
+ID & Criterio & 25/10/2026 & 21/11/2026 \\
+\midrule
+PM-01 & Separación por capas & Cumple parcialmente: la lógica estaba en las rutas & Cumple: entidades, esquemas, servicios y rutas \\
+PM-02 & Pruebas automatizadas en el repositorio & \textbf{No existían}; el CI no probaba nada & 95 pruebas pytest, Cypress y Selenium; el CI corre pytest con cobertura \\
+PM-03 & Funciones con complejidad $> 10$ & \textbf{3} (14, 13 y 13) & 0 (máximo 8) \\
+PM-04 & Duplicación & Construcción de \codigo{BudgetOut} y \codigo{SavingGoalOut} repetida 3 veces cada una & Una función por respuesta (\codigo{to_budget_out}, \codigo{to_goal_out}, \codigo{_to_transaction_out}) \\
+PM-05 & Código muerto & Cliente de Supabase, login comentado, \codigo{mockData.js} & Eliminado, junto con los esquemas \codigo{Token} y \codigo{ToggleDayRequest} \\
+PM-06 & SonarQube Community 26.7 & Quality Gate aprobado; mantenibilidad A (249 incidencias), fiabilidad D (151), seguridad C (1); cobertura 0\,\%; duplicación 0,7\,\% & \pendiente{repetir el análisis de SonarQube sobre la rama \codigo{fix/defectos}} \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\evidencia{previo/sonarqube_antes.png}{fig:sonar-antes}{Resumen de SonarQube (primera ejecución)}{Fuente: elaboración propia con SonarQube Community 26.7.}

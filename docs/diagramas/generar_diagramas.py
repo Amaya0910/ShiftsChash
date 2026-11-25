@@ -316,34 +316,40 @@ def arbol():
 # ── 4. Cronograma ────────────────────────────────────────────────────────────
 TAREAS = [
     # (fase, actividad, inicio, fin, responsable)
-    ("Sprint 0", "Planteamiento del problema y requisitos", date(2026, 8, 3), date(2026, 8, 14), "Ambos"),
-    ("Sprint 1", "Arquitectura, BD, autenticación y categorías", date(2026, 8, 13), date(2026, 8, 28), "Ambos"),
-    ("Sprint 2", "Transacciones, historial y recurrencias", date(2026, 8, 31), date(2026, 9, 11), "Ambos"),
-    ("Sprint 3", "Presupuestos, resumen y gráficas", date(2026, 9, 14), date(2026, 9, 25), "Ambos"),
-    ("Sprint 4", "Metas de ahorro, perfil y tema", date(2026, 9, 28), date(2026, 10, 9), "Ambos"),
-    ("Sprint 5", "Despliegue Vercel/Render y CI", date(2026, 10, 12), date(2026, 10, 17), "Ambos"),
-    ("Calidad", "Modelos UML y pruebas (unit., integ., sistema)", date(2026, 10, 12), date(2026, 10, 25), "Ambos"),
-    ("Calidad", "Métricas y estimación", date(2026, 10, 19), date(2026, 10, 25), "Ambos"),
-    ("Cierre", "Corrección de defectos y pruebas automatizadas", date(2026, 11, 16), date(2026, 11, 22), "Ambos"),
-    ("Cierre", "Aceptación con usuarios y documento final", date(2026, 11, 23), date(2026, 11, 29), "Ambos"),
-    ("Cierre", "Presentación y sustentación", date(2026, 11, 30), date(2026, 12, 4), "Ambos"),
+    # Sprints 1-4: fechas del historial de Git de github.com/piri277/ShiftCash (68 commits).
+    ("Sprint 0", "Planteamiento del problema y requisitos (aprox.)", date(2026, 4, 6), date(2026, 4, 19), "Equipo"),
+    ("Sprint 1", "Proyecto React, login y dashboard inicial", date(2026, 4, 20), date(2026, 5, 3), "Equipo"),
+    ("Sprint 2", "Backend FastAPI, transacciones, recurrencias y gráficas", date(2026, 5, 4), date(2026, 5, 17), "Equipo"),
+    ("Sprint 3", "Presupuestos, despliegue, metas y responsive", date(2026, 5, 18), date(2026, 5, 31), "Equipo"),
+    ("Sprint 4", "Perfil, alertas, correcciones e inicio con Google", date(2026, 6, 1), date(2026, 6, 9), "Equipo"),
+    ("Calidad", "Modelos UML y diseño de pruebas", date(2026, 8, 13), date(2026, 10, 11), "Equipo"),
+    ("Calidad", "Despliegue de la versión documentada y pruebas con herramientas", date(2026, 10, 12), date(2026, 10, 25), "Equipo"),
+    ("Calidad", "Métricas y estimación", date(2026, 10, 19), date(2026, 10, 25), "Equipo"),
+    ("Cierre", "Corrección de defectos y pruebas automatizadas", date(2026, 11, 16), date(2026, 11, 20), "Equipo"),
+    ("Cierre", "Aceptación con usuarios y documento final", date(2026, 11, 21), date(2026, 11, 25), "Equipo"),
+    ("Cierre", "Presentación y sustentación", date(2026, 11, 26), date(2026, 11, 30), "Equipo"),
 ]
 
 
 def cronograma():
     fig, ax = plt.subplots(figsize=(12, 5.2))
-    colores = {"Sprint 0": "#9fb8d6", "Sprint 1": AZUL, "Sprint 2": AZUL, "Sprint 3": AZUL, "Sprint 4": AZUL,
-               "Sprint 5": AZUL, "Calidad": "#2e6b30", "Cierre": "#b5651d"}
+    colores = {"Sprint 0": "#9fb8d6", "Sprint 1": AZUL, "Sprint 2": AZUL, "Sprint 3": AZUL, "Sprint 4": AZUL, "Calidad": "#2e6b30", "Cierre": "#b5651d"}
     for i, (f, a, ini, fin, _) in enumerate(reversed(TAREAS)):
         ax.barh(i, (fin - ini).days + 1, left=mdates.date2num(ini), color=colores[f], height=0.6)
         ax.text(mdates.date2num(fin) + 1.5, i, f"{(fin - ini).days + 1} d", va="center", fontsize=7)
     ax.set_yticks(range(len(TAREAS)))
     ax.set_yticklabels([f"{f} · {a}" for f, a, *_ in reversed(TAREAS)], fontsize=8)
     ax.xaxis_date()
-    ax.xaxis.set_major_locator(mdates.WeekdayLocator(byweekday=0, interval=2))
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%d %b"))
+    # Líneas en el inicio de cada mes; la etiqueta va centrada en el mes (abril a noviembre).
+    ax.xaxis.set_major_locator(mdates.MonthLocator())
+    ax.xaxis.set_major_formatter(plt.NullFormatter())
+    ax.xaxis.set_minor_locator(mdates.MonthLocator(bymonthday=15))
+    MESES = ["ene", "feb", "mar", "abr", "may", "jun", "jul", "ago", "sep", "oct", "nov", "dic"]
+    ax.xaxis.set_minor_formatter(plt.FuncFormatter(lambda v, _: f"{MESES[mdates.num2date(v).month - 1]} {mdates.num2date(v).year}"))
+    ax.tick_params(axis="x", which="minor", length=0, labelsize=8)
+    ax.set_xlim(mdates.date2num(date(2026, 4, 1)), mdates.date2num(date(2026, 12, 6)))
     ax.grid(axis="x", ls=":", alpha=0.6)
-    ax.set_title("Cronograma del proyecto ShiftCash (agosto – diciembre de 2026)", fontsize=11, weight="bold")
+    ax.set_title("Cronograma del proyecto ShiftCash (abril – noviembre de 2026)", fontsize=11, weight="bold")
     for s in ("top", "right"):
         ax.spines[s].set_visible(False)
     guardar(fig, "cronograma.png")

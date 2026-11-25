@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { eliminarCategoria } from '../../../api/categories';
+import { mensajeError } from '../../../api/errores';
 
 export default function ConfirmarEliminarCategoria({ categoria, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
@@ -21,7 +22,7 @@ export default function ConfirmarEliminarCategoria({ categoria, onClose, onSucce
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al eliminar');
+      setError(mensajeError(err, 'Error al eliminar'));
     } finally {
       setLoading(false);
     }

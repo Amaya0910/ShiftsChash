@@ -1,0 +1,157 @@
+\PassOptionsToPackage{obeyspaces,spaces}{url} % \codigo conserva los espacios
+\documentclass[stu,12pt,biblatex,floatsintext]{apa7}
+% --- Idioma y codificación ---
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[spanish,es-tabla]{babel} % es-tabla: «Tabla» en lugar de «Cuadro» (APA)
+\setlength{\parindent}{1.27cm}
+\usepackage[table]{xcolor}
+% --- Utilidades comunes ---
+\usepackage{csquotes}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{hyperref} % apa7 ya carga hyperref: sus opciones van en \hypersetup
+\hypersetup{colorlinks=true, linkcolor=blue, urlcolor=blue, citecolor=blue,
+            hypertexnames=false} % anclas únicas: cada parte reinicia la numeración de secciones
+\usepackage{amsmath,amssymb}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{pdflscape} % páginas horizontales para diagramas de secuencia
+\usepackage{longtable}
+\usepackage{enumitem}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, decorations.pathreplacing, positioning, shapes.geometric, shapes.multipart, fit, calc}
+\usepackage{minted}
+\setminted{breaklines} % las líneas largas de código no se salen del margen
+% --- Bibliografía (APA 7) ---
+\usepackage[style=apa,backend=biber]{biblatex}
+\DeclareLanguageMapping{spanish}{spanish-apa}
+% --- Evitar que las notas al pie se dividan entre páginas ---
+\interfootnotelinepenalty=10000
+
+\title{Proyecto final: ShiftCash}
+\shorttitle{ShiftCash}
+\addbibresource{referencias.bib}
+\DefineBibliographyStrings{spanish}{
+  references = {Bibliografía},
+}
+\renewcommand{\arraystretch}{1.5}
+
+% --- Caracteres de los guiones incluidos que pdfLaTeX no trae ---
+\DeclareUnicodeCharacter{2500}{-}
+\DeclareUnicodeCharacter{1F354}{\textit{(icono)}}
+\DeclareUnicodeCharacter{1F4BC}{\textit{(icono)}}
+\DeclareUnicodeCharacter{1F3AC}{\textit{(icono)}}
+
+% --- Convenciones propias del documento ---
+\setcounter{secnumdepth}{3} % secciones numeradas para poder referenciarlas
+\renewcommand{\notelabel}{Nota} % apa7 escribe «Note» por defecto
+\graphicspath{{images/}}
+% Paleta: negro, gris y un solo color de acento
+\definecolor{acento}{HTML}{1F4E79}
+\definecolor{gris}{gray}{0.45}
+\definecolor{grisclaro}{gray}{0.88}
+% Datos que debe aportar el equipo (lista final: grep -rn "pendiente" secciones/)
+\newcommand{\pendiente}[1]{\textbf{[PENDIENTE: #1]}}
+% Nombres de archivos, clases y endpoints del código
+\newcommand{\codigo}[1]{\nolinkurl{#1}} % admite cortes de línea en / y _
+% Columnas de tabla con ajuste de línea
+\newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
+\newcolumntype{Y}{>{\raggedright\arraybackslash}X}
+% Estilos TikZ comunes a los diagramas
+\tikzset{
+  caja/.style={draw, rectangle, align=center, inner sep=4pt, font=\footnotesize},
+  cajagris/.style={caja, fill=grisclaro},
+  cajaacento/.style={caja, draw=acento, very thick},
+  flecha/.style={-{Stealth[length=2mm]}, thin},
+  flechapunteada/.style={-{Stealth[length=2mm]}, thin, dashed},
+}
+
+\begin{document}
+\begin{titlepage}
+    \centering
+    % --- Encabezado institucional ---
+    \textsc{\large Universidad Popular del César}\\[0.2cm]
+    \textsc{\normalsize Facultad de Ingeniería de Sistemas}\\[0.15cm]
+    \textit{\textbf{SS602}: Ingeniería de Software II}
+    % --- Línea separadora ---
+    \rule{\textwidth}{0.6pt}
+    % --- Actividad y título ---
+    {\Large \bfseries Proyecto final: ShiftCash\par}
+    \vspace{0.2cm}
+    {\normalsize Aplicación web para el control de finanzas personales\par}
+    \vspace{0.5cm}
+    \rule{\textwidth}{0.6pt}
+    \vspace{3cm}
+    % --- Autores ---
+    {\large Isabella Amaya\par}
+    \vspace{0.2cm}
+    {\large Brayan Vásquez\par}
+    \vspace{1.5cm}
+    {\normalsize Docente: Maribel Romero\par}
+    \vfill
+    % --- Pie de portada ---
+    {\normalsize Valledupar, Cesar\par}
+    \vspace{0.1cm}
+    {\normalsize \today\par}
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ===================== PRIMERA PARTE =====================
+\part*{Primera parte: análisis y diseño}
+\addcontentsline{toc}{part}{Primera parte: análisis y diseño}
+\input{secciones/parte1/01_problema}
+\input{secciones/parte1/02_propuesta}
+\input{secciones/parte1/03_metodologia}
+\input{secciones/parte1/04_requisitos}
+\input{secciones/parte1/05_casos_uso}
+\input{secciones/parte1/06_diseno}
+\input{secciones/parte1/07_producto}
+
+% ===================== SEGUNDA PARTE =====================
+\newpage
+\part*{Segunda parte: pruebas del software}
+\addcontentsline{toc}{part}{Segunda parte: pruebas del software}
+\setcounter{section}{0} % cada parte numera sus secciones desde 1
+\input{secciones/parte2/01_plan}
+\input{secciones/parte2/02_unitarias}
+\input{secciones/parte2/03_integracion}
+\input{secciones/parte2/04_sistema}
+\input{secciones/parte2/05_aceptacion}
+\input{secciones/parte2/06_conclusiones}
+
+% ===================== TERCERA PARTE =====================
+\newpage
+\part*{Tercera parte: medición del software}
+\addcontentsline{toc}{part}{Tercera parte: medición del software}
+\setcounter{section}{0}
+\input{secciones/parte3/01_internas}
+\input{secciones/parte3/02_externas}
+
+% ===================== CUARTA PARTE =====================
+\newpage
+\part*{Cuarta parte: estimación del software}
+\addcontentsline{toc}{part}{Cuarta parte: estimación del software}
+\setcounter{section}{0}
+\input{secciones/parte4/01_estimacion}
+
+% ===================== CONCLUSIONES =====================
+\newpage
+\input{secciones/conclusiones}
+
+\newpage
+\printbibliography
+
+% ===================== APÉNDICES =====================
+\newpage
+\appendix
+\input{apendices/guiones}
+\input{apendices/defectos}
+\input{apendices/acta}
+
+\end{document}

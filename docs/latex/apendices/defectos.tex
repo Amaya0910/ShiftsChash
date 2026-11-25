@@ -1,0 +1,37 @@
+% =====================================================================
+% Apéndice F: registro de defectos
+% =====================================================================
+\section{Registro de defectos}\label{ap:defectos}
+
+{\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{longtable}{L{0.8cm} L{1.1cm} L{3.4cm} L{2.2cm} L{3.4cm} L{2.6cm}}
+\caption{Registro de defectos, corrección y estado tras la reprueba}\label{tab:defectos}\\
+\toprule
+ID & Severidad & Descripción & Evidencia & Corrección (archivo) & Estado tras la reprueba \\
+\midrule
+\endfirsthead
+\toprule
+ID & Severidad & Descripción & Evidencia & Corrección (archivo) & Estado tras la reprueba \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+D-01 & Alta & Cuota diaria negativa cuando el objetivo es menor que días × unidad mínima (1\,000 COP en 15 días: día 15 = $-400$) & Prueba unitaria fallida; PA-07 en la interfaz & \codigo{services/saving_service.py} (\codigo{_distribute_insufficient}) & Corregido: \codigo{test_d01_*}, PI-12 y PA-07 aprobados \\
+D-02 & Media & Sin monto máximo; un valor mayor que \codigo{Numeric(15,2)} llegaba a la BD & Prueba unitaria & \codigo{schemas.py} (\codigo{MAX_AMOUNT}, \codigo{_validar_monto}) & Corregido: \codigo{test_transaccion_monto_invalido}, PI-11 \\
+D-03 & Media & \codigo{month} fuera de 1–12 producía 500 & PI-09 (500) & \codigo{schemas.py} (\codigo{_validar_mes}, \codigo{_validar_anio}) & Corregido: PI-09 responde 422 \\
+D-04 & Media & \codigo{percentage} limitado a 100: nunca se veía «superado» & PI-04, PA-06 & \codigo{services/budget_service.py} (\codigo{percentage_used}) & Corregido: PI-04 y PA-06 aprobados \\
+D-05 & Media & \codigo{category_id} \codigo{NOT NULL} con \codigo{ON DELETE SET NULL} & PI-05 (referencia huérfana) & \codigo{models.py} (\codigo{RESTRICT}); \codigo{routes/categories.py} (409) & Corregido en el código (PI-05 en SQLite); \pendiente{migrar la FK en Supabase y repetir PI-05} \\
+D-06 & Crítica & Credenciales codificadas (\codigo{admin@test.com/123}) y usuario 999 & Análisis estático (PS-03) & \codigo{routes/users.py}, \codigo{auth.py}; \codigo{.env.example} & Corregido: \codigo{test_d06_*} \\
+D-07 & Media & Meta sin \codigo{end_date} producía 500 & PI-10 (500) & \codigo{services/saving_service.py} (\codigo{create_goal}) & Corregido: PI-10 aprobado \\
+D-08 & Baja & La moneda del plan siempre era COP & Análisis estático & \codigo{services/saving_service.py} (moneda del usuario) & Corregido: \codigo{test_d08_*} \\
+D-09 & Alta & La API en Render no respondía por más de 7 min & Observado el 25/10/2026 & \codigo{hooks/useBackendWarmup.js}; \codigo{.github/workflows/mantener-api-despierta.yml} & Mitigado en el código; \pendiente{revisar el servicio en Render, activar el flujo en \codigo{main} y medir la disponibilidad} \\
+D-10 & Baja & Formulario de contacto sin \codigo{htmlFor} ni manejador & Inspección del DOM & \codigo{pages/Home.jsx} & Corregido: PU-03 aprobado \\
+D-11 & Media & Eliminar la cuenta o una categoría con datos asociados producía 500 & PI-13 (nueva) & \codigo{models.py} (\codigo{cascade="all, delete-orphan"}) & Corregido: PI-13 aprobado \\
+D-12 & Media & Editar una transacción aceptaba una categoría ajena & PI-14 (nueva) & \codigo{routes/transactions.py} (\codigo{get_accessible_category}) & Corregido: PI-14 aprobado \\
+D-13 & Media & Un error 422 de la API rompía el formulario (React no puede mostrar la lista \codigo{detail}) & Revisión del código & \codigo{frontend/src/api/errores.js} (\codigo{mensajeError}) & Corregido: el formulario muestra «El monto debe ser mayor a 0» (Selenium) \\
+D-14 & Baja & Una transacción recurrente sin frecuencia válida se guardaba y nunca se repetía & Métrica de integridad (Tercera parte) & \codigo{schemas.py} (\codigo{FRECUENCIAS}, validador del modelo) & Corregido: \codigo{test_d14_*} \\
+\end{longtable}
+}
+\vspace{-1em}
+{\small\textit{Nota.} D-01 a D-08 y D-10 se corrigieron en el commit \codigo{296ac7a} de la rama \codigo{fix/defectos}; D-09 y D-11 a D-14, en la misma rama \pendiente{hash del commit}. Fuente: elaboración propia.}

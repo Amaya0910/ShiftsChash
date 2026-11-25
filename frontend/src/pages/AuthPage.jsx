@@ -3,11 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import { useGoogleLogin } from '@react-oauth/google';
 import { loginUser, registerUser, googleAuthUser } from '../api/auth';
 import { useAuth } from '../hooks/useAuth';
+import { useBackendWarmup } from '../hooks/useBackendWarmup';
 import '../styles/auth.css';
+import { mensajeError } from '../api/errores';
 
 function AuthPage() {
   const navigate = useNavigate();
   const { login } = useAuth();
+  const servidorDespertando = useBackendWarmup();
   const [isActive, setIsActive] = useState(false);
 
   // Password visibility states
@@ -82,7 +85,7 @@ function AuthPage() {
       login(data.access_token, data.user);
       navigate('/dashboard');
     } catch (err) {
-      setLoginError(err.response?.data?.detail || 'Credenciales incorrectas');
+      setLoginError(mensajeError(err, 'Credenciales incorrectas'));
     } finally {
       setLoginLoading(false);
     }
@@ -115,7 +118,7 @@ function AuthPage() {
       setRegisterConfirm('');
       setPasswordError('');
     } catch (err) {
-      setRegisterError(err.response?.data?.detail || 'Error al registrarse');
+      setRegisterError(mensajeError(err, 'Error al registrarse'));
     } finally {
       setRegisterLoading(false);
     }
@@ -129,6 +132,11 @@ function AuthPage() {
         <div className="form-box login">
           <form onSubmit={handleLoginSubmit}>
             <h1>Login</h1>
+            {servidorDespertando && (
+              <div className="alert alert-info" role="status">
+                Despertando el servidor; la primera conexión puede tardar hasta un minuto.
+              </div>
+            )}
             {loginError && <div className="alert alert-error">{loginError}</div>}
 
             <div className="input-box">

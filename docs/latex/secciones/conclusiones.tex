@@ -1,0 +1,17 @@
+% =====================================================================
+% Conclusiones generales
+% =====================================================================
+\section*{Conclusiones generales}
+\addcontentsline{toc}{part}{Conclusiones generales}
+
+\paragraph{Problema y propuesta.} Más de la mitad de las personas en Colombia no anota sus gastos con regularidad \parencite{asobancaria2021}. ShiftCash ataca la causa que está a su alcance, el registro manual sin cálculo automático, con una aplicación web que registra los movimientos, calcula el gasto de cada presupuesto con su porcentaje real, genera las recurrencias y convierte cada meta en un plan diario. El alcance es viable en un semestre: el producto se desarrolló en 1,68 meses con Scrum y la fase de calidad, entre agosto y noviembre de 2026.
+
+\paragraph{Requisitos y modelos.} Los 20 requisitos funcionales tienen prioridad y un criterio de aceptación verificable con una prueba; los 15 no funcionales tienen métrica, valor objetivo y forma de verificación, y la Tercera parte los mide. Los 14 casos de uso cubren todos los RF (matriz de trazabilidad). Los diagramas de clases, secuencia y componentes son de implementación y coinciden con el código después de la refactorización, que separó la capa de servicios.
+
+\paragraph{Pruebas.} El proyecto pasó de no tener pruebas en el repositorio a 95 pruebas automatizadas con 95\,\% de cobertura, más los guiones de Cypress (8 de 8), Selenium y JMeter (0\,\% de error en 1\,500 peticiones). Las pruebas encontraron 14 defectos; los 13 de código están corregidos y verificados con una prueba que fallaba antes del cambio, y el de disponibilidad (D-09) está mitigado.
+
+\paragraph{Métricas.} La refactorización bajó la complejidad sin aumentar el tamaño: ninguna función supera $V(G) = 10$, las rutas pasaron de WMC 50 y 37 a 7 y 5, y el acoplamiento y la herencia están en los rangos comunes. En calidad externa mejoraron la corrección funcional, la integridad de las entradas, la tolerancia a fallos, la accesibilidad (78 a 95 en Lighthouse) y la instalabilidad. Siguen por debajo del objetivo el LCP en perfil móvil y la verificación en Edge y Safari.
+
+\paragraph{Estimación.} Los cinco modelos ubican el proyecto entre 6,2 y 19 PM. Los puntos de historia, con el equipo real de 3 personas, son los más cercanos a la duración real (2,05 frente a 1,68 meses) y el modelo más viable para planificar. El equipo no gastó dinero; contratado a una tarifa justificada, el proyecto real habría costado unos \$15,6 millones.
+
+\paragraph{Trabajo pendiente.} Para completar la validación faltan la sesión de aceptación con un usuario final en la aplicación desplegada y su acta firmada, la tarea cronometrada PU-06, la encuesta sobre el problema, migrar la clave foránea en Supabase, revisar el servicio de Render y repetir sobre la versión desplegada los análisis de ZAP, SonarQube, JMeter y LambdaTest.

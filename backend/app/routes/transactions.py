@@ -3,9 +3,24 @@ from sqlalchemy.orm import Session
 from datetime import date
 from .. import models, schemas, auth
 from ..database import get_db
-from sqlalchemy import or_
+from ..services.category_service import get_accessible_category, visible_to
 
 router = APIRouter(prefix="/transactions", tags=["transactions"])
+
+
+def _to_transaction_out(t: models.Transaction) -> schemas.TransactionOut:
+    """Respuesta de la transacción con el nombre de su categoría."""
+    return schemas.TransactionOut(
+        trans_id=t.trans_id,
+        category_id=t.category_id,
+        category_name=t.category.name_cat if t.category else "Sin categoría",
+        type=t.type,
+        amount=float(t.amount),
+        description=t.description,
+        trans_date=t.trans_date,
+        is_recurring=t.is_recurring,
+        frequency=t.frequency,
+    )
 
 
 # ── Responsabilidad única: obtener categorías disponibles para el usuario ──
@@ -14,13 +29,7 @@ def get_categories(
     current_user: models.User = Depends(auth.get_current_user),
     db: Session = Depends(get_db)
 ):
-    categories = db.query(models.Category).filter(
-        or_(
-            models.Category.is_default == 1,
-            models.Category.user_id == current_user.user_id
-        )
-    ).all()
-    return categories
+    return db.query(models.Category).filter(visible_to(current_user.user_id)).all()
 
 
 # ── Responsabilidad única: crear una transacción ──
@@ -30,15 +39,7 @@ def create_transaction(
     current_user: models.User = Depends(auth.get_current_user),
     db: Session = Depends(get_db)
 ):
-    # Verificar que la categoría existe y es accesible por el usuario
-    category = db.query(models.Category).filter(
-        models.Category.category_id == transaction.category_id,
-        (models.Category.is_default == 1) |
-        (models.Category.user_id == current_user.user_id)
-    ).first()
-
-    if not category:
-        raise HTTPException(status_code=404, detail="Categoría no encontrada")
+    get_accessible_category(db, current_user.user_id, transaction.category_id)
 
     new_transaction = models.Transaction(
         user_id=current_user.user_id,
@@ -67,24 +68,7 @@ def get_transactions(
         .all()
     )
 
-    # Enriquece con el nombre de la categoría
-    result = []
-    for t in transactions:
-        category = db.query(models.Category).filter(
-            models.Category.category_id == t.category_id
-        ).first()
-        result.append(schemas.TransactionOut(
-            trans_id=t.trans_id,
-            category_id=t.category_id,
-            category_name=category.name_cat if category else "Sin categoría",
-            type=t.type,
-            amount=float(t.amount),
-            description=t.description,
-            trans_date=t.trans_date,
-            is_recurring=t.is_recurring,
-            frequency=t.frequency,
-        ))
-    return result
+    return [_to_transaction_out(t) for t in transactions]
 
 
 @router.put("/{trans_id}", response_model=schemas.TransactionOut)
@@ -102,6 +86,7 @@ def update_transaction(
     if not transaction:
         raise HTTPException(status_code=404, detail="Transacción no encontrada")
 
+    get_accessible_category(db, current_user.user_id, data.category_id)
     transaction.category_id = data.category_id
     transaction.type        = data.type
     transaction.amount      = data.amount
@@ -111,21 +96,7 @@ def update_transaction(
     db.commit()
     db.refresh(transaction)
 
-    category = db.query(models.Category).filter(
-        models.Category.category_id == transaction.category_id
-    ).first()
-
-    return schemas.TransactionOut(
-        trans_id=transaction.trans_id,
-        category_id=transaction.category_id,
-        category_name=category.name_cat if category else "Sin categoría",
-        type=transaction.type,
-        amount=float(transaction.amount),
-        description=transaction.description,
-        trans_date=transaction.trans_date,
-        is_recurring=transaction.is_recurring,
-        frequency=transaction.frequency
-    )
+    return _to_transaction_out(transaction)
 
 
 @router.delete("/{trans_id}", status_code=204)
