@@ -74,7 +74,7 @@ PI-01 & H1 & \codigo{POST /transactions/} sin token: 401 & Aprobado & Aprobado (
 PI-02 & H1 & Crear un gasto: 200 y aparece en el historial & Aprobado & Aprobado (pytest, Cypress) \\
 PI-03 & H1 & Categoría inexistente o ajena: 404 & Aprobado & Aprobado (pytest, Cypress) \\
 PI-04 & H2 & Gasto mayor que el límite (700\,000 de 600\,000): \codigo{percentage} > 100 & \textbf{Fallido} (100, D-04) & Aprobado (pytest, Cypress) \\
-PI-05 & H5 & Eliminar una categoría con transacciones: se conservan las transacciones & \textbf{Fallido parcial} (204 y referencia huérfana, D-05) & Aprobado en SQLite con FK: 409 y transacción intacta; PostgreSQL: \pendiente{correr \codigo{TEST_DATABASE_URL=postgresql://... python -m pytest -k pi05} sobre una base PostgreSQL vacía} \\
+PI-05 & H5 & Eliminar una categoría con transacciones: se conservan las transacciones & \textbf{Fallido parcial} (204 y referencia huérfana, D-05) & Aprobado en SQLite con FK: 409 y transacción intacta; PostgreSQL: \resPIcincoPostgres \\
 PI-06 & H3 & Meta de 30 días; marcar días 1 y 2: \codigo{days_completed} = 2 & Aprobado & Aprobado (pytest, Cypress) \\
 PI-07 & H3 & Editar la fecha final: el plan se regenera & Aprobado & Aprobado (pytest) \\
 PI-08 & H4 & Recurrente mensual; ejecutar \codigo{registrar_recurrentes} dos veces: una sola instancia & Pendiente (solo corre a las 00:05) & Aprobado: la prueba invoca la función directamente (pytest) \\

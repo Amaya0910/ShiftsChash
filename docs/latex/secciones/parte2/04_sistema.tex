@@ -38,8 +38,8 @@ PS-03 & Credenciales en el código (A07) & RNF13 & \textbf{Fallido}: \codigo{adm
 PS-04 & Almacenamiento de contraseñas & RNF01 & bcrypt con sal (estático) & Aprobado (\codigo{test_rnf01_*}) \\
 PS-05 & Aislamiento entre usuarios (A01) & RNF12 & Aprobado (estático) & Aprobado en ejecución (\codigo{test_pi15_*}, \codigo{test_*_ajeno_404}) \\
 PS-06 & CORS & RNF03 & Lista blanca (estático) & Aprobado en ejecución (\codigo{test_rnf03_*}) \\
-PS-07 & ZAP sobre la API & RNF13 & 0 altas, 0 medias, 1 baja (falta \codigo{X-Content-Type-Options}) & Cabecera agregada (\codigo{test_ps07_*}); nuevo escaneo: \pendiente{repetir ZAP sobre la API desplegada} \\
-PS-08 & ZAP sobre el frontend & RNF13 & 0 altas, 3 medias (sin CSP, sin anti-clickjacking, falso positivo de la SPA), 2 bajas & Cabeceras \codigo{X-Frame-Options}, \codigo{frame-ancestors}, \codigo{nosniff} y \codigo{Referrer-Policy} en \codigo{vercel.json}; nuevo escaneo: \pendiente{repetir ZAP tras desplegar} \\
+PS-07 & ZAP sobre la API & RNF13 & 0 altas, 0 medias, 1 baja (falta \codigo{X-Content-Type-Options}) & Cabecera agregada (\codigo{test_ps07_*}); nuevo escaneo: \resZapApi \\
+PS-08 & ZAP sobre el frontend & RNF13 & 0 altas, 3 medias (sin CSP, sin anti-clickjacking, falso positivo de la SPA), 2 bajas & Cabeceras \codigo{X-Frame-Options}, \codigo{frame-ancestors}, \codigo{nosniff} y \codigo{Referrer-Policy} en \codigo{vercel.json}; nuevo escaneo: \resZapFrontend \\
 PS-09 & Token en \codigo{localStorage} & — & Riesgo aceptado (observación) & Sin cambios: riesgo aceptado \\
 \end{longtable}
 }
@@ -79,7 +79,7 @@ Percentil 95 / 99 & — & 24 ms / 45 ms \\
 Máximo & 75 ms & 57 ms \\
 Rendimiento & 50,8 peticiones/s & 25,4 peticiones/s (limitado por la rampa de 60 s) \\
 Por petición (p90) & — & GET budgets 13 ms; GET transactions 25 ms; POST transactions 22 ms \\
-Contra la API en Render & No se ejecutó & \pendiente{ejecutar el mismo plan con \codigo{-Jhost=shiftschash-api.onrender.com} cuando la API responda} \\
+Contra la API en Render & No se ejecutó & \resJmeterRender \\
 \bottomrule
 \end{tabularx}
 \tablenote{Fuente: elaboración propia con Apache JMeter 5.6.3.}
@@ -104,7 +104,7 @@ PU-02 & Imágenes con texto alternativo & RNF14 & 2 de 2 (aprobado) & Aprobado \
 PU-03 & Campos con etiqueta asociada & RNF14 & \textbf{0 de 3} en el formulario de contacto (D-10) & 3 de 3 con \codigo{htmlFor} e \codigo{id} (aprobado) \\
 PU-04 & Formulario de contacto funcional & — & \textbf{Sin manejador} (D-10) & Con manejador; sin correo de destino informa que no está habilitado (decisión del equipo) \\
 PU-05 & Mensajes de error comprensibles & RNF07 & En español (aprobado) & Aprobado; además, los errores 422 ya no rompen la interfaz (D-13) \\
-PU-06 & Tiempo para registrar un gasto (5 usuarios) & RNF07 & Pendiente & \pendiente{mediana, tasa de éxito y observaciones de los 5 usuarios} \\
+PU-06 & Tiempo para registrar un gasto (5 usuarios) & RNF07 & Pendiente & Mediana: \resPUMediana{} s; éxito: \resPUExito; \resPUObservaciones \\
 PU-07 & Aviso cuando la API está despertando & RNF10 & No existía & «Despertando el servidor» tras 3 s (aprobado, D-09) \\
 \bottomrule
 \end{tabularx}
@@ -127,8 +127,8 @@ Chromium de escritorio (1366 px) & Navegador, Selenium & Correcto (ejecutado en 
 Emulación móvil de 375 × 812 px & Navegador & Sin desbordamiento horizontal; barra de navegación inferior (Figura \ref{fig:p-movil}) \\
 Chrome 154 en macOS (1440 × 900) & LambdaTest & Portada correcta (25/10/2026) \\
 Firefox 155 en Windows 11 (1920 × 1080) & LambdaTest & Portada correcta (25/10/2026) \\
-Safari en macOS y Edge en Windows 11 & LambdaTest & \pendiente{ejecutar en LambdaTest (se agotaron las sesiones gratuitas)} \\
-Safari iOS y Chrome Android (dispositivos reales) & LambdaTest & \pendiente{ejecutar en dispositivos reales o con el teléfono de un integrante} \\
+Safari en macOS y Edge en Windows 11 & LambdaTest & \resLambdaEscritorio \\
+Safari iOS y Chrome Android (dispositivos reales) & LambdaTest & \resLambdaMovil \\
 \bottomrule
 \end{tabularx}
 \tablenote{RNF06 exige 0 defectos bloqueantes en Chrome, Firefox, Edge y Safari. Fuente: elaboración propia.}
@@ -147,7 +147,7 @@ Safari iOS y Chrome Android (dispositivos reales) & LambdaTest & \pendiente{ejec
 ID & Prueba & RNF & 25/10/2026 & 21/11/2026 \\
 \midrule
 PF-01 & Disponibilidad del frontend (Vercel) & RNF10 & Disponible (aprobado) & Disponible (aprobado) \\
-PF-02 & Disponibilidad de la API (Render) & RNF10 & \textbf{Más de 7 min sin respuesta} (D-09) & Mitigación lista (ping cada 10 min y aviso en la interfaz); la API no respondió en 60 s: \pendiente{revisar el servicio en Render y medir la disponibilidad una semana} \\
+PF-02 & Disponibilidad de la API (Render) & RNF10 & \textbf{Más de 7 min sin respuesta} (D-09) & Mitigación lista (ping cada 10 min y aviso en la interfaz); \resDisponibilidadApi \\
 PF-03 & Exactitud de los cálculos & RNF08 & 48 de 49 casos (D-01) & 58 de 58 casos \\
 PF-04 & Entradas inválidas que provocan 500 & RNF05 & 2 (D-03 y D-07) & 0 \\
 PF-05 & Tasa de error bajo carga & RNF11 & 66,7\,\% con datos inválidos persistidos; 0\,\% sin ellos & 0\,\% en 1\,500 peticiones \\
@@ -172,7 +172,7 @@ PM-02 & Pruebas automatizadas en el repositorio & \textbf{No existían}; el CI n
 PM-03 & Funciones con complejidad $> 10$ & \textbf{3} (14, 13 y 13) & 0 (máximo 8) \\
 PM-04 & Duplicación & Construcción de \codigo{BudgetOut} y \codigo{SavingGoalOut} repetida 3 veces cada una & Una función por respuesta (\codigo{to_budget_out}, \codigo{to_goal_out}, \codigo{_to_transaction_out}) \\
 PM-05 & Código muerto & Cliente de Supabase, login comentado, \codigo{mockData.js} & Eliminado, junto con los esquemas \codigo{Token} y \codigo{ToggleDayRequest} \\
-PM-06 & SonarQube Community 26.7 & Quality Gate aprobado; mantenibilidad A (249 incidencias), fiabilidad D (151), seguridad C (1); cobertura 0\,\%; duplicación 0,7\,\% & \pendiente{repetir el análisis de SonarQube sobre la rama \codigo{fix/defectos}} \\
+PM-06 & SonarQube Community 26.7 & Quality Gate aprobado; mantenibilidad A (249 incidencias), fiabilidad D (151), seguridad C (1); cobertura 0\,\%; duplicación 0,7\,\% & \resSonar \\
 \bottomrule
 \end{tabularx}
 \tablenote{Fuente: elaboración propia.}

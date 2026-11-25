@@ -101,3 +101,10 @@ Use siempre una cuenta de prueba: Cypress y JMeter crean registros.
 GitHub Actions ejecuta en cada push el lint y la compilación del frontend y las pruebas
 del backend con cobertura (`.github/workflows/node.js.yml`). El flujo
 `mantener-api-despierta.yml` consulta la API cada 10 minutos para que Render no la suspenda.
+
+## 🎤 Demostración y presentación
+
+Los scripts de `scripts/demo/` levantan la app con datos de prueba y ejecutan cada herramienta
+(pytest, Cypress, Selenium, JMeter, métricas, Lighthouse, ZAP y SonarQube). La guía paso a paso,
+con la prueba de aceptación y el orden de la demostración, está en
+[docs/GUIA_PRESENTACION.md](docs/GUIA_PRESENTACION.md).

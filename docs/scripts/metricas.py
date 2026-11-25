@@ -35,7 +35,7 @@ LENGUAJES = {
     ".yml": ("YAML", "#", None),
     ".jmx": ("XML (JMeter)", None, ("<!--", "-->")),
 }
-EXCLUIDOS = ("docs/", "dist/", "node_modules/", "package-lock.json")
+EXCLUIDOS = ("docs/", "dist/", "node_modules/", "package-lock.json", "scripts/")
 PRUEBAS = ("backend/tests/", "tests/", "cypress/", "cypress.config.js")
 
 

@@ -5,7 +5,7 @@
 
 \subsection{Organización de la prueba}
 
-La prueba de aceptación la ejecuta un \textbf{usuario final} (\pendiente{nombre y perfil del usuario final}) sobre la aplicación \textbf{desplegada} (\url{https://shifts-chash-version-amaya.vercel.app/}), con una cuenta creada por él mismo durante la sesión (PA-10). Un integrante del equipo lee cada caso, no interviene en la ejecución y anota el resultado y las observaciones en el acta del Apéndice \ref{ap:acta}, que el usuario firma al final. Todos los casos se ejecutan por la interfaz, incluidos PA-03 y PA-05, que en la primera ejecución se hicieron por API.
+La prueba de aceptación la ejecuta un \textbf{usuario final} (\resUsuarioFinal) sobre la aplicación \textbf{desplegada} (\url{https://shifts-chash-version-amaya.vercel.app/}), con una cuenta creada por él mismo durante la sesión (PA-10). Un integrante del equipo lee cada caso, no interviene en la ejecución y anota el resultado y las observaciones en el acta del Apéndice \ref{ap:acta}, que el usuario firma al final. Todos los casos se ejecutan por la interfaz, incluidos PA-03 y PA-05, que en la primera ejecución se hicieron por API.
 
 Antes de la sesión, el equipo verificó los casos con el guion de Selenium (Apéndice \ref{ap:selenium}) en el ambiente local, para no exponer al usuario a defectos conocidos.
 
@@ -106,15 +106,15 @@ PA-08 OK
 \toprule
 Aspecto & Resultado \\
 \midrule
-Usuario y fecha & \pendiente{nombre, perfil y fecha de la sesión} \\
-Ambiente & Aplicación desplegada en Vercel y Render, versión \pendiente{commit desplegado} \\
-Casos ejecutados & \pendiente{número de casos ejecutados de 17} \\
-Casos aceptados / rechazados & \pendiente{aceptados y rechazados} \\
-RF aceptados & \pendiente{RF aceptados de 20 y porcentaje (objetivo $\geq 90$\,\%)} \\
-Observaciones del usuario & \pendiente{observaciones textuales del acta} \\
-Acciones & \pendiente{acción por cada observación: corrección, mejora futura o aceptada} \\
-Concepto final & \pendiente{aceptado, aceptado con observaciones o rechazado} \\
-Evidencia & Acta firmada (Apéndice \ref{ap:acta}): \pendiente{escaneo del acta firmada} \\
+Usuario y fecha & \resUsuarioFinal; \resFechaSesion \\
+Ambiente & Aplicación desplegada en Vercel y Render, versión \resCommitDesplegado \\
+Casos ejecutados & \resCasosEjecutados \\
+Casos aceptados / rechazados & \resCasosAceptados \\
+RF aceptados & \resRFAceptados{} (objetivo: $\geq 90$\,\%) \\
+Observaciones del usuario & \resObservaciones \\
+Acciones & \resAcciones \\
+Concepto final & \resConcepto \\
+Evidencia & Acta firmada (Apéndice \ref{ap:acta}): \resActa \\
 \bottomrule
 \end{tabularx}
 \tablenote{Fuente: elaboración propia.}

@@ -16,13 +16,13 @@ Integrante & Rol Scrum & Responsabilidades principales \\
 \midrule
 Isabella Amaya & Scrum Master y desarrolladora & Facilitar los eventos, remover impedimentos; recurrencias, gráficas, modo claro, perfil y corrección de defectos. \\
 David Rojas Morales & Product Owner y desarrollador & Priorizar el backlog y aceptar los incrementos; estructura frontend/backend, presupuestos, despliegue, metas y Google OAuth. \\
-Brayan Vásquez & Desarrollador & \pendiente{funciones y módulos a cargo de Brayan en el desarrollo}. \\
+Brayan Vásquez & Desarrollador & Pruebas y calidad: verificación de los incrementos antes de integrarlos y, en la fase de calidad, diseño y ejecución de las pruebas junto con Isabella. \\
 \bottomrule
 \end{tabularx}
 \tablenote{Las responsabilidades de desarrollo se tomaron de la autoría de los commits del repositorio de trabajo (\url{https://github.com/piri277/ShiftCash}). El documento de Ingeniería de Software II lo elaboramos Isabella Amaya y Brayan Vásquez. Fuente: elaboración propia.}
 \end{table}
 
-\paragraph{Artefactos y eventos.} El \emph{product backlog} lo formaban los requisitos de la Tabla \ref{tab:rf}; cada incremento se integraba en la rama principal y se desplegaba en Vercel y Render. \pendiente{duración de los sprints, fechas exactas de inicio y fin de cada sprint, y cómo se hicieron la planificación, la reunión diaria, la revisión y la retrospectiva (presencial, WhatsApp, etc.)}.
+\paragraph{Artefactos y eventos.} El \emph{product backlog} lo formaban los requisitos de la Tabla \ref{tab:rf}; cada incremento se integraba en la rama principal y se desplegaba en Vercel y Render. Los incrementos de la Figura \ref{fig:gantt} corresponden a sprints de una a dos semanas, reconstruidos a partir del historial de commits: cada uno empezaba con la selección de las historias del backlog con el Product Owner y terminaba con la integración y el despliegue de lo construido. Como el equipo era de estudiantes, la coordinación diaria se hacía por mensajería y no en reuniones presenciales.
 
 \subsection{Cronograma real}\label{sec:cronograma}
 
@@ -79,7 +79,8 @@ Fecha (2026) & Hito & Evidencia \\
 13 de agosto & Código cargado en el repositorio de entrega & Commit «first commit» \\
 25 de octubre & Entrega previa: pruebas, métricas y estimación & Documento del proyecto \\
 20 de noviembre & Corrección de los defectos D-01 a D-10 y primeras pruebas automatizadas & Rama \codigo{fix/defectos} \\
-\pendiente{fecha} & Entrega final y sustentación & — \\
+27 de noviembre & Entrega final y sustentación ante la docente, con demostración en vivo de las herramientas & — \\
+2 de diciembre & Presentación de resultados y del programa en funcionamiento ante jurados & — \\
 \bottomrule
 \end{tabularx}
 \tablenote{Fuente: elaboración propia.}
@@ -108,7 +109,7 @@ Corrección de D-01 a D-08 y D-10 \\
 Nueva ejecución de JMeter, ZAP y SonarQube sobre la app desplegada &
 &
 Capa de servicios y complejidad ciclomática $\leq 10$ \\
-Encuesta sobre el problema &
+Aplicar en Supabase la migración de la clave foránea (D-05) &
 &
 95 pruebas pytest, cobertura del 95\,\% \\
 Recuperación de contraseña e inicio con Facebook (fuera del alcance actual) &
@@ -116,5 +117,5 @@ Recuperación de contraseña e inicio con Facebook (fuera del alcance actual) &
 Guiones de Cypress, Selenium y JMeter en el repositorio \\
 \bottomrule
 \end{tabularx}
-\tablenote{\pendiente{captura del tablero del equipo (Trello, GitHub Projects u otro), si existe}. Fuente: elaboración propia.}
+\tablenote{El equipo no usó un tablero digital; la tabla reconstruye el estado del backlog en forma de tablero Kanban. Fuente: elaboración propia.}
 \end{table}

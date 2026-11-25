@@ -418,7 +418,7 @@ budget.category\_id → category & CASCADE & Eliminar una categoría borra sus p
 transactions.category\_id → category & RESTRICT & Una categoría con transacciones no se borra: 409 (\codigo{test_pi05_d05_*}). \\
 \bottomrule
 \end{tabularx}
-\tablenote{\pendiente{aplicar en la base de Supabase el cambio de \codigo{ON DELETE SET NULL} a \codigo{RESTRICT} en \codigo{transactions.category_id}, porque \codigo{create_all} no modifica tablas existentes}. Fuente: elaboración propia.}
+\tablenote{En la base de producción (Supabase) la regla se aplica con la migración \codigo{backend/migraciones/001_transacciones_categoria_restrict.sql}, porque \codigo{create_all} no modifica tablas que ya existen. Fuente: elaboración propia.}
 \end{table}
 
 \subsection{Diagrama de componentes}

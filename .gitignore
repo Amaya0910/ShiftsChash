@@ -67,3 +67,11 @@ docs/latex/_minted*/
 # Salidas de Cypress
 cypress/screenshots/
 cypress/videos/
+
+# Base de datos local de la demostración
+.demo/
+
+# Salidas de las demostraciones en vivo
+docs/evidencias/jmeter_2*/
+docs/evidencias/lighthouse_2*
+docs/evidencias/zap/
