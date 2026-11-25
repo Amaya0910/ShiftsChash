@@ -1,0 +1,249 @@
+% =====================================================================
+% Primera parte – 5. Modelo de casos de uso
+% =====================================================================
+\section{Modelo de casos de uso}\label{sec:cu}
+
+\subsection{Diagrama general}
+
+La Figura \ref{fig:cu-general} reúne los 14 casos de uso del sistema; son los mismos que se cuentan en la estimación por puntos de casos de uso (Cuarta parte). CU01, CU02 y CU03 son las tres funcionalidades centrales que se prueban en detalle en la Segunda parte (F1, F2 y F3).
+
+\paragraph{Uso de las relaciones.} Usamos «extend» para comportamientos opcionales que se activan desde otro caso de uso: CU06 extiende CU05 (el usuario elige Google en la misma pantalla), CU08 extiende CU09 (editar o eliminar se hace desde el detalle de una transacción del historial) y CU13 extiende CU03 (marcar días se hace sobre una meta ya creada). No usamos «include» para la autenticación: iniciar sesión es una \emph{precondición} de los casos de uso del dashboard, no un paso que ellos ejecuten.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama general de casos de uso de ShiftCash}
+\label{fig:cu-general}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  cu/.style={draw, ellipse, align=center, font=\scriptsize, minimum width=3.3cm, minimum height=0.95cm, inner sep=1pt},
+  cuc/.style={cu, draw=acento, very thick},
+  rel/.style={flechapunteada, font=\tiny},
+  actor/.pic={
+    \draw (0,0.55) circle (0.18);
+    \draw (0,0.37) -- (0,-0.1);
+    \draw (-0.3,0.2) -- (0.3,0.2);
+    \draw (0,-0.1) -- (-0.22,-0.45);
+    \draw (0,-0.1) -- (0.22,-0.45);
+  },
+]
+% Límite del sistema
+\draw[gris] (-0.4,0.9) rectangle (9.9,-12.4);
+\node[anchor=north west, font=\small\bfseries] at (-0.4,0.9) {ShiftCash};
+% Columna izquierda
+\node[cu] (cu04) at (1.8,0)     {CU04 Registrarse};
+\node[cu] (cu05) at (1.8,-1.3)  {CU05 Iniciar sesión};
+\node[cu] (cu07) at (1.8,-2.6)  {CU07 Gestionar perfil};
+\node[cuc] (cu01) at (1.8,-3.9) {CU01 Registrar\\transacción};
+\node[cu] (cu09) at (1.8,-5.2)  {CU09 Consultar\\historial};
+\node[cu] (cu11) at (1.8,-6.5)  {CU11 Ver resumen};
+\node[cu] (cu10) at (1.8,-7.8)  {CU10 Ver gráficas};
+\node[cu] (cu12) at (1.8,-9.1)  {CU12 Gestionar\\categorías};
+\node[cuc] (cu02) at (1.8,-10.4) {CU02 Gestionar\\presupuesto};
+\node[cuc] (cu03) at (1.8,-11.7) {CU03 Gestionar meta\\de ahorro};
+% Columna derecha
+\node[cu] (cu06) at (7.6,-1.3)  {CU06 Iniciar sesión\\con Google};
+\node[cu] (cu08) at (7.6,-5.2)  {CU08 Editar o eliminar\\transacción};
+\node[cu] (cu14) at (7.6,-3.9)  {CU14 Generar transacciones\\recurrentes};
+\node[cu] (cu13) at (7.6,-11.7) {CU13 Marcar día\\de ahorro};
+% Actores
+\pic at (-2.6,-5.8) {actor}; \node[font=\scriptsize] (usr) at (-2.6,-6.5) {Usuario};
+\coordinate (u) at (-2.3,-5.6);
+\pic at (11.9,-3.9) {actor}; \node[font=\scriptsize, align=center] at (11.9,-4.75) {Programador\\de tareas (tiempo)};
+\coordinate (prog) at (11.6,-3.75);
+\pic at (11.9,-1.3) {actor}; \node[font=\scriptsize, align=center] at (11.9,-2.15) {Google OAuth\\(externo)};
+\coordinate (goo) at (11.6,-1.15);
+% Asociaciones del usuario
+\foreach \c in {cu04,cu05,cu07,cu01,cu09,cu11,cu10,cu12,cu02,cu03} \draw[gris] (u) -- (\c.west);
+\draw[gris] (u) .. controls (-1,-12.9) and (5,-12.9) .. (cu13.south);
+\draw[gris] (prog) -- (cu14.east);
+\draw[gris] (goo) -- (cu06.east);
+% Extensiones
+\draw[rel] (cu06.west) -- node[above]{«extend»} (cu05.east);
+\draw[rel] (cu08.west) -- node[above]{«extend»} (cu09.east);
+\draw[rel] (cu13.west) -- node[above]{«extend»} (cu03.east);
+\draw[flechapunteada, gris] (cu14.west) -- node[below, font=\tiny]{crea instancias de} (cu01.east);
+\end{tikzpicture}}
+\figurenote{Los casos de uso con borde de color son las funcionalidades centrales F1–F3. La flecha de CU14 a CU01 es una dependencia (el programador crea transacciones), no una relación de inclusión. Fuente: elaboración propia con notación UML 2.5.1 \parencite{omg2017}.}
+\end{figure}
+
+\subsection{Descripción de los casos de uso}
+
+% \casouso{ID}{Nombre}{Actores}{RF}{Precondiciones}{Flujo básico}{Flujos alternos}{Excepciones}{Postcondiciones}
+\newcommand{\casouso}[9]{%
+\begin{table}[H]
+\caption{Especificación del caso de uso #1: #2}
+\label{tab:#1}
+\small
+\begin{tabularx}{\linewidth}{L{2.7cm} Y}
+\toprule
+Actores & #3 \\
+Requisitos & #4 \\
+Precondiciones & #5 \\
+Flujo básico & #6 \\
+Flujos alternos & #7 \\
+Excepciones & #8 \\
+Postcondiciones & #9 \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}}
+
+\casouso{CU01}{Registrar transacción}
+{Usuario}
+{RF03, RF04}
+{Sesión iniciada con un JWT vigente; existe al menos una categoría (predeterminada o propia).}
+{1. El usuario pulsa «+ Transacción» en la barra superior. 2. El sistema muestra el formulario con las categorías disponibles (\codigo{GET /transactions/categories}). 3. El usuario elige el tipo, el monto, la categoría, la descripción y la fecha. 4. Pulsa Guardar. 5. El cliente valida que haya monto y categoría. 6. Envía \codigo{POST /transactions/}. 7. El backend valida el esquema y la categoría (\codigo{get_accessible_category}) y guarda la transacción. 8. El sistema cierra el formulario y actualiza el resumen, el historial y los presupuestos.}
+{A1 (recurrente): en el paso 3 el usuario activa «recurrente» y elige la frecuencia. A2 (sin fecha): se guarda con la fecha de hoy.}
+{E1: falta el monto o la categoría: mensaje en el formulario. E2: monto $\leq 0$ o mayor que el máximo: 422. E3: categoría inexistente o ajena: 404. E4: token vencido: 401. E5: recurrente sin frecuencia: «Selecciona la frecuencia de repetición».}
+{La transacción queda guardada y se refleja en el historial, el resumen, las gráficas y los presupuestos de su categoría.}
+
+\casouso{CU02}{Gestionar presupuesto}
+{Usuario}
+{RF11, RF12, RF13}
+{Sesión iniciada; existe una categoría de gasto.}
+{1. El usuario abre Presupuestos y pulsa «Nuevo presupuesto». 2. Ingresa la categoría, el nombre, el monto y el período (por defecto, mensual del mes actual). 3. El cliente valida y envía \codigo{POST /budgets/}. 4. El backend valida el esquema y la categoría, y guarda el presupuesto (\codigo{budget_service.create_budget}). 5. Calcula el rango del período, el gasto y el porcentaje real (\codigo{to_budget_out}). 6. El sistema muestra la tarjeta con gastado, asignado, porcentaje y barra.}
+{A1 (período único): exige fechas de inicio y fin ordenadas. A2 (permanente): el rango se recalcula siempre sobre el período actual. A3 (editar): \codigo{PUT /budgets/{id}} cambia solo los campos enviados. A4 (eliminar): \codigo{DELETE /budgets/{id}}. A5 (superado): si el gasto supera el monto, la tarjeta muestra el porcentaje real en rojo.}
+{E1: mes fuera de 1–12 o año fuera de 2000–2100: 422. E2: categoría ajena: 404. E3: monto $\leq 0$: 422. E4: presupuesto de otro usuario: 404.}
+{El presupuesto queda guardado y su ejecución se actualiza con cada gasto de su categoría.}
+
+\casouso{CU03}{Gestionar meta de ahorro}
+{Usuario}
+{RF15, RF16, RF18}
+{Sesión iniciada.}
+{1. El usuario abre Metas de Ahorro y pulsa «Nueva meta». 2. Ingresa nombre, objetivo (múltiplo de 1000), fechas e imagen opcional. 3. El cliente valida y envía \codigo{POST /saving-goals/}. 4. El backend valida el esquema y crea la meta (\codigo{saving_service.create_goal}) con el plan de \codigo{generate_daily_amounts} en la moneda del usuario. 5. El sistema muestra la tarjeta con el progreso en 0\,\%.}
+{A1 (sin fecha final): se usan 30 días. A2 (editar): si cambian el objetivo o la fecha final, el plan se regenera. A3 (eliminar): \codigo{DELETE /saving-goals/{id}}.}
+{E1: nombre vacío, objetivo $\leq 0$ o fecha final pasada: 422. E2: inicio posterior al fin: 422. E3: objetivo no múltiplo de 1000: mensaje en el formulario. E4: meta ajena: 404.}
+{La meta queda guardada con su plan; ninguna cuota es negativa y la suma es igual al objetivo.}
+
+\casouso{CU04}{Registrarse}
+{Usuario}
+{RF01}
+{El usuario no tiene cuenta.}
+{1. El usuario abre \codigo{/registro}. 2. Ingresa nombre, correo, contraseña y confirmación. 3. El cliente valida que la contraseña tenga al menos 8 caracteres y coincida. 4. Envía \codigo{POST /auth/register}. 5. El backend guarda el usuario con la contraseña cifrada con bcrypt. 6. El sistema le pide iniciar sesión.}
+{A1: el usuario elige registrarse con Google (ver CU06).}
+{E1: correo ya registrado: 400. E2: contraseña corta: 422. E3: las contraseñas no coinciden: mensaje en el formulario.}
+{La cuenta existe con moneda COP por defecto.}
+
+\casouso{CU05}{Iniciar sesión}
+{Usuario}
+{RF02}
+{El usuario tiene cuenta.}
+{1. El usuario abre \codigo{/login}. 2. Ingresa correo y contraseña. 3. El cliente envía \codigo{POST /auth/login}. 4. El backend verifica la contraseña y emite un JWT. 5. El cliente guarda el token y abre el dashboard.}
+{A1: el usuario elige Google (CU06). A2: si la API tarda más de 3 s, se muestra «Despertando el servidor».}
+{E1: credenciales incorrectas: 401 y mensaje. E2: API no disponible: mensaje de error.}
+{El usuario tiene una sesión válida.}
+
+\casouso{CU06}{Iniciar sesión con Google}
+{Usuario, Google OAuth}
+{RF02}
+{El usuario tiene una cuenta de Google.}
+{1. El usuario pulsa el botón de Google. 2. Google autentica al usuario y entrega un token de acceso. 3. El cliente envía \codigo{POST /auth/google}. 4. El backend consulta los datos del usuario a Google, crea la cuenta si no existe y emite un JWT. 5. El cliente abre el dashboard.}
+{A1: primera vez: se crea la cuenta con el correo de Google.}
+{E1: token de Google inválido: 401. E2: Google no entrega el correo: 400.}
+{El usuario tiene una sesión válida.}
+
+\casouso{CU07}{Gestionar perfil}
+{Usuario}
+{RF19, RF20}
+{Sesión iniciada.}
+{1. El usuario abre Configuración. 2. Cambia nombre, correo, moneda, foto, umbral de alerta o tema. 3. Pulsa Guardar. 4. El cliente envía la petición correspondiente a \codigo{/users/me}. 5. El sistema confirma el cambio.}
+{A1 (contraseña): exige la contraseña actual. A2 (eliminar cuenta): tras confirmar, \codigo{DELETE /users/me} borra la cuenta y sus datos. A3 (tema y umbral): se guardan en el navegador.}
+{E1: contraseña actual incorrecta: 400. E2: foto de otro formato o de más de 3 MB: 400.}
+{El perfil queda actualizado.}
+
+\casouso{CU08}{Editar o eliminar transacción}
+{Usuario}
+{RF06}
+{Sesión iniciada; existe la transacción (extiende CU09).}
+{1. En el historial, el usuario abre el detalle de una transacción. 2. Pulsa Editar, cambia los datos y guarda. 3. El cliente envía \codigo{PUT /transactions/{id}}. 4. El backend verifica el propietario y la categoría, y guarda. 5. El sistema actualiza el historial.}
+{A1 (eliminar): el usuario pulsa eliminar, confirma y el cliente envía \codigo{DELETE /transactions/{id}} (204).}
+{E1: transacción de otro usuario: 404. E2: categoría ajena: 404. E3: monto inválido: 422.}
+{La transacción queda modificada o eliminada y los totales se recalculan.}
+
+\casouso{CU09}{Consultar historial}
+{Usuario}
+{RF07}
+{Sesión iniciada.}
+{1. El usuario abre Historial. 2. El sistema lista las transacciones agrupadas por fecha (\codigo{GET /transactions/}). 3. El usuario busca por texto o filtra por tipo, categorías, recurrencia, frecuencia o rango de fechas. 4. El sistema muestra solo las que cumplen el filtro.}
+{A1: el usuario limpia los filtros. A2: abre el detalle de una transacción (punto de extensión de CU08).}
+{E1: sin transacciones: «Aún no tienes transacciones este mes.». E2: ningún resultado: «Sin resultados para esta búsqueda.».}
+{Ninguna (consulta).}
+
+\casouso{CU10}{Ver gráficas}
+{Usuario}
+{RF09}
+{Sesión iniciada.}
+{1. El usuario abre Gráficas. 2. El sistema muestra gastos e ingresos por categoría y la evolución por mes.}
+{A1: el usuario cambia el período o filtra por tipo, categorías o solo recurrentes.}
+{E1: sin datos en el período: la gráfica muestra «Sin datos.».}
+{Ninguna (consulta).}
+
+\casouso{CU11}{Ver resumen}
+{Usuario}
+{RF08, RF12, RF14}
+{Sesión iniciada.}
+{1. El usuario abre Resumen (vista inicial). 2. El sistema calcula total gastado, ganado, ahorrado y número de transacciones del mes. 3. Muestra el presupuesto total y el seguimiento de la meta activa.}
+{A1 (alerta): si el gasto supera el umbral configurado, muestra la alerta de presupuesto.}
+{E1: API no disponible: mensaje de error.}
+{Ninguna (consulta).}
+
+\casouso{CU12}{Gestionar categorías}
+{Usuario}
+{RF10}
+{Sesión iniciada.}
+{1. El usuario abre Categorías. 2. Pulsa «Nueva categoría», ingresa nombre, ícono y tipo, y guarda (\codigo{POST /categories/}). 3. El sistema la agrega a la lista.}
+{A1 (editar): \codigo{PUT /categories/{id}} solo sobre las propias. A2 (eliminar): \codigo{DELETE /categories/{id}}; sus presupuestos se eliminan con ella.}
+{E1: categoría predeterminada: 404 (no editable ni eliminable). E2: categoría con transacciones: 409 «reasígnalas antes de eliminarla». E3: nombre vacío o tipo inválido: 422.}
+{La categoría queda creada, modificada o eliminada.}
+
+\casouso{CU13}{Marcar día de ahorro}
+{Usuario}
+{RF17}
+{Existe una meta propia (extiende CU03).}
+{1. El usuario abre la plantilla del reto de una meta. 2. Marca o desmarca días. 3. Pulsa «Guardar días». 4. Por cada día cambiado, el cliente envía \codigo{POST /saving-goals/{id}/toggle-day/{n}}. 5. El backend actualiza los días (\codigo{saving_service.toggle_day}) y devuelve el progreso. 6. El sistema muestra «Guardado» y el nuevo porcentaje.}
+{A1: un día ya marcado se desmarca.}
+{E1: meta de otro usuario: 404.}
+{Los días completados y el progreso quedan guardados.}
+
+\casouso{CU14}{Generar transacciones recurrentes}
+{Programador de tareas}
+{RF05}
+{Existen transacciones marcadas como recurrentes.}
+{1. A las 00:05 el programador ejecuta \codigo{registrar_recurrentes}. 2. Recorre las transacciones recurrentes. 3. Para cada una evalúa \codigo{_toca_hoy} según la frecuencia. 4. Si corresponde y no existe la instancia del día, la crea.}
+{A1: no corresponde hoy: se omite.}
+{E1: la instancia ya existe: no se duplica. E2: la API estaba suspendida a esa hora: la instancia no se crea ese día (riesgo asociado a D-09).}
+{Las transacciones del día quedan registradas como no recurrentes.}
+
+\subsection{Matriz de trazabilidad}
+
+\begin{table}[H]
+\caption{Trazabilidad entre casos de uso y requisitos funcionales}
+\label{tab:trazabilidad}
+\centering
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.3}
+\newcommand{\x}{$\bullet$}
+\begin{tabular}{l*{20}{c}}
+\toprule
+ & \rotatebox{90}{RF01} & \rotatebox{90}{RF02} & \rotatebox{90}{RF03} & \rotatebox{90}{RF04} & \rotatebox{90}{RF05} & \rotatebox{90}{RF06} & \rotatebox{90}{RF07} & \rotatebox{90}{RF08} & \rotatebox{90}{RF09} & \rotatebox{90}{RF10} & \rotatebox{90}{RF11} & \rotatebox{90}{RF12} & \rotatebox{90}{RF13} & \rotatebox{90}{RF14} & \rotatebox{90}{RF15} & \rotatebox{90}{RF16} & \rotatebox{90}{RF17} & \rotatebox{90}{RF18} & \rotatebox{90}{RF19} & \rotatebox{90}{RF20} \\
+\midrule
+CU01 Registrar transacción &   &   & \x & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU02 Gestionar presupuesto &   &   &   &   &   &   &   &   &   &   & \x & \x & \x &   &   &   &   &   &   &   \\
+CU03 Gestionar meta        &   &   &   &   &   &   &   &   &   &   &   &   &   &   & \x & \x &   & \x &   &   \\
+CU04 Registrarse           & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU05 Iniciar sesión        &   & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU06 Sesión con Google     &   & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU07 Gestionar perfil      &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   & \x & \x \\
+CU08 Editar/eliminar trans.&   &   &   &   &   & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU09 Consultar historial   &   &   &   &   &   &   & \x &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+CU10 Ver gráficas          &   &   &   &   &   &   &   &   & \x &   &   &   &   &   &   &   &   &   &   &   \\
+CU11 Ver resumen           &   &   &   &   &   &   &   & \x &   &   &   & \x &   & \x &   &   &   &   &   &   \\
+CU12 Gestionar categorías  &   &   &   &   &   &   &   &   &   & \x &   &   &   &   &   &   &   &   &   &   \\
+CU13 Marcar día            &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   & \x &   &   &   \\
+CU14 Generar recurrentes   &   &   &   &   & \x &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   \\
+\bottomrule
+\end{tabular}
+\vspace{6pt}
+\tablenote{Todos los RF quedan cubiertos por al menos un caso de uso y todos los casos de uso cubren al menos un RF. Fuente: elaboración propia.}
+\end{table}

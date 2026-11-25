@@ -13,10 +13,12 @@ class User(Base):
     currency    = Column(String(10), default="COP")
     created_at  = Column(TIMESTAMP, server_default=text("CURRENT_TIMESTAMP"))
 
-    categories    = relationship("Category", back_populates="user", foreign_keys="Category.user_id")
-    budgets       = relationship("Budget", back_populates="user")
-    transactions  = relationship("Transaction", back_populates="user")
-    saving_goals  = relationship("SavingGoal", back_populates="user")
+    # D-11: al eliminar la cuenta se eliminan sus datos (igual que ON DELETE CASCADE en la BD)
+    categories    = relationship("Category", back_populates="user", foreign_keys="Category.user_id",
+                                 cascade="all, delete-orphan")
+    budgets       = relationship("Budget", back_populates="user", cascade="all, delete-orphan")
+    transactions  = relationship("Transaction", back_populates="user", cascade="all, delete-orphan")
+    saving_goals  = relationship("SavingGoal", back_populates="user", cascade="all, delete-orphan")
 
 
 class Category(Base):
@@ -30,7 +32,8 @@ class Category(Base):
     is_default  = Column(SmallInteger, default=0)
 
     user    = relationship("User", back_populates="categories", foreign_keys=[user_id])
-    budgets = relationship("Budget", back_populates="category")
+    # D-11: los presupuestos de una categoría eliminada se eliminan con ella (ON DELETE CASCADE)
+    budgets = relationship("Budget", back_populates="category", cascade="all, delete-orphan")
 
 
 class Budget(Base):

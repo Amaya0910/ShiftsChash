@@ -1,0 +1,36 @@
+Costo de una persona-mes: 6,646,961 COP (salario 4,377,262 + 51.85 % de prestaciones)
+
+Modelo                          Tamaño      PM  Meses Personas   Talento (COP)  Detalle
+Puntos de función            160.06 PF    8.00   5.51     1.45      53,195,626  PFNA=151, TDI=41, VAF=1.06
+Puntos de casos de uso      108.42 PCU   13.55   6.73     2.01      90,084,554  UUCP=141, TCF=0.91, ECF=0.845
+Puntos de objeto              90.4 NOP    6.95   5.22     1.33      46,221,942  PO=113, PROD=13
+Puntos de historia               89 PH    6.16   2.05     3.00      40,955,504  4.45 sprints de 2 semanas a 20 PH
+COCOMO II                  6.228 KSLOC   19.03   9.36     2.03     126,487,434  E=1.0997, EAF=0.866
+
+Presupuesto estimado con puntos de historia: 6.16 PM en 2.05 meses
+  Talento humano                                                      40,955,504
+  Energía eléctrica                                                       56,326
+  Equipos (depreciación)                                                 205,385
+  Internet                                                               492,923
+  Hosting (Vercel Hobby, Render Free, Supabase Free)                           0
+  Dominio (subdominio vercel.app)                                              0
+  Licencias y herramientas (código abierto y planes gratuitos)                 0
+  Imprevistos (10 %)                                                   4,171,014
+  Total                                                               45,881,151
+
+Presupuesto del proyecto real (esfuerzo estimado): 2.04 PM en 1.68 meses
+  Talento humano                                                      13,583,019
+  Energía eléctrica                                                       18,681
+  Equipos (depreciación)                                                 167,671
+  Internet                                                               402,411
+  Hosting (Vercel Hobby, Render Free, Supabase Free)                           0
+  Dominio (subdominio vercel.app)                                              0
+  Licencias y herramientas (código abierto y planes gratuitos)                 0
+  Imprevistos (10 %)                                                   1,417,178
+  Total                                                               15,588,960
+
+Duración real: 1.68 meses con 3 personas (cota superior de esfuerzo: 5.03 PM a tiempo completo)
+Esfuerzo real estimado: 15 h/semana × 3 personas × 7.3 semanas = 327 h = 2.04 PM
+Costo real desembolsado: 0 COP (equipos e internet propios; planes gratuitos)
+Plan de pago de Render para evitar la suspensión (D-09): 7 USD/mes
+Velocidad real del equipo: 24.5 PH por sprint de 2 semanas (3.63 sprints)

@@ -1,0 +1,41 @@
+% =====================================================================
+% Primera parte – 7. Producto del software
+% =====================================================================
+\section{Producto del software}
+
+\begin{itemize}
+  \item Aplicación desplegada: \url{https://shifts-chash-version-amaya.vercel.app/}
+  \item API: \url{https://shiftschash-api.onrender.com} (documentación interactiva en \codigo{/docs})
+  \item Repositorio: \url{https://github.com/Amaya0910/ShiftCash} (rama de trabajo \codigo{fix/defectos})
+\end{itemize}
+
+Las capturas de la portada (Figuras \ref{fig:p-inicio} a \ref{fig:p-login}) se tomaron el 25 de octubre de 2026 sobre la aplicación desplegada. Las del dashboard se tomaron sobre una ejecución local del mismo código, con base de datos SQLite y datos ficticios de un usuario de prueba: las de la entrega anterior (25 de octubre de 2026) muestran las vistas que no cambiaron, y las marcadas como «versión corregida» (21 de noviembre de 2026) muestran el código de la rama \codigo{fix/defectos}, tomadas con Selenium a 1366 × 900 px.
+
+% \captura{archivo}{etiqueta}{título}{nota}
+\newcommand{\captura}[4]{%
+\begin{figure}[H]
+\centering
+\caption{#3}
+\label{#2}
+\includegraphics[width=0.92\linewidth, height=0.42\textheight, keepaspectratio]{producto/#1}
+\figurenote{#4 Fuente: elaboración propia.}
+\end{figure}}
+
+\subsection{Sitio público y acceso}
+
+\captura{inicio}{fig:p-inicio}{Página de inicio pública de ShiftCash}{}
+\captura{servicios}{fig:p-servicios}{Sección «Nuestros servicios» de la página pública}{}
+\captura{login}{fig:p-login}{Pantalla de inicio de sesión (CU05 y CU06)}{El botón de Facebook y el enlace «¿Olvidaste tu contraseña?» no están implementados (Tabla \ref{tab:alcance}).}
+
+\subsection{Dashboard}
+
+\captura{v2_resumen}{fig:p-resumen}{Vista Resumen (CU11) con la alerta de presupuesto, versión corregida}{La alerta aparece porque el gasto (99\,\%) supera el umbral configurado (80\,\%).}
+\captura{modal_transaccion}{fig:p-modal-tr}{Formulario de nueva transacción (CU01)}{}
+\captura{v2_historial}{fig:p-historial}{Vista Historial con búsqueda y filtros (CU09), versión corregida}{}
+\captura{graficas}{fig:p-graficas}{Vista Gráficas (CU10)}{}
+\captura{categorias}{fig:p-categorias}{Vista Categorías (CU12)}{}
+\captura{v2_presupuestos}{fig:p-presupuestos}{Vista Presupuestos (CU02) con un presupuesto superado, versión corregida}{«Comida del mes» muestra el porcentaje real (124\,\%) en rojo; antes de corregir D-04 se mostraba 100\,\%.}
+\captura{modal_presupuesto}{fig:p-modal-pr}{Formulario de nuevo presupuesto (CU02)}{}
+\captura{v2_metas}{fig:p-metas}{Vista Metas de Ahorro (CU03), versión corregida}{}
+\captura{v2_reto_pequeno}{fig:p-reto}{Plan de una meta de \$1\,000 en 15 días (CU13), versión corregida}{Los días 1 a 10 tienen cuotas de \$100 y los días 11 a 15, de \$0; antes de corregir D-01 el día 15 mostraba \$$-400$.}
+\captura{movil_375}{fig:p-movil}{Dashboard en un ancho de 375 px con la barra de navegación inferior}{}

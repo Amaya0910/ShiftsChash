@@ -1,7 +1,8 @@
 """Configuración común de las pruebas del backend de ShiftCash.
 
-Se usa una base de datos SQLite temporal con claves foráneas activadas,
+Se usa una base de datos SQLite en memoria con claves foráneas activadas,
 de modo que las pruebas no dependen de PostgreSQL ni de variables reales.
+Con TEST_DATABASE_URL=postgresql://... corren sobre PostgreSQL.
 """
 import os
 import sys
@@ -29,17 +30,18 @@ from app.main import app  # noqa: E402
 
 scheduler.scheduler.shutdown(wait=False)  # el cron real no debe correr en las pruebas
 
-engine = create_engine(
-    "sqlite://",
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
+# Por defecto SQLite en memoria; con TEST_DATABASE_URL las pruebas corren sobre
+# una base PostgreSQL vacía y desechable (por ejemplo, para PI-05).
+_URL_PRUEBAS = os.environ.get("TEST_DATABASE_URL", "sqlite://")
+if _URL_PRUEBAS.startswith("sqlite"):
+    engine = create_engine(_URL_PRUEBAS, connect_args={"check_same_thread": False}, poolclass=StaticPool)
 
-
-@event.listens_for(engine, "connect")
-def _activar_fk(dbapi_connection, _):
-    # PostgreSQL siempre aplica las FK; en SQLite hay que activarlas.
-    dbapi_connection.execute("PRAGMA foreign_keys=ON")
+    @event.listens_for(engine, "connect")
+    def _activar_fk(dbapi_connection, _):
+        # PostgreSQL siempre aplica las FK; en SQLite hay que activarlas.
+        dbapi_connection.execute("PRAGMA foreign_keys=ON")
+else:
+    engine = create_engine(_URL_PRUEBAS)
 
 
 TestingSession = sessionmaker(autocommit=False, autoflush=False, bind=engine)

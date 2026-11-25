@@ -1,0 +1,186 @@
+% =====================================================================
+% Primera parte – 2. Propuesta de solución
+% =====================================================================
+\section{Propuesta de solución}
+
+\subsection{Objetivos}
+
+\paragraph{Objetivo general.} Desarrollar una aplicación web que le permita a una persona registrar y clasificar sus ingresos y gastos, controlar la ejecución de sus presupuestos por categoría y período, y cumplir metas de ahorro mediante un plan diario con indicador de progreso.
+
+\paragraph{Objetivos específicos.}
+\begin{enumerate}[label=OE\arabic*., leftmargin=1.6cm]
+  \item Reducir el registro de un movimiento a un formulario único con validaciones en el cliente y en el servidor (ataca C1).
+  \item Calcular automáticamente el gasto ejecutado y el porcentaje real de cada presupuesto, y alertar cuando se supera el umbral configurado (ataca C2).
+  \item Generar sin intervención del usuario las transacciones recurrentes del día (ataca C3).
+  \item Convertir cada meta de ahorro en un plan de cuotas diarias sin valores negativos y mostrar su avance (ataca C4).
+  \item Verificar la calidad del producto con pruebas unitarias, de integración, de sistema y de aceptación, y con métricas basadas en ISO/IEC 25010 \parencite{iso25010}.
+\end{enumerate}
+
+\subsection{Usuarios y actores}
+
+\begin{table}[H]
+\caption{Actores del sistema}
+\label{tab:actores}
+\begin{tabularx}{\linewidth}{L{3.6cm} L{2.2cm} Y}
+\toprule
+Actor & Tipo & Descripción \\
+\midrule
+Usuario & Principal, humano & Persona que registra sus finanzas: se registra o inicia sesión y usa todos los módulos. \\
+Programador de tareas & Secundario, tiempo & Proceso de APScheduler que cada día a las 00:05 genera las transacciones recurrentes. \\
+Google OAuth & Secundario, sistema externo & Valida la identidad del usuario cuando inicia sesión con su cuenta de Google. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Descripción del sistema}\label{sec:descripcion}
+
+ShiftCash es una aplicación web cliente-servidor con dos subsistemas desacoplados que se comunican por HTTPS con una API REST/JSON:
+
+\begin{itemize}
+  \item \textbf{Frontend} (\codigo{frontend/src}): aplicación de página única en React 19 y Vite \parencite{react2025,vite2025}, desplegada en Vercel. Usa React Router con las rutas públicas \codigo{/}, \codigo{/login}, \codigo{/registro} y la ruta privada \codigo{/dashboard}, protegida por \codigo{PrivateRoute}. Dentro del dashboard se navega entre siete vistas. Se organiza en capas: \codigo{api/} (clientes HTTP con Axios, que adjuntan el JWT), \codigo{hooks/} (estado y reglas de presentación), \codigo{components/} (vistas, modales y diseño) y \codigo{pages/}.
+  \item \textbf{Backend} (\codigo{backend/app}): API REST en FastAPI \parencite{fastapi2025} desplegada en Render. Se organiza en capas: \codigo{models.py} (entidades SQLAlchemy), \codigo{schemas.py} (validación con Pydantic), \codigo{services/} (reglas de negocio), \codigo{routes/} (endpoints delgados que delegan en los servicios), \codigo{auth.py} (JWT y bcrypt) y \codigo{scheduler.py} (tarea diaria de recurrencias).
+  \item \textbf{Base de datos}: PostgreSQL alojado en Supabase, al que la API accede con SQLAlchemy y \codigo{psycopg2} mediante la variable de entorno \codigo{DATABASE_URL}.
+\end{itemize}
+
+\subsubsection{Módulos y funciones}
+
+\begin{longtable}{L{2.6cm} L{7.2cm} L{2.4cm}}
+\caption{Módulos de ShiftCash y su relación con los modelos}\label{tab:modulos}\\
+\toprule
+Módulo & Funciones & RF / CU \\
+\midrule
+\endfirsthead
+\toprule
+Módulo & Funciones & RF / CU \\
+\midrule
+\endhead
+Autenticación & Registro con correo y contraseña; inicio de sesión con contraseña o con Google; emisión y verificación del JWT; protección de rutas. & RF01–RF02 / CU04–CU06 \\
+Transacciones & Registrar, editar y eliminar ingresos y gastos; marcar una transacción como recurrente; generación diaria automática de las recurrentes. & RF03–RF06 / CU01, CU08, CU14 \\
+Historial & Listado agrupado por fecha con búsqueda y filtros por tipo, categoría, recurrencia, frecuencia y fechas; detalle de cada transacción. & RF07 / CU09 \\
+Resumen y gráficas & Totales del mes (gastado, ganado, ahorrado, número de transacciones), alertas de presupuesto y gráficas de torta, barras y áreas \parencite{recharts2025}. & RF08, RF09, RF14 / CU10, CU11 \\
+Categorías & Categorías predeterminadas (no editables) y personalizadas (crear, editar, eliminar si no tienen transacciones). & RF10 / CU12 \\
+Presupuestos & Límite por categoría y período (diario, semanal, mensual o único, permanente o no); gasto ejecutado, porcentaje real y estado «superado». & RF11–RF13 / CU02 \\
+Metas de ahorro & Meta con objetivo y fechas; plan de cuotas diarias redondeadas a la moneda; marcado de días y progreso. & RF15–RF18 / CU03, CU13 \\
+Perfil y configuración & Nombre, correo, contraseña, moneda, foto, umbral de alerta, tema claro u oscuro y eliminación de la cuenta. & RF19, RF20 / CU07 \\
+\bottomrule
+\end{longtable}
+\vspace{-1em}
+{\small\textit{Nota.} Los RF se detallan en la Tabla \ref{tab:rf} y los CU en la sección \ref{sec:cu}. Fuente: elaboración propia.}
+
+\subsubsection{Flujo principal}
+
+El uso típico de ShiftCash sigue la secuencia de la Figura \ref{fig:flujo}: el usuario inicia sesión, define sus presupuestos y metas, registra sus movimientos (o deja que las recurrentes se generen solas) y consulta en el resumen cuánto lleva gastado y ahorrado. Cada paso corresponde a uno o más casos de uso de la sección \ref{sec:cu}.
+
+\begin{figure}[H]
+\centering
+\caption{Flujo principal de uso de ShiftCash}
+\label{fig:flujo}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[node distance=5mm and 6mm, paso/.style={caja, text width=2.5cm, minimum height=1.4cm}]
+\node[paso] (a) {Iniciar sesión\\(CU05/CU06)};
+\node[paso, right=of a] (b) {Crear presupuestos y metas\\(CU02, CU03)};
+\node[paso, right=of b, cajaacento] (c) {Registrar ingresos y gastos\\(CU01)};
+\node[paso, right=of c] (d) {Calcular gasto, porcentaje y progreso};
+\node[paso, right=of d] (e) {Consultar resumen, historial y gráficas\\(CU09–CU11)};
+\node[paso, cajagris, below=8mm of c] (r) {Generar recurrentes 00:05\\(CU14)};
+\draw[flecha] (a) -- (b); \draw[flecha] (b) -- (c); \draw[flecha] (c) -- (d); \draw[flecha] (d) -- (e);
+\draw[flecha] (r) -- (c);
+\draw[flechapunteada] (e.south) |- ++(0,-2.4) -| node[pos=0.25, below, font=\scriptsize]{ajustar presupuestos o metas} (b.south);
+\end{tikzpicture}}
+\figurenote{Fuente: elaboración propia.}
+\end{figure}
+
+\subsubsection{Procesos automatizados}
+
+\begin{table}[H]
+\caption{Procesos que ShiftCash automatiza}
+\label{tab:procesos}
+\begin{tabularx}{\linewidth}{L{3.4cm} Y L{3.6cm}}
+\toprule
+Proceso & Qué hace & Dónde está \\
+\midrule
+Transacciones recurrentes & Cada día a las 00:05 replica las recurrentes (mensual, semanal, quincenal, anual) que correspondan a la fecha, sin duplicarlas. & \codigo{scheduler.py} \\
+Gasto de un presupuesto & Calcula el rango del período, suma los gastos de la categoría y devuelve el porcentaje real (puede superar 100\,\%). & \codigo{services/budget_service.py} \\
+Plan de ahorro & Reparte el objetivo en cuotas diarias variables (±30\,\%) redondeadas a la unidad de la moneda del usuario; ninguna es negativa y la suma es exacta. & \codigo{services/saving_service.py} \\
+Progreso de la meta & Total ahorrado, porcentaje y días cumplidos; se rehace el plan si cambian el objetivo o la fecha final. & \codigo{services/saving_service.py} \\
+Resumen y alertas & Totales del mes y alerta cuando el gasto supera el umbral configurado (80\,\% por defecto). & \codigo{useFinanzas.js}, \codigo{VistaResumen.jsx} \\
+Integración continua & En cada push: lint y compilación del frontend y pruebas del backend con cobertura. & \codigo{.github/workflows} \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsubsection{Tecnologías}
+
+\begin{table}[H]
+\caption{Tecnologías utilizadas}
+\label{tab:tecnologias}
+\begin{tabularx}{\linewidth}{L{2.6cm} L{4.6cm} Y}
+\toprule
+Capa & Tecnología (versión) & Uso \\
+\midrule
+Interfaz & React 19.2, Vite 8.0, React Router 7.14 & SPA, empaquetado y rutas públicas y privadas. \\
+Gráficas y HTTP & Recharts 3.8, Axios 1.16 & Gráficas del resumen; cliente HTTP con el JWT. \\
+Identidad & \codigo{@react-oauth/google} 0.13 & Inicio de sesión con Google. \\
+API & FastAPI 0.136, Uvicorn 0.49 & Endpoints REST y documentación OpenAPI. \\
+Dominio y datos & SQLAlchemy 2.0, Pydantic 2.13 & ORM y validación de entradas \parencite{bayer2025,pydantic2025}. \\
+Seguridad & python-jose 3.5, bcrypt 5.0 & JWT y hash de contraseñas. \\
+Tareas & APScheduler 3.11 & Recurrencias diarias. \\
+Base de datos & PostgreSQL (Supabase) & Persistencia. \\
+Despliegue & Vercel, Render, GitHub Actions & Hospedaje e integración continua. \\
+Pruebas & pytest 9.2, pytest-cov 7.1, Cypress, Selenium 4, JMeter & Pruebas y medición (Segunda y Tercera parte). \\
+\bottomrule
+\end{tabularx}
+\tablenote{Versiones tomadas de \codigo{package.json} y \codigo{backend/requirements.txt}. Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Relación con los modelos.} Cada módulo se traza hasta los requisitos (Tabla \ref{tab:rf}), los casos de uso (Tabla \ref{tab:trazabilidad}) y las clases que lo implementan (sección \ref{sec:clases-impl}); los servicios del backend son los mismos objetos que reciben los mensajes en los diagramas de secuencia (sección \ref{sec:secuencia}).
+
+\subsection{Alcance}\label{sec:alcance}
+
+\begin{table}[H]
+\caption{Alcance del proyecto}
+\label{tab:alcance}
+\begin{tabularx}{\linewidth}{Y Y}
+\toprule
+Incluye & No incluye \\
+\midrule
+Registro e inicio de sesión con correo o Google; JWT. & Recuperación de contraseña (el enlace de la pantalla de inicio no tiene endpoint). \\
+Transacciones de ingreso y gasto, incluidas las recurrentes. & Inicio de sesión con Facebook (el botón existe, pero no está implementado). \\
+Categorías predeterminadas y personalizadas. & Conexión con bancos o importación de extractos. \\
+Presupuestos por categoría y período con alerta de superado. & Inversiones, créditos, contabilidad de empresas o impuestos. \\
+Metas de ahorro con plan diario y progreso. & Varias monedas en una misma cuenta: cada usuario elige una. \\
+Resumen, historial con filtros y gráficas. & Aplicación móvil nativa (la web es responsiva). \\
+Perfil, moneda, foto, tema y umbral de alerta. & Notificaciones por correo o push. \\
+Despliegue en la nube (Vercel, Render, Supabase). & Disponibilidad garantizada 24/7 (plan gratuito de Render; ver D-09). \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+El alcance es viable en el semestre: el producto se construyó entre abril y junio de 2026 y la fase de calidad entre agosto y noviembre de 2026, como muestra el cronograma de la sección \ref{sec:cronograma}.
+
+\subsection{Valor frente a otras soluciones}
+
+\begin{table}[H]
+\caption{Comparación con la forma actual de controlar las finanzas}
+\label{tab:valor}
+\begin{tabularx}{\linewidth}{L{3.5cm} Y Y Y}
+\toprule
+Necesidad & Cuaderno & Hoja de cálculo & ShiftCash \\
+\midrule
+Registrar un gasto & A mano, sin validación & A mano; fórmulas propias & Formulario con validación en dos capas \\
+Total por categoría & Suma manual & Fórmula que el usuario arma & Automático (resumen y gráficas) \\
+Porcentaje del presupuesto & Cálculo manual & Fórmula y formato condicional propios & Automático, con estado «superado» y alerta \\
+Gastos recurrentes & Se reescriben & Se copian & Se generan solos cada día \\
+Plan de una meta & No existe & Debe diseñarse & Cuotas diarias automáticas y progreso \\
+Acceso & Físico & Archivo local o en la nube & Web desde cualquier navegador, con sesión \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+Frente a la aplicación del banco, ShiftCash clasifica los movimientos según las categorías del propio usuario, reúne el efectivo y las distintas cuentas en un solo lugar y añade presupuestos y metas. Frente a otras aplicaciones de presupuesto, ShiftCash es gratuita para el usuario, está en español, redondea los montos a la moneda que él elige y une en un solo lugar los presupuestos por período y un plan de ahorro diario con indicador de progreso.
+
+\paragraph{En cuánto mejora.} Para conocer el estado de un presupuesto con cuaderno u hoja de cálculo hay que sumar los gastos del período y dividirlos por el límite; en ShiftCash ese resultado aparece sin ninguna operación del usuario. El tiempo que toma registrar un gasto se mide con la tarea cronometrada PU-06 (Segunda parte): mediana de \resPUMediana{} segundos, con una tasa de éxito de \resPUExito.

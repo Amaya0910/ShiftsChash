@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { createSavingGoal, updateSavingGoal } from '../api/savings';
+import { mensajeError } from '../api/errores';
 
 const INITIAL_STATE = {
   name: '',
@@ -115,9 +116,7 @@ export function useMetaForm(onSuccess, metaExistente = null) {
       onSuccess?.();
     } catch (err) {
       setError(
-        err.response?.data?.detail ||
-        err.message ||
-        'Error al guardar la meta'
+        mensajeError(err, err.message || 'Error al guardar la meta')
       );
     } finally {
       setLoading(false);

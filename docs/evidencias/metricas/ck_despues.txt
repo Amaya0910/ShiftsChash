@@ -1,0 +1,44 @@
+Clases (atributos = campos de la clase y nombres usados por cada método)
+Clase                  Módulo                NOM  WMC  DIT  NOC  CBO  RFC  LCOM LCOM4
+Budget                 models.py               0    0    1    0    2    0     0     0
+Category               models.py               0    0    1    0    2    0     0     0
+SavingGoal             models.py               0    0    1    0    1    0     0     0
+Transaction            models.py               0    0    1    0    2    0     0     0
+User                   models.py               0    0    1    0    4    0     0     0
+BudgetBase             schemas.py              4    5    1    2    0    9     6     4
+BudgetCreate           schemas.py              1    5    2    0    0    3     0     1
+BudgetOut              schemas.py              0    0    2    0    0    0     0     0
+BudgetUpdate           schemas.py              4    6    1    0    0    9     6     4
+CategoryCreate         schemas.py              2    4    1    0    0    5     1     2
+CategoryOut            schemas.py              0    0    1    0    0    0     0     0
+CategoryUpdate         schemas.py              0    0    1    0    0    0     0     0
+CurrencyUpdate         schemas.py              0    0    1    0    0    0     0     0
+GoogleAuthRequest      schemas.py              0    0    1    0    0    0     0     0
+PasswordUpdate         schemas.py              1    2    1    0    0    4     0     1
+SavingGoalCreate       schemas.py              4   10    1    0    0   10     4     3
+SavingGoalOut          schemas.py              0    0    1    0    0    0     0     0
+SavingGoalUpdate       schemas.py              2    5    1    0    0    6     1     2
+TokenWithUser          schemas.py              0    0    1    0    1    0     0     0
+TransactionCreate      schemas.py              3    6    1    0    0    7     3     3
+TransactionOut         schemas.py              0    0    1    0    0    0     0     0
+UserCreate             schemas.py              1    2    1    0    0    4     0     1
+UserLogin              schemas.py              0    0    1    0    0    0     0     0
+UserOut                schemas.py              0    0    1    0    0    0     0     0
+UserUpdate             schemas.py              0    0    1    0    0    0     0     0
+
+Módulos como clase (métodos = funciones; atributos = nombres globales del módulo)
+Módulo                            NOM  WMC  CBO  RFC  LCOM LCOM4
+auth.py                             4    7    2   20     4     3
+database.py                         1    1    0    3     0     1
+main.py                             2    2    9    5     0     1
+routes/budgets.py                   4    5    5   17     0     1
+routes/categories.py                4    7    5   19     0     1
+routes/profile.py                   7   16    4   32     0     1
+routes/savings.py                   6    7    5   20     0     1
+routes/transactions.py              6   12    5   28     0     1
+routes/users.py                     3   14    4   23     0     1
+scheduler.py                        2   12    3   15     1     1
+schemas.py                          3   10    0    4     3     3
+services/budget_service.py         12   25    3   40    64     4
+services/category_service.py        2    3    1    8     1     1
+services/saving_service.py         14   39    2   63    67     3

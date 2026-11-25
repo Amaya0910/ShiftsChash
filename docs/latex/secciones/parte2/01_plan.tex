@@ -1,0 +1,125 @@
+% =====================================================================
+% Segunda parte – 1. Introducción y plan de pruebas
+% =====================================================================
+\section{Introducción}
+
+Esta parte documenta las pruebas de ShiftCash. Seguimos a \textcite{myers2011} y \textcite{pressman2010} y organizamos las pruebas en cuatro niveles: unitarias, de integración, de sistema y de aceptación. El análisis de caja negra y caja blanca se concentra en las tres funcionalidades centrales: registrar transacción (F1, CU01), gestionar presupuesto (F2, CU02) y gestionar meta de ahorro (F3, CU03). Las pruebas automatizadas cubren además el resto de los requisitos.
+
+Las pruebas se ejecutaron dos veces. La \textbf{primera ejecución} (25 de octubre de 2026, sobre el commit \codigo{0efe28b}) encontró los defectos D-01 a D-10 (Apéndice \ref{ap:defectos}). La \textbf{segunda ejecución} (21 de noviembre de 2026, rama \codigo{fix/defectos}) se hizo después de corregirlos y encontró además D-11. Cada sección muestra el resultado de ambas ejecuciones.
+
+\section{Plan de pruebas}
+
+\subsection{Objetivos}
+
+\paragraph{Objetivo general.} Verificar que ShiftCash cumple sus requisitos funcionales y no funcionales, y encontrar y corregir los defectos que afectan la exactitud de los cálculos financieros, la seguridad y la experiencia del usuario.
+
+\paragraph{Objetivos específicos.}
+\begin{enumerate}[label=OP\arabic*., leftmargin=1.6cm]
+  \item Verificar que los esquemas Pydantic rechazan montos, tipos, períodos y fechas inválidos con 422.
+  \item Cubrir todos los caminos independientes de \codigo{_toca_hoy}, del cálculo del período mensual de un presupuesto y de \codigo{generate_daily_amounts}.
+  \item Verificar la integración incremental de modelos, servicios, rutas y cliente en el flujo de cada caso de uso.
+  \item Medir la seguridad, el rendimiento, la usabilidad, la portabilidad, la fiabilidad y la mantenibilidad frente a los RNF de la Tabla \ref{tab:rnf}.
+  \item Validar con un usuario final, en la aplicación desplegada, que el sistema satisface los requisitos (porcentaje de RF aceptados).
+  \item Alcanzar una cobertura de líneas del backend de al menos 80\,\% (RNF09).
+\end{enumerate}
+
+\subsection{Alcance}
+
+\begin{table}[H]
+\caption{Alcance del plan de pruebas}
+\label{tab:alcance-pruebas}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{2.8cm} L{5.4cm} Y}
+\toprule
+Módulo & Componentes bajo prueba & Objetivo \\
+\midrule
+F1 Transacciones & \codigo{TransactionCreate}, \codigo{routes.transactions}, \codigo{category_service}, \codigo{scheduler._toca_hoy}, \codigo{registrar_recurrentes}, \codigo{useTransaccionForm} & Validación de monto, tipo y categoría; recurrencias sin duplicados. \\
+F2 Presupuestos & \codigo{BudgetCreate}, \codigo{budget_service} (\codigo{get_date_range}, \codigo{calculate_spent}, \codigo{percentage_used}), \codigo{routes.budgets}, \codigo{PresupuestoModal} & Rango por período, gasto, porcentaje real y estado «superado». \\
+F3 Metas & \codigo{SavingGoalCreate}, \codigo{saving_service} (\codigo{generate_daily_amounts}, \codigo{calculate_progress}, \codigo{toggle_day}), \codigo{routes.savings}, \codigo{useMetaForm} & Exactitud del plan, marcado de días y progreso. \\
+Soporte & \codigo{routes.users}, \codigo{routes.profile}, \codigo{routes.categories}, \codigo{auth} & Registro, inicio de sesión (con Google simulado), perfil, categorías y eliminación en cascada. \\
+Transversal & \codigo{get_current_user}, \codigo{PrivateRoute}, CORS, despliegue & Seguridad, rendimiento, portabilidad, usabilidad, fiabilidad y mantenibilidad. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuera del alcance: la recuperación de contraseña y el inicio con Facebook, que no están implementados (Tabla \ref{tab:alcance}). Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Estrategia: niveles, tipos, técnicas y herramientas}
+
+\begin{table}[H]
+\caption{Niveles, tipos, técnicas y herramientas de prueba}
+\label{tab:estrategia}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{1.9cm} L{2.5cm} L{3.8cm} Y}
+\toprule
+Nivel & Tipo & Técnica & Herramienta y justificación \\
+\midrule
+Unitario & Funcional y estructural & Clases de equivalencia, valores límite, camino básico \parencite{mccabe1976} & pytest \parencite{pytest2025} con pytest-cov: el backend es Python y la lógica crítica son funciones puras. \\
+Integración & Incremental ascendente; basada en hilos & Pruebas de API con base de datos real (SQLite con FK) y flujo E2E & pytest + \codigo{TestClient} de FastAPI; Cypress \parencite{cypress2025} contra la API y la SPA en ejecución. \\
+Sistema & Seguridad & Escaneo pasivo y activo (OWASP Top 10) & OWASP ZAP \parencite{zap2025,owasp2021}. \\
+Sistema & Rendimiento y fiabilidad & Carga: 50 usuarios, 60 s de rampa, 10 iteraciones & Apache JMeter \parencite{jmeter2025}. \\
+Sistema & Portabilidad & Compatibilidad entre navegadores y anchos & LambdaTest \parencite{lambdatest2025} y emulación móvil. \\
+Sistema & Usabilidad & Inspección heurística y tarea cronometrada & Navegador y usuarios reales (PU-06). \\
+Sistema & Mantenibilidad & Métricas estáticas & \codigo{docs/scripts/metricas.py}, ESLint, SonarQube \parencite{sonarqube2025}. \\
+Aceptación & Funcional de usuario & Escenarios derivados de los RF, ejecutados por un usuario final & Guion y acta (Apéndice \ref{ap:acta}); automatización de apoyo con Selenium \parencite{selenium2025}. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Ambiente de pruebas}
+
+\begin{table}[H]
+\caption{Ambiente de pruebas y versiones exactas}
+\label{tab:ambiente}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{3.6cm} Y}
+\toprule
+Elemento & Especificación \\
+\midrule
+Código bajo prueba & Repositorio \codigo{Amaya0910/ShiftCash}: commit \codigo{0efe28b} (primera ejecución) y rama \codigo{fix/defectos} (segunda ejecución). \\
+Ambiente desplegado & Frontend en Vercel (\url{https://shifts-chash-version-amaya.vercel.app/}); API en Render; PostgreSQL en Supabase. \\
+Ambiente local & Windows 11; API con Uvicorn 0.49 en \codigo{localhost:8000} y SQLite; frontend con Vite 8.0.9 en \codigo{127.0.0.1:5173}; Node.js 25.9.0. Datos ficticios: un usuario de prueba, 4 categorías, 6 transacciones de noviembre de 2026, 2 presupuestos y 2 metas. \\
+Unitarias e integración & Python 3.12.10, pytest 9.2.0, pytest-cov 7.1.0 (coverage 7.17.4), httpx 0.28.1; SQLite en memoria con claves foráneas activadas. \\
+Integración E2E & Cypress 13.17.0 (Electron 27.3.10, sin interfaz). \\
+Aceptación automatizada & Selenium 4.53.0 (Python) con Google Chrome 157.0.8103.80, ventana de 1366 × 900 px. \\
+Rendimiento & Apache JMeter 5.6.3 sobre Eclipse Temurin JDK 21.0.13. \\
+Seguridad y calidad & OWASP ZAP 2.16.1 (Docker); SonarQube Community 26.7 (primera ejecución). \\
+Portabilidad & LambdaTest Real Time: Chrome 154 en macOS y Firefox 155 en Windows 11. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Recursos asignados}
+
+\begin{table}[H]
+\caption{Recursos humanos, técnicos y de tiempo}
+\label{tab:recursos}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{3.4cm} L{4.2cm} Y}
+\toprule
+Recurso & Rol o uso & Asignación \\
+\midrule
+Isabella Amaya & Diseño y ejecución de pruebas & Todos los tipos de prueba, en conjunto con Brayan \\
+Brayan Vásquez & Diseño y ejecución de pruebas & Todos los tipos de prueba, en conjunto con Isabella \\
+Usuario final & Ejecuta la prueba de aceptación y firma el acta & \resUsuarioFinal \\
+5 participantes & Tarea cronometrada PU-06 & \resPUParticipantes \\
+Equipo de cómputo & Ejecución local y herramientas & Computador del equipo con Windows 11 \\
+Herramientas & Tabla \ref{tab:ambiente} & Todas gratuitas o de código abierto (LambdaTest en plan gratuito) \\
+Tiempo & Primera ejecución & 25 de octubre de 2026 \\
+Tiempo & Corrección y segunda ejecución & 20 y 21 de noviembre de 2026 \\
+Tiempo & Aceptación con usuario final & \resFechaSesion \\
+Horas dedicadas & Total del plan de pruebas & Estimadas: 15 h por semana por autor entre el 13 de agosto y el 21 de noviembre de 2026 (unas 14 semanas), cerca de 420 horas \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\subsection{Criterios de aprobación}
+
+\begin{itemize}
+  \item \textbf{Unitarias e integración:} el 100\,\% de las pruebas automatizadas pasan y la cobertura de líneas del backend es de al menos 80\,\%.
+  \item \textbf{Sistema:} cada RNF alcanza su valor objetivo (Tabla \ref{tab:rnf}); ninguna alerta de ZAP de riesgo alto.
+  \item \textbf{Aceptación:} al menos el 90\,\% de los RF aceptados por el usuario final y ningún defecto abierto de severidad crítica o alta.
+  \item \textbf{Suspensión:} se suspende la ejecución si la API no está disponible; se reanuda al restablecerla.
+\end{itemize}

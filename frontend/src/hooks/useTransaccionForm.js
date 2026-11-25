@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { crearTransaccion, actualizarTransaccion } from '../api/transactions';
+import { mensajeError } from '../api/errores';
 
 const INITIAL_STATE = {
   category_id:  '',
@@ -83,7 +84,7 @@ export function useTransaccionForm(onSuccess, transaccionExistente = null) {
       setForm(INITIAL_STATE);
       onSuccess?.();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al guardar la transacción');
+      setError(mensajeError(err, 'Error al guardar la transacción'));
     } finally {
       setLoading(false);
     }

@@ -1,0 +1,121 @@
+% =====================================================================
+% Primera parte – 3. Metodología y cronograma
+% =====================================================================
+\section{Metodología y cronograma}
+
+\subsection{Metodología: Scrum}
+
+Desarrollamos ShiftCash con Scrum \parencite{schwaber2020}: el producto se construyó en incrementos cortos, cada uno con funcionalidad utilizable, revisada y desplegada antes de pasar al siguiente. Elegimos Scrum porque los requisitos se fueron precisando a medida que usábamos la aplicación (por ejemplo, la parametrización de alertas y la nueva vista de metas surgieron en la revisión de incrementos anteriores) y porque el equipo era pequeño y podía coordinarse a diario.
+
+\begin{table}[H]
+\caption{Roles Scrum del equipo}
+\label{tab:roles}
+\begin{tabularx}{\linewidth}{L{3.6cm} L{3.4cm} Y}
+\toprule
+Integrante & Rol Scrum & Responsabilidades principales \\
+\midrule
+Isabella Amaya & Scrum Master y desarrolladora & Facilitar los eventos, remover impedimentos; recurrencias, gráficas, modo claro, perfil y corrección de defectos. \\
+David Rojas Morales & Product Owner y desarrollador & Priorizar el backlog y aceptar los incrementos; estructura frontend/backend, presupuestos, despliegue, metas y Google OAuth. \\
+Brayan Vásquez & Desarrollador & Pruebas y calidad: verificación de los incrementos antes de integrarlos y, en la fase de calidad, diseño y ejecución de las pruebas junto con Isabella. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Las responsabilidades de desarrollo se tomaron de la autoría de los commits del repositorio de trabajo (\url{https://github.com/piri277/ShiftCash}). El documento de Ingeniería de Software II lo elaboramos Isabella Amaya y Brayan Vásquez. Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Artefactos y eventos.} El \emph{product backlog} lo formaban los requisitos de la Tabla \ref{tab:rf}; cada incremento se integraba en la rama principal y se desplegaba en Vercel y Render. Los incrementos de la Figura \ref{fig:gantt} corresponden a sprints de una a dos semanas, reconstruidos a partir del historial de commits: cada uno empezaba con la selección de las historias del backlog con el Product Owner y terminaba con la integración y el despliegue de lo construido. Como el equipo era de estudiantes, la coordinación diaria se hacía por mensajería y no en reuniones presenciales.
+
+\subsection{Cronograma real}\label{sec:cronograma}
+
+El cronograma de la Figura \ref{fig:gantt} se reconstruyó con las fechas reales de los commits de los dos repositorios del proyecto: el de desarrollo (\url{https://github.com/piri277/ShiftCash}, 67 commits entre el 21 de abril y el 10 de junio de 2026) y el de la entrega de Ingeniería de Software II (\url{https://github.com/Amaya0910/ShiftCash}, desde el 13 de agosto de 2026). Cada barra agrupa los commits de un incremento; las fechas exactas de los sprints quedan por confirmar con el equipo.
+
+\begin{figure}[H]
+\centering
+\caption{Cronograma real del proyecto (2026)}
+\label{fig:gantt}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[x=0.06cm, y=0.62cm, font=\footnotesize]
+  % Meses (día 0 = 1 de abril)
+  \foreach \x/\m in {0/Abr, 30/May, 61/Jun, 91/Jul, 122/Ago, 153/Sep, 183/Oct, 214/Nov, 244/Dic} {
+    \draw[gris!40] (\x, 0.5) -- (\x, -11.6);
+    \node[anchor=south west, font=\scriptsize\bfseries] at (\x, 0.5) {\m};
+  }
+  % Tareas: fila, inicio, fin, etiqueta, estilo
+  \newcommand{\barra}[5]{%
+    \node[anchor=east, font=\scriptsize] at (-2, -#1) {#4};
+    \fill[#5] (#2, -#1-0.3) rectangle ({max(#3,#2+2)}, -#1+0.3);
+  }
+  \node[anchor=west, font=\scriptsize\itshape] at (-62, 0.9) {Desarrollo del producto};
+  \barra{1}{20}{22}{Inc. 1: proyecto React, dashboard y CI}{black}
+  \barra{2}{33}{39}{Documentación inicial (README)}{gris}
+  \barra{3}{42}{44}{Inc. 2: backend FastAPI, recurrentes, historial, gráficas}{black}
+  \barra{4}{50}{52}{Inc. 3: presupuestos, esquema BD, despliegue}{black}
+  \barra{5}{54}{60}{Inc. 4: login, landing, metas, responsive, alertas}{black}
+  \barra{6}{61}{70}{Inc. 5: perfil, fechas locales, metas, Google}{black}
+  \draw[gris] (-62, -6.75) -- (250, -6.75);
+  \node[anchor=west, font=\scriptsize\itshape] at (-62, -7.1) {Ingeniería de Software II};
+  \barra{8}{134}{135}{Migración del código al repositorio de entrega}{gris}
+  \barra{9}{153}{207}{Pruebas, métricas y estimación (entrega previa)}{gris}
+  \barra{10}{199}{199}{Configuración del despliegue}{gris}
+  \barra{11}{233}{240}{Corrección D-01 a D-10, pruebas y documento final}{acento}
+  % Hitos
+  \foreach \x/\t in {207/Entrega previa 25 oct} {
+    \draw[acento, thick] (\x, 0.4) -- (\x, -11.6);
+    \node[acento, font=\scriptsize, anchor=north west, rotate=0] at (\x, -11.6) {\t};
+  }
+\end{tikzpicture}}
+\figurenote{Las barras negras son incrementos del producto, las grises son trabajo de documentación y calidad, y la de color es la fase actual. El inicio de la barra «Pruebas, métricas y estimación» (septiembre) es aproximado. Fuente: elaboración propia con el historial de Git.}
+\end{figure}
+
+\begin{table}[H]
+\caption{Hitos del proyecto}
+\label{tab:hitos}
+\begin{tabularx}{\linewidth}{L{3.2cm} Y L{3cm}}
+\toprule
+Fecha (2026) & Hito & Evidencia \\
+\midrule
+21 de abril & Primer commit: proyecto React & Repositorio de desarrollo \\
+23 de mayo & Primer despliegue (Supabase, Vercel, Render) & Commits de configuración de CORS y Supabase \\
+10 de junio & Inicio de sesión con Google: cierre del desarrollo del producto & Último commit del repositorio de desarrollo \\
+13 de agosto & Código cargado en el repositorio de entrega & Commit «first commit» \\
+25 de octubre & Entrega previa: pruebas, métricas y estimación & Documento del proyecto \\
+20 de noviembre & Corrección de los defectos D-01 a D-10 y primeras pruebas automatizadas & Rama \codigo{fix/defectos} \\
+27 de noviembre & Entrega final y sustentación ante la docente, con demostración en vivo de las herramientas & — \\
+2 de diciembre & Presentación de resultados y del programa en funcionamiento ante jurados & — \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Esfuerzo real.} El desarrollo del producto duró 51 días calendario (21 de abril a 10 de junio de 2026), es decir, cerca de 1,7 meses, con tres personas. El equipo no registró horas; estimamos una dedicación de 15 horas por semana por persona, lo que da unas 327 horas (2,04 PM) en el desarrollo. El proyecto no tuvo gastos en dinero: se usaron equipos e internet propios y planes gratuitos. Estos valores se comparan con las estimaciones en la Cuarta parte.
+
+\subsection{Tablero Kanban}
+
+La Tabla \ref{tab:kanban} muestra el estado del backlog al 21 de noviembre de 2026, organizado como un tablero Kanban de tres columnas.
+
+\begin{table}[H]
+\caption{Tablero Kanban del proyecto (21 de noviembre de 2026)}
+\label{tab:kanban}
+\small
+\begin{tabularx}{\linewidth}{Y Y Y}
+\toprule
+\textbf{Por hacer} & \textbf{En curso} & \textbf{Hecho} \\
+\midrule
+Sesión de aceptación con usuario final y acta firmada (PA-01 a PA-09) &
+D-09: mantener la API despierta (ping y aviso listos; falta activarlos en \codigo{main}) &
+RF01 a RF20 implementados y desplegados \\
+Tarea cronometrada PU-06 con 5 usuarios &
+Documento final (Primera parte) &
+Corrección de D-01 a D-08 y D-10 \\
+Nueva ejecución de JMeter, ZAP y SonarQube sobre la app desplegada &
+&
+Capa de servicios y complejidad ciclomática $\leq 10$ \\
+Aplicar en Supabase la migración de la clave foránea (D-05) &
+&
+95 pruebas pytest, cobertura del 95\,\% \\
+Recuperación de contraseña e inicio con Facebook (fuera del alcance actual) &
+&
+Guiones de Cypress, Selenium y JMeter en el repositorio \\
+\bottomrule
+\end{tabularx}
+\tablenote{El equipo no usó un tablero digital; la tabla reconstruye el estado del backlog en forma de tablero Kanban. Fuente: elaboración propia.}
+\end{table}

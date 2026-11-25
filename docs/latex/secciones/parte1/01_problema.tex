@@ -1,0 +1,113 @@
+% =====================================================================
+% Primera parte – 1. Problema y contexto
+% =====================================================================
+\section{Problema y contexto}
+
+\subsection{Planteamiento del problema}
+
+\paragraph{Quién tiene el problema.} Personas que manejan su propio dinero —estudiantes universitarios con ingresos de mesadas o trabajos de medio tiempo, y trabajadores jóvenes con un salario fijo o ingresos variables— y que necesitan saber en qué se les va el dinero, si respetan los límites que se proponen y cuánto avanzan hacia una meta de ahorro.
+
+\paragraph{Dónde ocurre.} En el manejo diario de las finanzas personales en Colombia. Nuestro contexto inmediato es la comunidad universitaria de Valledupar (Cesar), donde formulamos y probamos la solución.
+
+\paragraph{Cómo ocurre hoy.} Quien intenta controlar sus finanzas lo hace de tres formas: lo apunta en un cuaderno, lleva una hoja de cálculo o confía en la memoria y en el extracto del banco. Las tres tienen el mismo problema: cada gasto se anota a mano, la suma por categoría y el porcentaje consumido de un presupuesto se calculan aparte, los gastos que se repiten (arriendo, suscripciones, salario quincenal) hay que volver a escribirlos cada vez y una meta de ahorro no se traduce en un plan concreto de cuánto guardar cada día. El extracto bancario solo muestra los movimientos de una cuenta y no los clasifica según los rubros de la persona. El resultado es que el registro se abandona o queda incompleto.
+
+\paragraph{Evidencia.} La Encuesta de Medición de Capacidades Financieras de 2019, aplicada a 12\,000 hogares, encontró que solo el 51\,\% de los encuestados hace un presupuesto para manejar sus ingresos y gastos, y solo el 47\,\% anota sus gastos de manera regular \parencite{asobancaria2021}. Es decir, \textbf{más de la mitad de las personas (53\,\%) no lleva un registro regular de sus gastos} y casi la mitad (49\,\%) no tiene presupuesto. La misma fuente señala que el índice de educación financiera de Colombia retrocedió 1,13 puntos frente a la medición de 2013 de la CAF.
+
+Para el contexto local construimos una \textbf{encuesta simulada}: por indicación de la docente, el equipo estimó las respuestas que darían 20 estudiantes y trabajadores jóvenes de Valledupar, con el fin de practicar el levantamiento de evidencia. La Tabla \ref{tab:encuesta} resume esos datos ilustrativos, que no provienen de personas encuestadas.
+
+\begin{table}[H]
+\caption{Encuesta simulada sobre el control de las finanzas personales (20 respuestas ilustrativas)}
+\label{tab:encuesta}
+\footnotesize
+\begin{tabularx}{\linewidth}{Y L{2.2cm}}
+\toprule
+Pregunta y respuesta & Respuestas \\
+\midrule
+¿Cómo registra hoy sus gastos? No los registra & 9 (45\,\%) \\
+\quad En cuaderno o notas del celular & 6 (30\,\%) \\
+\quad En una hoja de cálculo & 3 (15\,\%) \\
+\quad Con una aplicación & 2 (10\,\%) \\
+De quienes registran (11), ¿lo ha abandonado alguna vez? Sí & 7 (64\,\%) \\
+Motivo principal del abandono: toma mucho tiempo anotar todo & 4 de 7 \\
+\quad No sabe cuánto lleva gastado sin hacer cuentas & 2 de 7 \\
+\quad Olvida los gastos que se repiten & 1 de 7 \\
+¿Tiene una meta de ahorro sin un plan para cumplirla? Sí & 13 (65\,\%) \\
+¿Usaría una aplicación gratuita que calcule el gasto de cada presupuesto? Sí & 17 (85\,\%) \\
+\bottomrule
+\end{tabularx}
+\tablenote{Datos ilustrativos construidos por el equipo como ejercicio académico; no son respuestas de personas reales. Coinciden en orden de magnitud con \textcite{asobancaria2021}. Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Qué queda fuera del problema.} No abordamos la gestión de inversiones ni de créditos, la contabilidad de empresas o negocios, la declaración de impuestos, la conexión automática con cuentas bancarias ni el asesoramiento financiero. Tampoco pretendemos resolver la falta de educación financiera en sí: la reconocemos como causa, pero nuestra solución se dirige a la herramienta de registro y control (ver la sección \ref{sec:causas}).
+
+\subsection{Causas y efectos}\label{sec:causas}
+
+La Figura \ref{fig:arbol} resume el árbol de problemas. El problema central es que \emph{las personas no llevan un control sistemático de sus ingresos, gastos y metas de ahorro}.
+
+\begin{figure}[H]
+\centering
+\caption{Árbol de problemas de ShiftCash}
+\label{fig:arbol}
+\resizebox{\linewidth}{!}{%
+\begin{tikzpicture}[
+  node distance=6mm and 4mm,
+  efecto/.style={caja, text width=3.2cm, minimum height=1.3cm},
+  causa/.style={caja, text width=3.2cm, minimum height=1.3cm},
+  central/.style={caja, fill=acento, text=white, font=\small\bfseries, text width=13.6cm, minimum height=1cm},
+]
+\node[central] (P) {Las personas no llevan un control sistemático de sus ingresos, gastos y metas de ahorro};
+% Efectos
+\node[efecto, above=12mm of P.north west, anchor=south west] (E1) {E1. No saben en qué rubros se va su dinero};
+\node[efecto, right=of E1] (E2) {E2. Superan los límites de gasto sin darse cuenta};
+\node[efecto, right=of E2] (E3) {E3. Abandonan las metas de ahorro};
+\node[efecto, right=of E3] (E4) {E4. Dificultad para cubrir obligaciones y ahorrar};
+% Causas
+\node[causa, below=12mm of P.south west, anchor=north west, cajaacento] (C1) {C1. Registro manual lento y propenso a errores u omisiones};
+\node[causa, right=of C1, cajaacento] (C2) {C2. Sin cálculo automático del gasto por categoría ni del presupuesto};
+\node[causa, right=of C2] (C3) {C3. Los gastos e ingresos recurrentes se olvidan};
+\node[causa, right=of C3] (C4) {C4. Metas de ahorro sin un plan diario concreto};
+\node[causa, below=6mm of $(C2.south)!0.5!(C3.south)$, text width=8cm, fill=grisclaro] (C5) {C5 (estructural). Bajo nivel de educación financiera};
+\foreach \e in {E1,E2,E3,E4} \draw[flecha] (P.north -| \e.south) -- (\e.south);
+\foreach \c in {C1,C2,C3,C4} \draw[flecha] (\c.north) -- (P.south -| \c.north);
+\draw[flecha, gris] (C5.north) -- ++(0,3mm) -| (C1.south);
+\draw[flecha, gris] (C5.north) -- ++(0,3mm) -| (C4.south);
+\node[font=\footnotesize\itshape, anchor=east] at ([xshift=-2mm]E1.west) {Efectos};
+\node[font=\footnotesize\itshape, anchor=east] at ([xshift=-2mm]C1.west) {Causas};
+\end{tikzpicture}}
+\figurenote{Las causas con borde de color son las que ataca ShiftCash como causa principal. Fuente: elaboración propia.}
+\end{figure}
+
+\begin{table}[H]
+\caption{Causas del problema y hechos que las sustentan}
+\label{tab:causas}
+\begin{tabularx}{\linewidth}{L{0.8cm} L{4.2cm} Y}
+\toprule
+ID & Causa & Hecho que la sustenta \\
+\midrule
+C1 & El registro manual es lento y se omite & Solo el 47\,\% anota sus gastos con regularidad \parencite{asobancaria2021}; en cuaderno u hoja de cálculo cada movimiento se escribe a mano. \\
+C2 & No hay cálculo automático del gasto ni del presupuesto & Saber cuánto se lleva gastado en una categoría exige sumar a mano; solo el 51\,\% hace presupuesto \parencite{asobancaria2021}. \\
+C3 & Los movimientos recurrentes se olvidan & El arriendo, las suscripciones o el salario quincenal deben reescribirse en cada período. \\
+C4 & Las metas no tienen plan & «Ahorrar un millón en tres meses» no dice cuánto guardar cada día ni cuánto se lleva. \\
+C5 & Bajo nivel de educación financiera & El índice de educación financiera retrocedió 1,13 puntos frente a 2013 \parencite{asobancaria2021}. \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia con datos de \textcite{asobancaria2021}.}
+\end{table}
+
+\begin{table}[H]
+\caption{Efectos del problema}
+\label{tab:efectos}
+\begin{tabularx}{\linewidth}{L{0.8cm} L{4.2cm} Y}
+\toprule
+ID & Efecto & Relación con las causas \\
+\midrule
+E1 & No se sabe en qué rubros se va el dinero & Sin registro (C1) ni clasificación (C2) no hay totales por categoría. \\
+E2 & Se superan los límites sin notarlo & Sin cálculo del porcentaje consumido (C2) el exceso se descubre a fin de mes. \\
+E3 & Se abandonan las metas de ahorro & Sin plan diario ni seguimiento del avance (C4) la meta pierde sentido. \\
+E4 & Dificultad para cubrir obligaciones y ahorrar & Es la consecuencia de E1 a E3 y de los gastos recurrentes olvidados (C3). \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
+\paragraph{Causa que ataca ShiftCash.} La causa principal que atacamos es la \textbf{carga del registro manual sin cálculo automático} (C1 y C2): ShiftCash convierte cada movimiento en un registro de pocos segundos, lo clasifica por categoría y calcula solo los totales, el gasto de cada presupuesto y su porcentaje. Sobre esa base resuelve también C3 (las transacciones recurrentes se generan solas cada día) y C4 (cada meta recibe un plan de cuotas diarias y un indicador de progreso). La causa estructural C5 queda fuera del alcance: una aplicación no reemplaza un programa de educación financiera, aunque sí facilita el hábito de registrar.

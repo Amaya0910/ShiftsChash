@@ -1,0 +1,83 @@
+% =====================================================================
+% Primera parte – 4. Requisitos
+% =====================================================================
+\section{Requisitos del sistema}
+
+\subsection{Requisitos funcionales}
+
+La prioridad sigue tres niveles: \textbf{Alta} (sin ella el producto no resuelve el problema), \textbf{Media} (aporta valor, pero el producto funciona sin ella) y \textbf{Baja} (comodidad). Cada criterio de aceptación es verificable con la prueba indicada en la última columna; los nombres \codigo{test_*} son pruebas automatizadas de \codigo{backend/tests} y los códigos PA son casos de aceptación (Segunda parte).
+
+{\footnotesize\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{L{1cm} L{4.2cm} L{1.1cm} L{5cm} L{2.6cm}}
+\caption{Requisitos funcionales}\label{tab:rf}\\
+\toprule
+ID & Descripción & Prior. & Criterio de aceptación verificable & Prueba \\
+\midrule
+\endfirsthead
+\toprule
+ID & Descripción & Prior. & Criterio de aceptación verificable & Prueba \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RF01 & Registrar un usuario con nombre, correo único y contraseña. & Alta & Con datos válidos responde 200; con un correo ya registrado responde 400; con una contraseña de menos de 8 caracteres responde 422. & \codigo{test_registro_correo_duplicado}, PA-10 \\
+RF02 & Iniciar sesión con correo y contraseña o con Google y recibir un JWT. & Alta & Credenciales válidas devuelven \codigo{access_token}; una contraseña incorrecta o las credenciales \codigo{admin@test.com/123} devuelven 401. & \codigo{test_login_contrasena_incorrecta}, \codigo{test_d06_*}, PA-10 \\
+RF03 & Registrar un ingreso o gasto con categoría, monto, descripción y fecha. & Alta & Un monto entre 0,01 y 9\,999\,999\,999\,999,99 se guarda y aparece en el historial; sin fecha toma la de hoy; un monto $\leq 0$ o mayor que el máximo responde 422; una categoría ajena o inexistente responde 404. & \codigo{test_pi02_*}, \codigo{test_pi03_*}, \codigo{test_pi11_*}, PA-02 \\
+RF04 & Marcar una transacción como recurrente (mensual, semanal, quincenal o anual). & Media & Sin frecuencia el formulario muestra «Selecciona la frecuencia de repetición» y la API responde 422; con frecuencia válida se guarda \codigo{is_recurring = true}. & \codigo{test_d14_*}, PA-04 \\
+RF05 & Generar cada día las transacciones recurrentes que correspondan, sin duplicarlas. & Media & Al ejecutar \codigo{registrar_recurrentes} en la fecha que corresponde se crea una instancia; una segunda ejecución el mismo día no crea otra. & \codigo{test_pi08_*}, \codigo{test_toca_hoy} \\
+RF06 & Editar y eliminar transacciones propias. & Alta & El propietario edita (200) y elimina (204); otro usuario recibe 404; asignar una categoría ajena responde 404. & \codigo{test_pi14_*}, PA-11 \\
+RF07 & Consultar el historial con búsqueda y filtros. & Media & Al filtrar por tipo, categoría, recurrencia, frecuencia o fechas solo se listan las transacciones que cumplen el filtro. & PA-12 \\
+RF08 & Ver el resumen financiero del mes. & Alta & Total gastado, ganado, ahorrado y número de transacciones coinciden con la suma de las transacciones del mes. & PA-02 \\
+RF09 & Ver gráficas de los movimientos. & Media & Las gráficas por categoría y por mes muestran los mismos totales que el resumen. & PA-13 \\
+RF10 & Gestionar categorías personalizadas. & Media & Se crean, editan y eliminan las propias; las predeterminadas no se editan ni se eliminan (404); una categoría con transacciones no se elimina (409). & \codigo{test_pi05_d05_*}, \codigo{test_no_elimina_*}, PA-05 \\
+RF11 & Crear un presupuesto por categoría y período. & Alta & Con datos válidos responde 201; un mes fuera de 1–12 o un año fuera de 2000–2100 responde 422; el período único exige fechas ordenadas. & \codigo{test_pi09_d03_*}, \codigo{test_presupuesto_unico_*} \\
+RF12 & Calcular el gasto ejecutado y el porcentaje real de cada presupuesto. & Alta & \codigo{spent} suma solo los gastos de la categoría en el rango; \codigo{percentage} es el valor real y supera 100 cuando se excede el límite; la tarjeta muestra «superado». & \codigo{test_pi04_d04_*}, \codigo{test_presupuesto_solo_suma_*}, PA-06 \\
+RF13 & Editar y eliminar presupuestos propios. & Media & Solo se cambian los campos enviados; otro usuario recibe 404. & \codigo{test_editar_presupuesto_*}, \codigo{test_presupuesto_ajeno_404} \\
+RF14 & Alertar cuando el gasto supera el umbral configurado. & Media & Con umbral de 80\,\% y gasto del 85\,\%, el resumen muestra la alerta; con 70\,\% no la muestra. & PA-14 \\
+RF15 & Crear una meta de ahorro con objetivo y fechas. & Alta & Con datos válidos responde 200; nombre vacío, objetivo $\leq 0$ o fecha final pasada responden 422; sin fecha final se usan 30 días; el formulario exige un objetivo múltiplo de 1000. & \codigo{test_pi10_d07_*}, \codigo{test_meta_fecha_pasada_y_orden}, PA-07, PA-08 \\
+RF16 & Generar el plan de cuotas diarias de la meta. & Alta & La suma de las cuotas es igual al objetivo, ninguna es negativa y todas son múltiplos de la unidad de la moneda del usuario. & \codigo{test_plan_*}, \codigo{test_d01_*}, \codigo{test_pi12_*}, \codigo{test_d08_*}, PA-07 \\
+RF17 & Marcar y desmarcar días y ver el progreso. & Alta & Marcar los días 1 y 2 deja \codigo{days_completed = 2} y el porcentaje igual a la suma de esas cuotas sobre el objetivo; volver a marcar un día lo desmarca. & \codigo{test_pi06_*}, \codigo{test_calculate_progress}, PA-09 \\
+RF18 & Editar y eliminar metas propias. & Media & Cambiar el objetivo o la fecha final regenera el plan; otro usuario recibe 404. & \codigo{test_pi07_*}, \codigo{test_meta_ajena_404} \\
+RF19 & Gestionar el perfil y la cuenta. & Media & Se actualizan nombre, correo, contraseña (exige la actual), moneda y foto (JPG, PNG, WebP o GIF de hasta 3 MB); eliminar la cuenta responde 204 y borra sus transacciones, presupuestos, metas y categorías. & \codigo{test_pi13_*}, PA-15 \\
+RF20 & Alternar el tema claro u oscuro. & Baja & El tema elegido se conserva al recargar la página. & PA-15 \\
+\end{longtable}
+}
+\vspace{-1em}
+{\small\textit{Nota.} Los casos PA-10 a PA-15 son nuevos y completan la cobertura de los RF en la prueba de aceptación. Fuente: elaboración propia.}
+
+\subsection{Requisitos no funcionales}
+
+Cada requisito no funcional se expresa con su característica de calidad de ISO/IEC 25010 \parencite{iso25010}, una métrica, un valor objetivo y el modo de verificación. La Tercera parte mide cada uno con la misma métrica. Usamos los nombres de la versión 2011; la equivalencia con la versión 2023 está en la Tercera parte.
+
+{\footnotesize\renewcommand{\arraystretch}{1.15}
+\begin{longtable}{L{1.35cm} L{2.6cm} L{3.7cm} L{2.3cm} L{3.55cm}}
+\caption{Requisitos no funcionales medibles}\label{tab:rnf}\\
+\toprule
+ID & Característica (subcaracterística) & Métrica & Objetivo & Verificación \\
+\midrule
+\endfirsthead
+\toprule
+ID & Característica (subcaracterística) & Métrica & Objetivo & Verificación \\
+\midrule
+\endhead
+\bottomrule
+\endfoot
+RNF01 & Seguridad (confidencialidad) & Contraseñas guardadas en texto plano & 0 & \codigo{test_rnf01_contrasena_se_guarda_con_hash_bcrypt} \\
+RNF02 & Seguridad (autenticidad) & Endpoints de datos que responden sin JWT & 0 (todos 401) & \codigo{test_pi01_sin_token_responde_401}, ZAP \\
+RNF03 & Seguridad (integridad) & Orígenes no autorizados que reciben cabeceras CORS & 0 & \codigo{test_rnf03_cors_solo_origenes_permitidos} \\
+RNF04 & Seguridad (autenticidad) & Accesos a \codigo{/dashboard} sin sesión que no redirigen a \codigo{/login} & 0 & PA-01 (Selenium) \\
+RNF05 & Fiabilidad (tolerancia a fallos) & Entradas inválidas que provocan un error 500 & 0 (responden 4xx) & \codigo{test_pi11_*}, \codigo{test_pi09_*}, \codigo{test_pi10_*} \\
+RNF06 & Portabilidad (adaptabilidad) & Navegadores y anchos de pantalla con defectos bloqueantes & 0 en Chrome, Firefox, Edge y Safari; 375–1920 px & LambdaTest y prueba manual a 375 px \\
+RNF07 & Usabilidad (operabilidad) & Tiempo mediano para registrar un gasto; tasa de éxito & $\leq 60$ s; $\geq 90$\,\% & Tarea cronometrada PU-06 con 5 usuarios \\
+RNF08 & Adecuación funcional (corrección) & Planes con suma distinta del objetivo o cuotas negativas; error en el porcentaje del presupuesto & 0; 0 & \codigo{test_plan_*}, \codigo{test_d01_*}, \codigo{test_pi04_*} \\
+RNF09 & Mantenibilidad (capacidad de ser probado y modificabilidad) & Cobertura de líneas del backend; funciones con complejidad ciclomática $> 10$ & $\geq 80$\,\%; 0 & pytest-cov; \codigo{docs/scripts/metricas.py}, SonarQube \\
+RNF10 & Fiabilidad (disponibilidad) & Tiempo de respuesta de la API tras inactividad; disponibilidad en horario de uso (6:00–24:00) & $\leq 60$ s; $\geq 99$\,\% & Registro del flujo \codigo{mantener-api-despierta}; monitor externo \\
+RNF11 & Eficiencia de desempeño (comportamiento temporal) & Percentil 90 del tiempo de respuesta y tasa de error con 50 usuarios concurrentes & p90 $< 2$ s; error $< 1$\,\% & JMeter, \codigo{tests/carga/shiftcash.jmx} \\
+RNF12 & Seguridad (confidencialidad) & Registros de otro usuario visibles o modificables & 0 & \codigo{test_pi15_aislamiento_entre_usuarios}, \codigo{test_*_ajeno_404} \\
+RNF13 & Seguridad (confidencialidad) & Secretos en el código; alertas ZAP de riesgo alto & 0; 0 & SonarQube, búsqueda en el repositorio y ZAP \\
+RNF14 & Usabilidad (accesibilidad) & Puntaje de accesibilidad de Lighthouse; campos sin etiqueta asociada & $\geq 90$; 0 & Lighthouse y revisión del DOM \\
+RNF15 & Eficiencia de desempeño (comportamiento temporal) & Largest Contentful Paint de la portada & $\leq 2{,}5$ s & Lighthouse \parencite{google2025vitals} \\
+\end{longtable}
+}
+\vspace{-1em}
+{\small\textit{Nota.} RNF01 a RNF11 conservan la numeración de la entrega anterior; RNF12 a RNF15 se agregaron para cubrir los hallazgos de las pruebas de sistema. Fuente: elaboración propia.}

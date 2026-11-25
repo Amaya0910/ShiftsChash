@@ -20,7 +20,7 @@ function Navbar() {
           <span className="bounce-letter text-cash">h</span>
           <i className="bi bi-coin fs-4 text-primary bounce-letter ms-2"></i>
         </Link>
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="Abrir menú de navegación">
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarNav">

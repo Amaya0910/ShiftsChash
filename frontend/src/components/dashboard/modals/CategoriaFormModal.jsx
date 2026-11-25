@@ -5,6 +5,7 @@ import { crearCategoria, actualizarCategoria } from '../../../api/categories';
 
 import "../../../styles/categorias.css";
 import "../../../styles/modal.css";
+import { mensajeError } from '../../../api/errores';
 
 const EMOJIS = [
   "🍔","🚗","🎵","❤️","📚","💡","✈️","🏠","👗","💪",
@@ -44,7 +45,7 @@ export default function VistaCategoriasForm({ categoriaEditar, onSuccess, onCanc
       }
       onSuccess();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al guardar');
+      setError(mensajeError(err, 'Error al guardar'));
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useTheme } from '../hooks/useTheme';
-import api from '../api/axios';
-import logoImg from '../assets/Logo-sinFondo1.png';
+import { useBackendWarmup } from '../hooks/useBackendWarmup';
+import logoImg from '../assets/Logo-sinFondo1.webp';
 import graficaImg from '../assets/Grafica.png';
 import '../styles/home.css';
 
@@ -41,17 +41,8 @@ Responder a: ${datos.get('email')}`);
     return () => clearTimeout(timer);
   }, []);
 
-  // Wake up backend silenciosamente (para evitar que se duerma en Render)
-  useEffect(() => {
-    const wakeUpBackend = async () => {
-      try {
-        await api.get('/');
-      } catch {
-        // Silencio: no hacer nada si hay error, es solo un ping de mantenimiento
-      }
-    };
-    wakeUpBackend();
-  }, []);
+  // D-09: despierta la API de Render mientras el usuario lee la portada
+  useBackendWarmup();
 
   return (
     <main>
@@ -198,7 +189,7 @@ function ServiceCard({ icon, title, text }) {
           <div className="icon-box mb-3">
             <i className={`bi ${icon} fs-1 text-primary`}></i>
           </div>
-          <h5 className="card-title fw-bold">{title}</h5>
+          <h3 className="card-title fw-bold h5">{title}</h3>
           <p className="card-text text-muted">{text}</p>
         </div>
       </div>

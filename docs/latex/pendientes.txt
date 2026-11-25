@@ -1,0 +1,14 @@
+Datos que faltan (editar docs/latex/resultados.tex y recompilar):
+- \resUsuarioFinal: nombre y perfil de quien ejecutó la prueba de aceptación
+- \resFechaSesion: fecha de la sesión de aceptación
+- \resCasosEjecutados: casos ejecutados, por ejemplo 17 de 17
+- \resCasosAceptados: aceptados y rechazados, por ejemplo 16 aceptados y 1 rechazado (PA-xx)
+- \resRFAceptados: RF aceptados de 20 y porcentaje, por ejemplo 19/20 = 95\,\%
+- \resObservaciones: observaciones textuales anotadas en el acta
+- \resAcciones: acción por cada observación: corrección, mejora futura o aceptada
+- \resConcepto: aceptado, aceptado con observaciones o rechazado
+- \resActa: incluir el escaneo o la foto del acta firmada
+- \resPUParticipantes: quiénes participaron (perfil de cada uno)
+- \resPUMediana: mediana en segundos
+- \resPUExito: tasa de éxito al primer intento, por ejemplo 5/5 = 1,00
+- \resPUObservaciones: observaciones de los participantes

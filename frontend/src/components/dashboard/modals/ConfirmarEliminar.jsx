@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { eliminarTransaccion } from "../../../api/transactions";
+import { mensajeError } from '../../../api/errores';
 
 export default function ConfirmarEliminar({ transaccion, onClose, onSuccess }) {
   const [loading, setLoading] = useState(false);
@@ -22,7 +23,7 @@ export default function ConfirmarEliminar({ transaccion, onClose, onSuccess }) {
       onSuccess();
       onClose();
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al eliminar');
+      setError(mensajeError(err, 'Error al eliminar'));
     } finally {
       setLoading(false);
     }

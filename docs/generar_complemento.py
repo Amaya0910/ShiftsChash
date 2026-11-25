@@ -179,13 +179,14 @@ p("El problema tiene magnitud medida en fuentes públicas:", negrita_ini="Impact
 viñetas([
     ("Solo el 11,1 % de los colombianos ", "podría cubrir por completo un gasto imprevisto grande con sus propios "
      "recursos (Bloomberg Línea, 2022, con datos de la encuesta de demanda de inclusión financiera de Banca de las "
-     "Oportunidades)."),
-    ("Más del 39 % de los colombianos ", "siente que le falta dinero para llegar al final del mes (La República, "
-     "con datos de la medición de bienestar financiero de Banca de las Oportunidades)."),
+     "Oportunidades, que encuestó a 3 721 adultos)."),
+    ("Más del 39 % de los colombianos ", "siente que le falta dinero para llegar al final del mes (Salazar Sierra, "
+     "2022, con datos de la Encuesta de Demanda de Inclusión Financiera 2022 de Banca de las Oportunidades, "
+     "5 513 personas)."),
 ])
 p("Estas cifras sirven de línea base: ShiftCash busca que el usuario sepa en todo momento cuánto lleva gastado "
   "frente a su presupuesto (alerta al 80 %) y que su meta de ahorro avance cada día.")
-nota("verifiquen las dos cifras en la fuente original antes de citarlas y agreguen la referencia completa en APA. "
+nota("las dos cifras ya se verificaron en la fuente (consultadas el 20 de noviembre de 2026). "
      "Para la evidencia primaria que pide el nivel Alto, apliquen una encuesta breve a al menos 15 o 20 compañeros "
      "con las preguntas de la Tabla C2 y reporten los porcentajes con la fecha y el número de respuestas.")
 tabla("Instrumento de encuesta para medir el problema (evidencia primaria)", ["#", "Pregunta", "Respuestas", "Resultado (n = __)"], [
@@ -245,26 +246,42 @@ p("Para decir «en cuánto» mejora la solución, comparen el tiempo de la tarea
 # ── 4 ────────────────────────────────────────────────────────────────────────
 doc.add_heading("4. Metodología de desarrollo y cronograma", level=1)
 donde("Primera Parte, reemplaza 1.6 «Metodología identificada». Rúbrica 7.3 y criterio «Realista».")
-p("El equipo usó un marco ágil basado en Scrum, adaptado a dos integrantes, con un tablero Kanban para "
-  "visualizar el trabajo. Se trabajó en sprints de dos semanas; al inicio de cada sprint se tomaban historias "
-  "del backlog (las 15 historias de usuario de la Cuarta Parte, 89 puntos) y al final se revisaba el incremento "
-  "funcionando. El tablero tenía las columnas Por hacer, En progreso, En revisión y Hecho, con un límite de dos "
-  "tarjetas en progreso por persona. La definición de terminado de cada historia fue: código en la rama "
-  "principal, prueba manual del flujo y despliegue en Vercel o Render.")
+p("El equipo siguió un enfoque ágil, iterativo e incremental, inspirado en Scrum y aplicado de forma ligera por "
+  "un equipo de desarrollo de tres integrantes. No se usó un tablero de tareas (Kanban, Trello o similar): el "
+  "trabajo se repartía directamente entre los integrantes según el módulo, y cada uno avanzaba sobre su parte. "
+  "La coordinación se hacía por un grupo de WhatsApp y una reunión semanal, en la que se revisaba lo hecho y se "
+  "acordaba cómo seguir con las siguientes tareas y sus fechas de entrega. "
+  "El producto creció en incrementos de unas dos semanas, cada uno con funcionalidades que se podían usar "
+  "(primero la interfaz y el inicio de sesión, después el backend con transacciones y gráficas, luego "
+  "presupuestos, metas y despliegue, y al final perfil, alertas e inicio de sesión con Google).")
+p("La integración del trabajo se apoyó en GitHub: ramas por integrante (por ejemplo, rama-tay) que se unían a "
+  "la rama principal mediante pull requests, y un flujo de integración continua (GitHub Actions, Node.js CI) "
+  "configurado desde el 22 de abril de 2026. Una funcionalidad se consideraba terminada cuando estaba en la rama "
+  "principal y se había probado manualmente el flujo; desde el primer despliegue (22 de mayo de 2026) también "
+  "debía quedar publicada en Vercel y Render.")
+p("Como lección aprendida, la falta de un tablero hizo más difícil ver el avance y priorizar entre módulos; en "
+  "un próximo proyecto se usaría un tablero sencillo (por ejemplo, GitHub Projects) con el backlog de historias "
+  "de usuario de la Cuarta Parte.")
 tabla("Roles del equipo", ["Rol", "Responsable", "Responsabilidades"], [
-    ["Product Owner y desarrollo frontend", "[completar]", "Priorizar el backlog, React/Vite, vistas y modales"],
-    ["Scrum Master y desarrollo backend", "[completar]", "Seguimiento del tablero, FastAPI, base de datos, despliegue"],
-    ["Calidad (compartido)", "Ambos", "Plan de pruebas, ejecución de herramientas, métricas y estimación"],
+    ["Scrum Master y desarrollo", "Isabella Amaya", "Coordinar el reparto del trabajo y las entregas, resolver bloqueos e integrar cambios; programar"],
+    ["Product Owner y desarrollo", "David Rojas", "Priorizar el backlog, aceptar las historias terminadas y programar"],
+    ["Desarrollo", "Brayan Vásquez", "Implementar historias del backlog en frontend y backend"],
+    ["Calidad y documentación", "Isabella Amaya y Brayan Vásquez", "Plan de pruebas, ejecución de herramientas, métricas, estimación y este documento"],
 ], anchos=[5, 3.5, 7.5])
+p("David Rojas participó en el desarrollo del producto, pero no hace parte del equipo que presenta esta "
+  "documentación; por eso no firma el acta de aceptación de la sección 11.")
+p("Las fechas de los sprints 1 a 4 salen del historial de Git del repositorio de desarrollo "
+  "(https://github.com/piri277/ShiftCash): 68 commits entre el primer commit, el 20 de abril de 2026, y el inicio "
+  "de sesión con Google, el 9 de junio de 2026. La documentación, las pruebas y las métricas de Ingeniería de "
+  "Software II se hicieron después, de agosto a noviembre, sobre una copia del código.")
 figura("cronograma.png", "Cronograma del proyecto ShiftCash por sprints", 16.5)
-nota("el cronograma se reconstruyó con el historial de Git (primer commit el 13 de agosto y despliegue el 17 de "
-     "octubre de 2026) y las fechas del informe. Ajusten las fechas de cada sprint y los nombres de los roles a lo "
-     "que realmente hicieron, y agreguen una captura del tablero Kanban (Trello, GitHub Projects o Notion) para la "
-     "diapositiva 5. Las fechas están en docs/diagramas/generar_diagramas.py (lista TAREAS); al cambiarlas, vuelvan "
-     "a generar la figura.")
-p("Coherencia con la estimación: el desarrollo funcional tomó unas 9 semanas (≈ 2,1 meses) con 2 personas, "
-  "cercano a los 2,23 meses y 4,45 PM de los puntos de historia, que fue el modelo propuesto como más viable en "
-  "la Cuarta Parte.")
+nota("el Sprint 0 es aproximado porque no deja rastro en Git; si tienen la fecha real, cámbienla en "
+     "docs/diagramas/generar_diagramas.py (lista TAREAS) y vuelvan a generar la figura.")
+p("Coherencia con la estimación: el desarrollo funcional tomó unas 7 semanas (≈ 1,7 meses, del 20 de abril "
+  "al 9 de junio de 2026), cercano a los 2,23 meses de los puntos de historia, que fue el modelo propuesto como más viable en la Cuarta Parte. Con "
+  "tres personas el esfuerzo máximo posible en ese tiempo es de 5,1 PM, frente a 4,45 PM estimados; la diferencia "
+  "se explica porque ningún integrante dedicó tiempo completo al proyecto (lo compartían con otras materias), así "
+  "que el esfuerzo efectivo queda cerca de lo estimado.")
 
 # ── 5 ────────────────────────────────────────────────────────────────────────
 doc.add_heading("5. Requisitos funcionales con prioridad y criterio verificable", level=1)
@@ -481,8 +498,8 @@ DEF = [
      "Medir arranque en frío antes y después (RNF12)", "Pendiente de aplicar"],
     ["D-10", "Baja", "Formulario de contacto sin label asociado ni manejador de envío.",
      "Home.jsx: htmlFor e id en los 3 campos, name, onSubmit que abre el correo y mensaje de estado.",
-     "Inspección del DOM (3 de 3 etiquetas); ESLint sin errores", "Corregido (falta definir CORREO_CONTACTO)"],
-    ["D-11", "Baja", "Código muerto: cliente de Supabase y mockData.js sin uso (PM-05).",
+     "Inspección del DOM (3 de 3 etiquetas); ESLint sin errores", "Corregido (el correo de contacto se publicará cuando el equipo lo defina; mientras tanto el formulario lo avisa)"],
+    ["D-11", "Baja", "Código muerto: cliente JavaScript de Supabase en el frontend y mockData.js sin uso (PM-05). La base de datos sí está en Supabase, pero el frontend no la consulta directamente: todo pasa por la API.",
      "Se eliminaron frontend/src/lib/supabaseClient.js y frontend/src/data/mockData.js.",
      "npm run build y npm run lint sin errores", "Corregido"],
 ]
@@ -527,9 +544,12 @@ for cmd in ("cd backend", "python -m venv venv && venv\\Scripts\\activate", "pip
     par.paragraph_format.left_indent = Cm(1)
     par.paragraph_format.space_after = Pt(0)
 doc.add_paragraph()
-nota("tomen captura de la salida de pytest en la terminal y del reporte HTML (docs/cobertura_html/index.html) como "
-     "evidencia «con herramienta». Si vuelven a analizar con SonarQube, importen el reporte XML (pytest --cov-report=xml) "
-     "para que la cobertura deje de aparecer en 0,0 %.")
+figura(os.path.join("..", "evidencias", "pytest_cobertura_terminal.png"),
+       "Ejecución de la suite con pytest y pytest-cov: 72 pruebas aprobadas y 80 % de cobertura (20 de noviembre de 2026)", 16)
+figura(os.path.join("..", "evidencias", "cobertura_html.png"),
+       "Reporte HTML de cobertura generado por coverage.py (docs/cobertura_html/index.html)", 11)
+nota("si vuelven a analizar con SonarQube, importen el reporte XML (pytest --cov-report=xml) para que la cobertura "
+     "deje de aparecer en 0,0 %.")
 
 # ── 11 ───────────────────────────────────────────────────────────────────────
 doc.add_heading("11. Pruebas de aceptación con usuarios finales", level=1)
@@ -602,21 +622,23 @@ doc.add_heading("13. Presupuesto del proyecto con recursos", level=1)
 donde("Cuarta Parte, antes de «6. Análisis comparativo». Rúbrica 7.3 («factores, tarifas y supuestos»).")
 p("El costo de personal que usan los modelos (COP 4 000 000 por persona-mes) se complementa con los demás recursos "
   "del proyecto. La tabla usa el esfuerzo y el tiempo de los Puntos de Función (8,00 PM en 5,51 meses), la "
-  "referencia elegida para presupuestar una versión de producción.")
+  "referencia elegida para presupuestar una versión de producción. Los precios se consultaron el 20 de noviembre "
+  "de 2026 y los valores en dólares se convierten con la TRM del 18 de noviembre de 2026 (COP 3 309,55).")
 tabla("Presupuesto con recursos (escenario de referencia: Puntos de Función)", ["Rubro", "Cantidad", "Valor unitario (COP)", "Total (COP)", "Justificación / fuente"], [
-    ["Personal de desarrollo", "8,00 PM", "4 000 000 / PM", "32 000 000", "[Justificar: salario de desarrollador junior + prestaciones; citar fuente salarial]"],
-    ["Equipos de cómputo (depreciación)", "2 equipos × 5,51 meses", "[valor del equipo] / 36 meses", "[calcular]", "Depreciación lineal a 3 años"],
-    ["Internet", "2 conexiones × 5,51 meses", "[tarifa mensual]", "[calcular]", "Plan residencial de cada integrante"],
+    ["Personal de desarrollo", "8,00 PM", "4 000 000 / PM", "32 000 000", "Salario promedio de desarrollador junior en Colombia: COP 2 812 680 (Indeed, sept. 2026) × factor prestacional 1,42 ≈ COP 4 000 000"],
+    ["Equipos de cómputo (depreciación)", "2 equipos × 5,51 meses", "2 400 000 / 36 meses", "734 667", "Portátil Core 5, 16 GB, 512 GB SSD (Falabella, nov. 2026); depreciación lineal a 3 años"],
+    ["Internet", "2 conexiones × 5,51 meses", "90 000 / mes", "991 800", "Plan hogar de fibra de 300 Mbps (rango de COP 85 000 a 100 000 en Claro, Tigo y Movistar)"],
     ["Hosting frontend (Vercel Hobby)", "5,51 meses", "0", "0", "Plan gratuito usado en el proyecto"],
-    ["Hosting API (Render)", "5,51 meses", "0 (gratuito) o [plan pago]", "[calcular]", "El plan gratuito causa D-09; el pago lo evita"],
-    ["Base de datos PostgreSQL", "5,51 meses", "[según proveedor]", "[calcular]", "[Indicar proveedor usado]"],
-    ["Dominio propio (opcional)", "1 año", "[tarifa .com o .co]", "[calcular]", "Opcional; hoy se usa el subdominio de Vercel"],
+    ["Hosting API (Render Starter)", "5,51 meses", "23 167 / mes (USD 7)", "127 650", "El plan gratuito causa D-09; el Starter mantiene el servicio activo"],
+    ["Base de datos (Supabase Pro)", "5,51 meses", "82 739 / mes (USD 25)", "455 892", "Proveedor usado en el proyecto. El plan gratuito pausa el proyecto tras una semana sin actividad y no tiene copias diarias; el Pro no se pausa e incluye copias de 7 días"],
+    ["Dominio propio .com.co (opcional)", "1 año", "58 999", "58 999", "GoDaddy Colombia, primer año; hoy se usa el subdominio de Vercel"],
     ["Licencias y herramientas", "—", "0", "0", "VS Code, GitHub, JMeter, ZAP, SonarQube Community, Selenium y pytest son gratuitos"],
-    ["Imprevistos", "10 % del subtotal", "—", "[calcular]", "Reserva de contingencia habitual"],
-    ["Total", "", "", "[sumar]", ""],
+    ["Subtotal", "", "", "34 369 008", ""],
+    ["Imprevistos", "10 % del subtotal", "—", "3 436 901", "Reserva de contingencia habitual"],
+    ["Total", "", "", "37 805 909", "≈ 1,13 veces el costo de personal"],
 ], anchos=[3.4, 2.6, 3, 2.4, 5.1], tam=8.5)
-nota("reemplacen los corchetes con precios reales consultados (y la fecha de consulta). Con los valores que usen, el "
-     "total sigue siendo coherente con el tamaño (160 PF) porque el componente dominante es el personal.")
+p("El total es coherente con el tamaño del sistema (160 PF) porque el componente dominante es el personal (93 % "
+  "del subtotal); los demás recursos suman cerca de COP 2,4 millones.")
 
 # ── 14 ───────────────────────────────────────────────────────────────────────
 doc.add_heading("14. Fe de erratas: contradicciones y textos pendientes", level=1)
@@ -631,7 +653,7 @@ ERR = [
     ["Apéndice C, línea 25", "«selector a confirmar en la ejecución»", "Reemplazar por el selector real usado al ejecutar (por ejemplo, By.NAME, \"category_id\")."],
     ["1.6 Metodología", "«El repositorio no documenta explícitamente la metodología… Información pendiente de completar»", "Reemplazar por la sección 4 de este documento."],
     ["Tabla 4, RNF11", "«Información pendiente de completar»", "Reemplazar la tabla por la Tabla C9 de RNF medibles (sección 6)."],
-    ["1.2 Descripción detallada", "«el proveedor concreto de la base de datos es Información pendiente de completar»", "[Indicar el proveedor real: Render PostgreSQL, Supabase, Neon u otro]"],
+    ["1.2 Descripción detallada", "«el proveedor concreto de la base de datos es Información pendiente de completar»", "«La base de datos PostgreSQL está alojada en Supabase; la API desplegada en Render se conecta a ella con SQLAlchemy mediante la variable DATABASE_URL.»"],
     ["Tabla 12 (ambiente)", "Versiones de LambdaTest y otras herramientas pendientes", "Indicar las versiones usadas: Cypress, Selenium 4.x, ZAP 2.16.1, JMeter 5.6.3, pytest 8.x."],
     ["PI-08, PF-05, PI-05 en PostgreSQL", "Pendientes", "PI-08 y PF-05: ejecutados por test_pi08_recurrente_genera_instancia_sin_duplicar. PI-05: ejecutado con FK activas (409)."],
     ["Tabla 31, PM-02", "«No existen [pruebas automatizadas]» (fallido)", "«72 pruebas en backend/tests, 80 % de cobertura» (aprobado)."],
@@ -650,7 +672,7 @@ doc.add_heading("15. Guía para la sustentación (plantilla de 22 diapositivas)"
 tabla("Contenido sugerido por diapositiva", ["Diap.", "Tema", "Qué mostrar de este documento o del informe"], [
     ["2–3", "Proyecto e introducción", "Nombre, integrantes, lema «Impulsa tus ahorros»"],
     ["4", "Problema", "Párrafo de la sección 1, las dos cifras de impacto y el árbol de problemas (Figura C1)"],
-    ["5", "Descripción del sistema", "Captura del tablero Kanban, cronograma (Figura C2) y módulos"],
+    ["5", "Descripción del sistema", "Metodología y roles (sección 4), cronograma (Figura C2) y módulos"],
     ["6–7", "Requisitos", "5 RF de prioridad alta y 5 RNF medibles con su resultado"],
     ["8–9", "Casos de uso", "Diagrama general (Figura C3) y la descripción de CU01"],
     ["10", "Diseño", "Clases de la implementación (Figura C4), un diagrama de secuencia y el de componentes"],
@@ -671,13 +693,16 @@ viñetas([
     ("¿Por qué impedir borrar una categoría en uso en vez de dejarla «Sin categoría»? ", "Porque category_id es obligatorio: dejar referencias huérfanas rompe la integridad (D-05). Es mejor reasignar primero."),
     ("¿Por qué el porcentaje real y no limitado a 100? ", "El usuario necesita saber cuánto se pasó; el límite se aplica solo al ancho de la barra en la interfaz."),
     ("¿Por qué SQLite en las pruebas? ", "Aísla las pruebas de la base de producción; con PRAGMA foreign_keys=ON se comporta como PostgreSQL en las restricciones probadas."),
-    ("¿Por qué los puntos de historia como estimación más viable? ", "Coinciden con el calendario real (2,23 frente a 2,1 meses), mientras que COCOMO II supone un proceso industrial que el equipo no tiene."),
+    ("¿Por qué los puntos de historia como estimación más viable? ", "Coinciden con el calendario real (2,23 frente a 1,7 meses), mientras que COCOMO II supone un proceso industrial que el equipo no tiene."),
 ])
 
 doc.add_heading("Referencias nuevas para agregar", level=1)
 for ref in [
     "Bloomberg Línea. (2022, 19 de enero). Solo 11,1 % de colombianos podría hacer frente total a un gasto imprevisto grande. https://www.bloomberglinea.com/2022/01/19/solo-111-de-colombianos-podria-hacer-frente-total-a-un-gasto-imprevisto-grande/",
-    "La República. (s. f.). Más de 39 % de los colombianos siente que le falta dinero para llegar al final del mes. https://www.larepublica.co/finanzas/mas-de-39-de-los-colombianos-siente-que-le-falta-dinero-para-llegar-al-final-del-mes-3425985 [completar la fecha al verificar]",
+    "Salazar Sierra, C. (2022, 16 de agosto). Más de 39 % de los colombianos siente que le falta dinero para llegar al final del mes. La República. https://www.larepublica.co/finanzas/mas-de-39-de-los-colombianos-siente-que-le-falta-dinero-para-llegar-al-final-del-mes-3425985",
+    "Indeed. (2026, 14 de septiembre). Sueldo de desarrollador/a junior en Colombia. https://co.indeed.com/career/junior-developer/salaries",
+    "Render. (2026). Pricing. https://render.com/pricing",
+    "Supabase. (2026). Pricing. https://supabase.com/pricing",
     "Krekel, H., & pytest-dev team. (2025). pytest documentation. https://docs.pytest.org/",
     "Rosenberg, L. H. (1998). Applying and interpreting object oriented metrics. Software Technology Conference, NASA SATC.",
     "International Organization for Standardization. (2023). ISO/IEC 25010:2023. Systems and software engineering – SQuaRE – Product quality model. ISO.",
