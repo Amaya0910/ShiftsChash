@@ -11,10 +11,10 @@ El documento para entregar es `docs/latex/main.pdf`.
 
 | # | Qué hacer | Cómo | Para qué |
 |---|---|---|---|
-| 1 | Integrar la rama a `main` | Abrir <https://github.com/Amaya0910/ShiftsChash/compare/main...fix/defectos>, **Create pull request** y luego **Merge pull request** | Vercel y Render despliegan las correcciones; se activa el ping de la API |
-| 2 | Revisar Render | En <https://dashboard.render.com>, abrir el servicio `shiftschash-api`. Si dice *Suspended*, reanudarlo; si no se desplegó solo, **Manual Deploy > Deploy latest commit** | La API no responde desde octubre |
-| 3 | Aplicar la migración en Supabase | Supabase > SQL Editor > pegar `backend/migraciones/001_transacciones_categoria_restrict.sql` > Run | Que la base de producción impida borrar categorías con transacciones (D-05) |
-| 4 | Probar el ping | GitHub > Actions > **Mantener API despierta** > **Run workflow** | Comprobar que la API y la base responden (`/salud`) |
+| 1 | ✅ Integrar la rama a `main` | Abrir <https://github.com/Amaya0910/ShiftsChash/compare/main...fix/defectos>, **Create pull request** y luego **Merge pull request** | Vercel y Render despliegan las correcciones; se activa el ping de la API |
+| 2 | ✅ Revisar Render | En <https://dashboard.render.com>, abrir el servicio `shiftschash-api`. Si dice *Suspended*, reanudarlo; si no se desplegó solo, **Manual Deploy > Deploy latest commit** | Que la API desplegada responda |
+| 3 | ✅ Aplicar la migración en Supabase | Supabase > SQL Editor > pegar `backend/migraciones/001_transacciones_categoria_restrict.sql` > Run | Que la base de producción impida borrar categorías con transacciones (D-05) |
+| 4 | ✅ Probar el ping | GitHub > Actions > **Mantener API despierta** > **Run workflow** | Comprobar que la API y la base responden (`/salud`) |
 | 5 | Verificar todo | `powershell -ExecutionPolicy Bypass -File scripts\demo\00_verificar.ps1` | Todo debe salir en `[OK]` |
 | 6 | Hacer la prueba de aceptación y PU-06 | Sección 2 | Completar los resultados del documento |
 | 7 | Pasar los resultados al documento | Editar solo `docs/latex/resultados.tex` y recompilar (sección 2.4) | Quitar los últimos 18 PENDIENTE |
