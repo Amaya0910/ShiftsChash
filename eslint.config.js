@@ -5,7 +5,15 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // Código generado o de terceros: reportes de cobertura y de herramientas, entorno de Python
+  globalIgnores(['dist', 'backend/venv', 'docs/cobertura_html', 'docs/evidencias', '.demo']),
+  {
+    // Configuración de Cypress (Node) y pruebas E2E (Mocha + Cypress)
+    files: ['cypress.config.js', 'cypress/**/*.js'],
+    languageOptions: {
+      globals: { ...globals.node, ...globals.mocha, cy: 'readonly', Cypress: 'readonly', expect: 'readonly' },
+    },
+  },
   {
     files: ['**/*.{js,jsx}'],
     extends: [
