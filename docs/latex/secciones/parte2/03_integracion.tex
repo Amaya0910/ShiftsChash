@@ -24,7 +24,7 @@ Integramos de abajo hacia arriba siguiendo las capas del backend (Figura \ref{fi
 \node[nivel] (l6) at (0,9) {\textbf{N6.} + hooks, vistas y modales\\(SPA completa)};
 \foreach \a/\b in {l1/l2, l2/l3, l3/l4, l4/l5, l5/l6} \draw[flecha] (\a) -- (\b);
 \node[drv] (d1) at (6.6,1.8) {Driver: \codigo{test_unitarias.py} (esquemas y funciones puras)};
-\node[drv] (d2) at (6.6,4.5) {Driver: \codigo{TestClient} de FastAPI en \codigo{test_integracion.py} (37 pruebas)};
+\node[drv] (d2) at (6.6,4.5) {Driver: \codigo{TestClient} de FastAPI en \codigo{test_integracion.py} (39 pruebas)};
 \node[drv] (d3) at (6.6,7.2) {Driver: \codigo{cy.request} de Cypress contra la API en ejecución};
 \node[drv] (d4) at (6.6,9) {Driver: navegador de Cypress y Selenium};
 \draw[flechapunteada] (d1) -- (l2); \draw[flechapunteada] (d2) -- (l3.east); \draw[flechapunteada] (d2) -- (l4.east);
@@ -95,7 +95,7 @@ E2E & H1–H3 & La SPA inicia sesión contra la API y abre Presupuestos & Aproba
 
 \subsection{Ejecución y evaluación}
 
-La segunda ejecución se hizo el 21 de noviembre de 2026 en el ambiente local de la Tabla \ref{tab:ambiente}: las 37 pruebas de \codigo{test_integracion.py} (Apéndice \ref{ap:unitarias}) con pytest y el guion de Cypress (Apéndice \ref{ap:cypress}) con la API y la SPA en ejecución:
+La segunda ejecución se hizo el 21 de noviembre de 2026 en el ambiente local de la Tabla \ref{tab:ambiente}: las 39 pruebas de \codigo{test_integracion.py} (Apéndice \ref{ap:unitarias}) con pytest y el guion de Cypress (Apéndice \ref{ap:cypress}) con la API y la SPA en ejecución:
 
 \begin{minted}[fontsize=\footnotesize, frame=single]{text}
 $ npx cypress run --spec cypress/e2e/integracion.cy.js \

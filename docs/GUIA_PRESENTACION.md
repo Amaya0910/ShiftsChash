@@ -14,7 +14,7 @@ El documento para entregar es `docs/latex/main.pdf`.
 | 1 | Integrar la rama a `main` | Abrir <https://github.com/Amaya0910/ShiftsChash/compare/main...fix/defectos>, **Create pull request** y luego **Merge pull request** | Vercel y Render despliegan las correcciones; se activa el ping de la API |
 | 2 | Revisar Render | En <https://dashboard.render.com>, abrir el servicio `shiftschash-api`. Si dice *Suspended*, reanudarlo; si no se desplegó solo, **Manual Deploy > Deploy latest commit** | La API no responde desde octubre |
 | 3 | Aplicar la migración en Supabase | Supabase > SQL Editor > pegar `backend/migraciones/001_transacciones_categoria_restrict.sql` > Run | Que la base de producción impida borrar categorías con transacciones (D-05) |
-| 4 | Probar el ping | GitHub > Actions > **Mantener API despierta** > **Run workflow** | Comprobar que la API responde |
+| 4 | Probar el ping | GitHub > Actions > **Mantener API despierta** > **Run workflow** | Comprobar que la API y la base responden (`/salud`) |
 | 5 | Verificar todo | `powershell -ExecutionPolicy Bypass -File scripts\demo\00_verificar.ps1` | Todo debe salir en `[OK]` |
 | 6 | Hacer la prueba de aceptación y PU-06 | Sección 2 | Completar los resultados del documento |
 | 7 | Pasar los resultados al documento | Editar solo `docs/latex/resultados.tex` y recompilar (sección 2.4) | Quitar los últimos 18 PENDIENTE |
@@ -80,7 +80,7 @@ Abrir PowerShell en la carpeta del proyecto. Si Windows bloquea los scripts, ant
 |---|---|---|---|
 | 0 | `scripts\demo\00_verificar.ps1` | Que todo está instalado | — |
 | 1 | `scripts\demo\01_levantar_app.ps1 -BaseNueva` | La app con datos de prueba (`demo@correo.com` / `Demo12345`) | Presupuesto «Comida del mes» en 117 % (D-04 corregido); reto de $1 000 sin cuotas negativas (D-01) |
-| 2 | `scripts\demo\02_pruebas_backend.ps1` | 95 pruebas pytest y el reporte de cobertura en el navegador | 95 % de cobertura; caja negra y blanca; antes había 0 pruebas |
+| 2 | `scripts\demo\02_pruebas_backend.ps1` | 97 pruebas pytest y el reporte de cobertura en el navegador | 95 % de cobertura; caja negra y blanca; antes había 0 pruebas |
 | 3 | `scripts\demo\03_cypress.ps1 -Abrir` | La interfaz de Cypress: elegir `integracion.cy.js` y ver las 8 pruebas | Integración ascendente; 8/8 (antes 7/8, fallaba PI-04) |
 | 4 | `scripts\demo\04_selenium.ps1` | Chrome se maneja solo: PA-01, 02, 03, 05, 06 y 08 | Aceptación automatizada; las capturas quedan en `docs/evidencias` |
 | 5 | `scripts\demo\05_jmeter.ps1 -Gui` y luego `scripts\demo\05_jmeter.ps1` | El plan (50 usuarios, 60 s, GET y POST) y el reporte HTML | 1 500 peticiones, 0 % de error, p90 de 22 ms (objetivo < 2 s) |
@@ -107,7 +107,7 @@ Solo resultados y el programa funcionando.
 **Resultados para mostrar (una diapositiva cada uno):**
 - **Problema:** el 53 % de los colombianos no anota sus gastos con regularidad (Asobancaria, 2021).
 - **Producto:** 20 requisitos funcionales, 14 casos de uso, desplegado en Vercel, Render y Supabase.
-- **Calidad:** 95 pruebas automatizadas, 95 % de cobertura, 14 defectos encontrados (13 corregidos y 1 mitigado).
+- **Calidad:** 97 pruebas automatizadas, 95 % de cobertura, 14 defectos encontrados (13 corregidos y 1 mitigado).
 - **Rendimiento:** 1 500 peticiones con 0 % de error; p90 de 22 ms.
 - **Mantenibilidad:** complejidad máxima de 8 (antes, 14); accesibilidad de 95/100.
 - **Aceptación:** el porcentaje de RF aceptados de su sesión.
@@ -120,7 +120,7 @@ Solo resultados y el programa funcionando.
 | Problema | Solución |
 |---|---|
 | «No se puede cargar el archivo… la ejecución de scripts está deshabilitada» | Usar `powershell -ExecutionPolicy Bypass -File <script>` |
-| La API desplegada no responde | Revisar Render (sección 1) o hacer la demo en local |
+| La API desplegada no responde | Abrir Supabase: si el proyecto dice *Paused*, pulsar **Restore project** y luego, en Render, **Manual Deploy**. Si no, hacer la demo en local |
 | El puerto 8000 o 5173 está ocupado | Cerrar las ventanas de PowerShell minimizadas del paso 1 |
 | Cypress o Selenium no encuentran elementos | Verificar que el paso 1 esté corriendo; recargar con `-BaseNueva` |
 | JMeter dice que no encuentra Java | Ejecutar `00_verificar.ps1`; el JDK está en `%LOCALAPPDATA%\shiftcash-tools` |

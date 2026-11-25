@@ -168,7 +168,7 @@ PF-06 & Idempotencia de las recurrencias & — & Solo análisis estático & Apro
 ID & Criterio & 25/10/2026 & 21/11/2026 \\
 \midrule
 PM-01 & Separación por capas & Cumple parcialmente: la lógica estaba en las rutas & Cumple: entidades, esquemas, servicios y rutas \\
-PM-02 & Pruebas automatizadas en el repositorio & \textbf{No existían}; el CI no probaba nada & 95 pruebas pytest, Cypress y Selenium; el CI corre pytest con cobertura \\
+PM-02 & Pruebas automatizadas en el repositorio & \textbf{No existían}; el CI no probaba nada & 97 pruebas pytest, Cypress y Selenium; el CI corre pytest con cobertura \\
 PM-03 & Funciones con complejidad $> 10$ & \textbf{3} (14, 13 y 13) & 0 (máximo 8) \\
 PM-04 & Duplicación & Construcción de \codigo{BudgetOut} y \codigo{SavingGoalOut} repetida 3 veces cada una & Una función por respuesta (\codigo{to_budget_out}, \codigo{to_goal_out}, \codigo{_to_transaction_out}) \\
 PM-05 & Código muerto & Cliente de Supabase, login comentado, \codigo{mockData.js} & Eliminado, junto con los esquemas \codigo{Token} y \codigo{ToggleDayRequest} \\

@@ -40,6 +40,29 @@ def test_rnf03_cors_solo_origenes_permitidos(client):
     assert "access-control-allow-origin" not in ajeno.headers
 
 
+def test_salud_consulta_la_base(client):
+    r = client.get("/salud")
+    assert r.status_code == 200
+    assert r.json() == {"api": "ok", "base_de_datos": "ok"}
+
+
+def test_salud_responde_503_si_la_base_falla(client):
+    from sqlalchemy.exc import OperationalError
+    from app.database import get_db
+    from app.main import app
+
+    class _SesionCaida:
+        def execute(self, *_):
+            raise OperationalError("SELECT 1", {}, Exception("sin conexión"))
+
+    original = app.dependency_overrides[get_db]
+    app.dependency_overrides[get_db] = lambda: _SesionCaida()
+    try:
+        assert client.get("/salud").status_code == 503
+    finally:
+        app.dependency_overrides[get_db] = original
+
+
 def test_ps07_api_envia_cabecera_nosniff(client):
     assert client.get("/").headers.get("x-content-type-options") == "nosniff"
 

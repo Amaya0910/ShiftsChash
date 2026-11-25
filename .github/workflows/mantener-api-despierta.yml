@@ -1,6 +1,7 @@
-# D-09: el plan gratuito de Render suspende la API tras 15 min sin tráfico.
-# Este flujo la consulta cada 10 min en horario de uso (6:00–23:00, hora de Colombia)
-# para que no quede dormida. GitHub solo ejecuta los "schedule" desde la rama main.
+# D-09: el plan gratuito de Render suspende la API tras 15 min sin tráfico y Supabase
+# pausa la base tras una semana sin consultas. Este flujo llama a /salud (que hace un
+# SELECT 1) cada 10 min en horario de uso (6:00–23:59, hora de Colombia).
+# GitHub solo ejecuta los "schedule" desde la rama main.
 name: Mantener API despierta
 
 on:
@@ -12,7 +13,7 @@ jobs:
   ping:
     runs-on: ubuntu-latest
     steps:
-      - name: Consultar la API
+      - name: Consultar la API y la base de datos
         env:
           API_URL: ${{ vars.API_URL || 'https://shiftschash-api.onrender.com' }}
-        run: curl --fail --silent --show-error --max-time 120 --retry 2 "$API_URL/"
+        run: curl --fail --silent --show-error --max-time 120 --retry 2 "$API_URL/salud"
