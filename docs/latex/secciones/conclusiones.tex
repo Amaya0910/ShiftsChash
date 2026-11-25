@@ -8,7 +8,7 @@
 
 \paragraph{Requisitos y modelos.} Los 20 requisitos funcionales tienen prioridad y un criterio de aceptación verificable con una prueba; los 15 no funcionales tienen métrica, valor objetivo y forma de verificación, y la Tercera parte los mide. Los 14 casos de uso cubren todos los RF (matriz de trazabilidad). Los diagramas de clases, secuencia y componentes son de implementación y coinciden con el código después de la refactorización, que separó la capa de servicios.
 
-\paragraph{Pruebas.} El proyecto pasó de no tener pruebas en el repositorio a 95 pruebas automatizadas con 95\,\% de cobertura, más los guiones de Cypress (8 de 8), Selenium y JMeter (0\,\% de error en 1\,500 peticiones). Las pruebas encontraron 14 defectos; los 13 de código están corregidos y verificados con una prueba que fallaba antes del cambio, y el de disponibilidad (D-09) está mitigado.
+\paragraph{Pruebas.} El proyecto pasó de no tener pruebas en el repositorio a 97 pruebas automatizadas con 95\,\% de cobertura, más los guiones de Cypress (8 de 8), Selenium y JMeter (0\,\% de error en 1\,500 peticiones). Las pruebas encontraron 14 defectos; los 13 de código están corregidos y verificados con una prueba que fallaba antes del cambio, y el de disponibilidad (D-09) está mitigado.
 
 \paragraph{Métricas.} La refactorización bajó la complejidad sin aumentar el tamaño: ninguna función supera $V(G) = 10$, las rutas pasaron de WMC 50 y 37 a 7 y 5, y el acoplamiento y la herencia están en los rangos comunes. En calidad externa mejoraron la corrección funcional, la integridad de las entradas, la tolerancia a fallos, la accesibilidad (78 a 95 en Lighthouse) y la instalabilidad. Siguen por debajo del objetivo el LCP en perfil móvil y la verificación en Edge y Safari.
 

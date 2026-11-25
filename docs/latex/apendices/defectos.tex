@@ -25,7 +25,7 @@ D-05 & Media & \codigo{category_id} \codigo{NOT NULL} con \codigo{ON DELETE SET 
 D-06 & Crítica & Credenciales codificadas (\codigo{admin@test.com/123}) y usuario 999 & Análisis estático (PS-03) & \codigo{routes/users.py}, \codigo{auth.py}; \codigo{.env.example} & Corregido: \codigo{test_d06_*} \\
 D-07 & Media & Meta sin \codigo{end_date} producía 500 & PI-10 (500) & \codigo{services/saving_service.py} (\codigo{create_goal}) & Corregido: PI-10 aprobado \\
 D-08 & Baja & La moneda del plan siempre era COP & Análisis estático & \codigo{services/saving_service.py} (moneda del usuario) & Corregido: \codigo{test_d08_*} \\
-D-09 & Alta & La API en Render no respondía por más de 7 min & Observado el 25/10/2026 & \codigo{hooks/useBackendWarmup.js}; \codigo{.github/workflows/mantener-api-despierta.yml} & Mitigado en el código; disponibilidad: \resDisponibilidadApi \\
+D-09 & Alta & La API en Render no respondía por más de 7 min & Observado el 25/10/2026 & \codigo{hooks/useBackendWarmup.js}; \codigo{main.py} (ruta \codigo{/salud}); \codigo{.github/workflows/mantener-api-despierta.yml} & Mitigado en el código; disponibilidad: \resDisponibilidadApi \\
 D-10 & Baja & Formulario de contacto sin \codigo{htmlFor} ni manejador & Inspección del DOM & \codigo{pages/Home.jsx} & Corregido: PU-03 aprobado \\
 D-11 & Media & Eliminar la cuenta o una categoría con datos asociados producía 500 & PI-13 (nueva) & \codigo{models.py} (\codigo{cascade="all, delete-orphan"}) & Corregido: PI-13 aprobado \\
 D-12 & Media & Editar una transacción aceptaba una categoría ajena & PI-14 (nueva) & \codigo{routes/transactions.py} (\codigo{get_accessible_category}) & Corregido: PI-14 aprobado \\

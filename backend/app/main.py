@@ -1,7 +1,10 @@
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from .database import engine, Base
+from sqlalchemy import text
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+from .database import engine, Base, get_db
 from .routes import users, transactions, categories, budgets, savings, profile
 from . import models, scheduler
 import os
@@ -45,3 +48,17 @@ app.mount("/static", StaticFiles(directory=static_dir), name="static")
 @app.get("/")
 def root():
     return {"message": "ShiftCash API funcionando"}
+
+
+@app.get("/salud")
+def salud(db: Session = Depends(get_db)):
+    """Comprueba la API y la base de datos con una consulta mínima.
+
+    El ping programado (D-09) llama a esta ruta: así la API de Render no se
+    suspende y la base de Supabase no se pausa por falta de consultas.
+    """
+    try:
+        db.execute(text("SELECT 1"))
+    except SQLAlchemyError:
+        raise HTTPException(status_code=503, detail="La base de datos no responde")
+    return {"api": "ok", "base_de_datos": "ok"}

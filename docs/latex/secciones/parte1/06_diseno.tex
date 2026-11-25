@@ -460,7 +460,7 @@ transactions.category\_id → category & RESTRICT & Una categoría con transacci
 \draw[flecha] (mod.south) -- node[right, font=\tiny]{SQL (psycopg2)} (pg.north);
 \draw[flecha] (apic.south) |- node[pos=0.3, left, font=\tiny]{token Google} (goo.west);
 \draw[flecha] (be.south -| routes.west) -- node[left, font=\tiny, pos=0.3]{verifica token (/auth/google)} (goo.north east);
-\draw[flechapunteada] (gh.north) -- node[right, font=\tiny]{GET / cada 10 min} (gh.north |- be.south);
+\draw[flechapunteada] (gh.north) -- node[right, font=\tiny]{GET /salud cada 10 min} (gh.north |- be.south);
 \end{tikzpicture}}
 \figurenote{Cada componente es una carpeta o archivo real del repositorio. Fuente: elaboración propia.}
 \end{figure}

@@ -100,7 +100,8 @@ Use siempre una cuenta de prueba: Cypress y JMeter crean registros.
 
 GitHub Actions ejecuta en cada push el lint y la compilación del frontend y las pruebas
 del backend con cobertura (`.github/workflows/node.js.yml`). El flujo
-`mantener-api-despierta.yml` consulta la API cada 10 minutos para que Render no la suspenda.
+`mantener-api-despierta.yml` llama a `/salud` cada 10 minutos: esa ruta consulta la base de datos,
+así que ni Render suspende la API ni Supabase pausa la base.
 
 ## 🎤 Demostración y presentación
 
