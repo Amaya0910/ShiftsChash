@@ -75,3 +75,9 @@ cypress/videos/
 docs/evidencias/jmeter_2*/
 docs/evidencias/lighthouse_2*
 docs/evidencias/zap/
+
+# Impeccable (herramienta de diseño local, no es parte del proyecto)
+.github/agents/
+.github/hooks/
+.github/skills/
+.impeccable/
