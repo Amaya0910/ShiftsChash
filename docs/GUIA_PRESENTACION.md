@@ -110,7 +110,7 @@ Solo resultados y el programa funcionando.
 - **Calidad:** 97 pruebas automatizadas, 95 % de cobertura, 14 defectos encontrados (13 corregidos y 1 mitigado).
 - **Rendimiento:** 1 500 peticiones con 0 % de error; p90 de 22 ms.
 - **Mantenibilidad:** complejidad máxima de 8 (antes, 14); accesibilidad de 95/100.
-- **Aceptación:** el porcentaje de RF aceptados de su sesión.
+- **Aceptación:** 20/20 RF aceptados (100 %); PU-06 con mediana de 36 s y 5/5 al primer intento.
 - **Estimación:** 2,05 meses estimados frente a 1,68 reales; costo real de $0; valor estimado del trabajo de $15,6 millones.
 
 ---
