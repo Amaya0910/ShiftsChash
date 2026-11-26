@@ -6,7 +6,7 @@ import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
   // Código generado o de terceros: reportes de cobertura y de herramientas, entorno de Python
-  globalIgnores(['dist', 'backend/venv', 'docs/cobertura_html', 'docs/evidencias', '.demo']),
+  globalIgnores(['dist', 'backend/venv', 'docs/cobertura_html', 'docs/evidencias', '.demo', '.claude', '.github/skills', '.impeccable']),
   {
     // Configuración de Cypress (Node) y pruebas E2E (Mocha + Cypress)
     files: ['cypress.config.js', 'cypress/**/*.js'],

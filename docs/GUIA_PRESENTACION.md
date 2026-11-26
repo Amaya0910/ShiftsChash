@@ -80,7 +80,7 @@ Abrir PowerShell en la carpeta del proyecto. Si Windows bloquea los scripts, ant
 |---|---|---|---|
 | 0 | `scripts\demo\00_verificar.ps1` | Que todo está instalado | — |
 | 1 | `scripts\demo\01_levantar_app.ps1 -BaseNueva` | La app con datos de prueba (`demo@correo.com` / `Demo12345`) | Presupuesto «Comida del mes» en 117 % (D-04 corregido); reto de $1 000 sin cuotas negativas (D-01) |
-| 2 | `scripts\demo\02_pruebas_backend.ps1` | 97 pruebas pytest y el reporte de cobertura en el navegador | 95 % de cobertura; caja negra y blanca; antes había 0 pruebas |
+| 2 | `scripts\demo\02_pruebas_backend.ps1` | 98 pruebas pytest y el reporte de cobertura en el navegador | 95 % de cobertura; caja negra y blanca; antes había 0 pruebas |
 | 3 | `scripts\demo\03_cypress.ps1 -Abrir` | La interfaz de Cypress: elegir `integracion.cy.js` y ver las 8 pruebas | Integración ascendente; 8/8 (antes 7/8, fallaba PI-04) |
 | 4 | `scripts\demo\04_selenium.ps1` | Chrome se maneja solo: PA-01, 02, 03, 05, 06 y 08 | Aceptación automatizada; las capturas quedan en `docs/evidencias` |
 | 5 | `scripts\demo\05_jmeter.ps1 -Gui` y luego `scripts\demo\05_jmeter.ps1` | El plan (50 usuarios, 60 s, GET y POST) y el reporte HTML | 1 500 peticiones, 0 % de error, p90 de 22 ms (objetivo < 2 s) |
@@ -107,11 +107,11 @@ Solo resultados y el programa funcionando.
 **Resultados para mostrar (una diapositiva cada uno):**
 - **Problema:** el 53 % de los colombianos no anota sus gastos con regularidad (Asobancaria, 2021).
 - **Producto:** 20 requisitos funcionales, 14 casos de uso, desplegado en Vercel, Render y Supabase.
-- **Calidad:** 97 pruebas automatizadas, 95 % de cobertura, 14 defectos encontrados (13 corregidos y 1 mitigado).
+- **Calidad:** 98 pruebas automatizadas, 95 % de cobertura, 15 defectos encontrados (14 corregidos y 1 mitigado).
 - **Rendimiento:** 1 500 peticiones con 0 % de error; p90 de 22 ms.
 - **Mantenibilidad:** complejidad máxima de 8 (antes, 14); accesibilidad de 95/100.
 - **Aceptación:** 20/20 RF aceptados (100 %); PU-06 con mediana de 36 s y 5/5 al primer intento.
-- **Estimación:** 2,05 meses estimados frente a 1,68 reales; costo real de $0; valor estimado del trabajo de $15,6 millones.
+- **Estimación:** siete estimaciones (incluidas COSMIC y una herramienta de IA); 2,05 meses estimados frente a 1,68 reales; costo real de $0; valor estimado del trabajo de $15,6 millones.
 
 ---
 

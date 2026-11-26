@@ -39,6 +39,36 @@ Calidad externa & ISO/IEC 25010 y 25023 & pytest, Cypress, Selenium, JMeter, ZAP
 \tablenote{Fuente: elaboración propia.}
 \end{table}
 
+\section{Modelo de medición: GQM}
+
+Seleccionamos las métricas con el enfoque \textbf{GQM} (\emph{Goal-Question-Metric}) de \textcite{basili1988}: cada medición responde a una pregunta, y cada pregunta permite saber si se cumple un objetivo de calidad. Así ninguna métrica se toma porque sí: todas sirven para decidir algo.
+
+\begin{table}[H]
+\caption{Objetivos, preguntas y métricas (GQM)}
+\label{tab:gqm}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{3.4cm} L{4.6cm} Y}
+\toprule
+Objetivo & Pregunta & Métricas (tabla) \\
+\midrule
+G1. Mejorar la mantenibilidad del backend & Q1. ¿Qué tan complejas son las funciones y los módulos? & $V(G)$ y WMC (Tablas \ref{tab:complejidad} y \ref{tab:ck-modulos}) \\
+ & Q2. ¿Qué tan acoplados y cohesivos son? & CBO, DIT, NOC y LCOM4 (Tablas \ref{tab:ck-clases} y \ref{tab:ck-modulos}) \\
+ & Q3. ¿Cuánto del código está probado y documentado? & Cobertura de líneas y densidad de comentarios (Tabla \ref{tab:me-mantenibilidad}) \\
+\midrule
+G2. Asegurar que el sistema hace lo que el usuario necesita & Q4. ¿Cuántos requisitos funcionan sin defectos? & RF sin defectos abiertos y densidad de defectos (Tablas \ref{tab:me-funcional} y \ref{tab:me-fiabilidad}) \\
+ & Q5. ¿El usuario final acepta el sistema? & RF aceptados (Tabla \ref{tab:me-funcional}) \\
+\midrule
+G3. Ofrecer una experiencia rápida y fácil de usar & Q6. ¿Responde a tiempo con varios usuarios? & Percentil 90 y tasa de error con JMeter; LCP (Tabla \ref{tab:me-desempeno}) \\
+ & Q7. ¿Cuánto cuesta registrar un gasto? & Tiempo, clics, éxito al primer intento y satisfacción (Tabla \ref{tab:me-usabilidad}) \\
+\midrule
+G4. Proteger los datos de cada usuario & Q8. ¿Puede alguien ver o cambiar datos ajenos? & Endpoints con JWT, registros ajenos visibles y alertas de ZAP (Tabla \ref{tab:me-seguridad}) \\
+\midrule
+G5. Funcionar en los entornos de los usuarios & Q9. ¿Se puede instalar, mover y usar en otros entornos? & Portabilidad, coexistencia, reemplazabilidad y navegadores (Tabla \ref{tab:me-portabilidad}) \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia.}
+\end{table}
+
 \section{Métricas internas}
 
 \subsection{Tamaño del código}
@@ -51,7 +81,7 @@ Calidad externa & ISO/IEC 25010 y 25023 & pytest, Cypress, Selenium, JMeter, ZAP
 \toprule
  & \multicolumn{5}{c}{Después (rama \codigo{fix/defectos})} & \multicolumn{2}{c}{Antes (\codigo{0efe28b})} \\
 \cmidrule(lr){2-6}\cmidrule(lr){7-8}
-Lenguaje & Archivos & Físicas & En blanco & Coment. & Código & Archivos & Código \\
+Lenguaje & Archivos & Físicas & En blanco & CLOC & NCLOC & Archivos & NCLOC \\
 \midrule
 CSS & 15 & 5\,785 & 825 & 217 & 4\,743 & 15 & 4\,738 \\
 JSX & 28 & 4\,864 & 504 & 93 & 4\,267 & 28 & 4\,243 \\
@@ -106,7 +136,9 @@ SonarQube (Lines of Code) & 11\,000 aprox. (13\,000 líneas totales) & \resSonar
 \figurenote{Fuente: elaboración propia.}
 \end{figure}
 
-\paragraph{Análisis.} Las tres herramientas coinciden en el orden de magnitud (entre 9\,500 y 11\,000 líneas de código) y difieren por lo que cada una considera código. El CSS es el 43\,\% del código, lo que refleja el peso de la presentación (tema claro y oscuro, diseño responsivo). La densidad de comentarios del Python bajó de 5,6\,\% a 3,9\,\% porque se borró el código comentado (el login antiguo), no porque se perdieran comentarios útiles; las clases y servicios nuevos tienen docstring.
+\paragraph{Notación de la clase.} Con la propuesta de HP, las líneas de código efectivas son las no comentadas (\textbf{NCLOC}) y las comentadas son \textbf{CLOC}; la longitud es $LOC = NCLOC + CLOC$ y la densidad de comentarios, $DC = CLOC / LOC$. Para todo el producto (después): $LOC = 10\,983 + 457 = 11\,440$ y $DC = 457 / 11\,440 = 0{,}040$. Para el Python del backend: antes, $DC = 93 / (1\,286 + 93) = 0{,}067$; después, $DC = 57 / (1\,153 + 57) = 0{,}047$. Las líneas en blanco no entran en $LOC$.
+
+\paragraph{Análisis.} Las tres herramientas coinciden en el orden de magnitud (entre 9\,500 y 11\,000 líneas de código) y difieren por lo que cada una considera código. El CSS es el 43\,\% del código, lo que refleja el peso de la presentación (tema claro y oscuro, diseño responsivo). La densidad de comentarios del Python bajó de 6,7\,\% a 4,7\,\% porque se borró el código comentado (el login antiguo), no porque se perdieran comentarios útiles; las clases y servicios nuevos tienen docstring.
 
 \subsection{Complejidad ciclomática}
 
@@ -227,7 +259,7 @@ auth.py & 4 & 7 & 2 & 20 & 3 & 4 / 8 / 21 \\
 scheduler.py & 2 & 12 & 3 & 15 & 1 & Igual \\
 \bottomrule
 \end{tabularx}
-\tablenote{En negrita, los valores poco comunes según \textcite{filo2015} (WMC $> 34$). Fuente: elaboración propia con \codigo{metricas.py ck}.}
+\tablenote{En negrita, los valores poco comunes según \textcite{filo2015} (WMC $> 34$). Medición del 21/11/2026; la corrección de D-15 (26/11/2026) agregó dos validaciones a \codigo{saving_service}, que pasó a WMC 41, $V(G)$ máxima de 7 y LCOM4 de 2; ninguna función supera $V(G) = 10$. Fuente: elaboración propia con \codigo{metricas.py ck}.}
 \end{table}
 
 \begin{figure}[H]

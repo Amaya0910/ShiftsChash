@@ -31,7 +31,8 @@ D-11 & Media & Eliminar la cuenta o una categoría con datos asociados producía
 D-12 & Media & Editar una transacción aceptaba una categoría ajena & PI-14 (nueva) & \codigo{routes/transactions.py} (\codigo{get_accessible_category}) & Corregido: PI-14 aprobado \\
 D-13 & Media & Un error 422 de la API rompía el formulario (React no puede mostrar la lista \codigo{detail}) & Revisión del código & \codigo{frontend/src/api/errores.js} (\codigo{mensajeError}) & Corregido: el formulario muestra «El monto debe ser mayor a 0» (Selenium) \\
 D-14 & Baja & Una transacción recurrente sin frecuencia válida se guardaba y nunca se repetía & Métrica de integridad (Tercera parte) & \codigo{schemas.py} (\codigo{FRECUENCIAS}, validador del modelo) & Corregido: \codigo{test_d14_*} \\
+D-15 & Media & Se podía marcar un día que no existe en el plan (0, negativo o mayor que $N$) y al acortar una meta seguían contando días fuera del plan: el progreso mostraba días completados sin ahorro & Tabla de valores del hilo H3 (Tabla \ref{tab:valores-h3}) & \codigo{services/saving_service.py} (\codigo{toggle_day}, \codigo{update_goal}) & Corregido: \codigo{test_d15_*} \\
 \end{longtable}
 }
 \vspace{-1em}
-{\small\textit{Nota.} D-01 a D-08 y D-10 se corrigieron en el commit \codigo{296ac7a} de la rama \codigo{fix/defectos}; D-09 y D-11 a D-14, en el commit \codigo{7e2cd12} de la misma rama. Fuente: elaboración propia.}
+{\small\textit{Nota.} D-01 a D-08 y D-10 se corrigieron en el commit \codigo{296ac7a} de la rama \codigo{fix/defectos}; D-09 y D-11 a D-14, en el commit \codigo{7e2cd12} de la misma rama; D-15 se encontró el 26/11/2026 con la tabla de valores del hilo H3 y se corrigió en la misma rama. Fuente: elaboración propia.}

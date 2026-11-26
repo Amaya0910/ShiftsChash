@@ -1,6 +1,6 @@
 """Estimación de esfuerzo, tiempo y costo de ShiftCash (Cuarta parte).
 
-Recalcula los cinco modelos con los mismos datos del documento y los compara con
+Recalcula los seis modelos con los mismos datos del documento y los compara con
 la duración real. Uso: python docs/scripts/estimacion.py
 """
 import math
@@ -28,6 +28,24 @@ def puntos_funcion() -> dict:
     pf = pfna * vaf
     pm = pf * 8 / HORAS_PM                              # 8 h/PF
     return {"tamano": f"{pf:.2f} PF", "pm": pm, "detalle": f"PFNA={pfna}, TDI={sum(gsc)}, VAF={vaf:.2f}"}
+
+
+# ── Puntos de función COSMIC (ISO/IEC 19761) ─────────────────────────────────
+# Movimientos de datos (E, X, R, W) de los 30 procesos funcionales (Tabla de COSMIC)
+PROCESOS_COSMIC = [
+    (1, 1, 1, 1), (1, 2, 1, 0), (2, 3, 1, 1), (1, 1, 1, 0), (1, 1, 1, 1), (1, 1, 1, 1),
+    (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 1, 5), (1, 1, 1, 0), (1, 1, 1, 1),
+    (1, 1, 1, 1), (1, 1, 2, 2), (1, 1, 1, 1), (1, 1, 2, 0), (1, 1, 2, 1), (1, 1, 1, 1),
+    (1, 1, 1, 1), (1, 1, 3, 0), (1, 1, 2, 1), (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 1, 0),
+    (1, 1, 2, 1), (1, 1, 1, 1), (1, 1, 1, 1), (1, 1, 2, 0), (1, 1, 2, 0), (1, 0, 1, 1),
+]
+
+
+def puntos_cosmic() -> dict:
+    e, x, r, w = (sum(p[i] for p in PROCESOS_COSMIC) for i in range(4))
+    cfp = e + x + r + w
+    return {"tamano": f"{cfp} CFP", "pm": cfp * 8 / HORAS_PM,       # 8 h/CFP, igual que IFPUG
+            "detalle": f"E={e}, X={x}, R={r}, W={w}"}
 
 
 # ── Puntos de casos de uso (Karner) ──────────────────────────────────────────
@@ -112,6 +130,7 @@ def presupuesto(pm: float, meses: float) -> dict:
 def main() -> None:
     modelos = {
         "Puntos de función": puntos_funcion(),
+        "Puntos de función COSMIC": puntos_cosmic(),
         "Puntos de casos de uso": puntos_casos_uso(),
         "Puntos de objeto": puntos_objeto(),
         "Puntos de historia": puntos_historia(),
