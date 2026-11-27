@@ -55,6 +55,57 @@ H5 & CU04–CU07, CU12 & Registro, inicio de sesión (con Google simulado), perf
 \tablenote{Fuente: elaboración propia.}
 \end{table}
 
+\subsubsection{Análisis del hilo H3: tabla de estados y tabla de valores}
+
+El hilo H3 recorre CU03 y CU13 (crear una meta y marcar los días del reto); su diagrama de secuencia es la Figura \ref{fig:sec-cu03}. Una meta no tiene un campo de estado: su estado se deduce de los días marcados ($d$) frente a los días del plan ($N$).
+
+\begin{table}[H]
+\caption{Tabla de estados de una meta de ahorro (hilo H3)}
+\label{tab:estados-h3}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{2.4cm} L{3.4cm} L{2.6cm} Y}
+\toprule
+Estado actual & Evento & Estado siguiente & Respuesta del sistema \\
+\midrule
+E0 Sin meta & Crear meta válida & E1 Creada ($d = 0$) & 200; plan de $N$ cuotas que suman el objetivo \\
+E0 Sin meta & Crear meta con monto no redondo o fechas invertidas & E0 & 422 con el motivo (PA-08) \\
+E1 Creada & Marcar un día $k$ con $1 \leq k \leq N$ & E2 En progreso & 200; sube el ahorro en la cuota del día $k$ \\
+E2 En progreso & Marcar otro día válido & E2, o E3 si $d = N$ & 200; E3 cuando el ahorro llega al 100\,\% \\
+E2 En progreso & Desmarcar el único día marcado & E1 & 200; el ahorro vuelve a 0 \\
+E3 Completada & Desmarcar un día & E2 & 200; el ahorro baja \\
+E1, E2 o E3 & Marcar un día que no existe ($k < 1$ o $k > N$) & El mismo & 422 «Ese día no pertenece al plan» (D-15) \\
+E1, E2 o E3 & Editar el objetivo o la fecha final & E1 o E2 & 200; se rehace el plan y los días fuera del plan nuevo dejan de contar (D-15) \\
+E1, E2 o E3 & Eliminar la meta & E0 & 200 \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: elaboración propia a partir de \codigo{services/saving_service.py}.}
+\end{table}
+
+La tabla de valores aplica valores límite al número de día y a los datos de la meta, con una meta de \$5\,000 y 5 días ($N = 5$).
+
+\begin{table}[H]
+\caption{Tabla de valores del hilo H3}
+\label{tab:valores-h3}
+\footnotesize
+\begin{tabularx}{\linewidth}{L{2.2cm} L{1.6cm} L{3.4cm} L{3cm} Y}
+\toprule
+Entrada & Valor & Resultado esperado & Obtenido antes (26/11/2026) & Obtenido después \\
+\midrule
+Día & 1 (límite inferior) & 200; $d = 1$ & 200; $d = 1$ & 200; $d = 1$ \\
+Día & 5 (límite superior) & 200; $d$ aumenta en 1 & 200 & 200 \\
+Día & 3 dos veces & Marca y luego desmarca & Marca y desmarca & Marca y desmarca \\
+Día & 0 & 422 & \textbf{200; $d$ aumenta sin ahorro} & 422 \\
+Día & $-1$ & 422 & \textbf{200; $d$ aumenta} & 422 \\
+Día & 6 ($N + 1$) & 422 & \textbf{200; $d$ aumenta} & 422 \\
+Día & 99 & 422 & \textbf{200; queda $d = 3$ de 5 sin ningún día válido} & 422 \\
+Fecha final & Acortada a 2 días con el día 5 marcado & El día 5 deja de contar & \textbf{Seguía contando} & \codigo{completed_days} vacío \\
+Objetivo & 1\,500 & 422 (múltiplo de 1\,000) & 422 & 422 \\
+Fecha final & Vacía & Plan de 30 días (D-07) & 30 días & 30 días \\
+\bottomrule
+\end{tabularx}
+\tablenote{En negrita, los resultados que no coinciden con lo esperado: son el defecto D-15, corregido en \codigo{toggle_day} y \codigo{update_goal} con la prueba de regresión \codigo{test_d15_marcar_dia_fuera_del_plan_422}, que fallaba antes del cambio. Con ella la suite tiene 98 pruebas. Fuente: elaboración propia.}
+\end{table}
+
 \subsection{Casos de prueba y resultados}
 
 {\footnotesize\renewcommand{\arraystretch}{1.15}

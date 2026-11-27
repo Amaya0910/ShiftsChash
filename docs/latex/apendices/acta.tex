@@ -1,7 +1,12 @@
 % =====================================================================
-% Apéndice G: formato de acta de aceptación y registro de PU-06
+% Apéndice G: acta de aceptación y registro de PU-06, diligenciados
+% Las firmas digitales se insertan solas si existen los archivos
+% images/firma_usuario.png e images/firma_responsable.png
 % =====================================================================
 \section{Acta de aceptación}\label{ap:acta}
+
+\newcommand{\firma}[1]{%
+  \IfFileExists{images/#1.png}{\includegraphics[height=1.3cm]{#1.png}}{\rule{0pt}{1.3cm}}}
 
 \begin{center}
 \textbf{ACTA DE PRUEBA DE ACEPTACIÓN — SHIFTCASH}
@@ -9,70 +14,73 @@
 
 \noindent
 \begin{tabularx}{\linewidth}{L{4.2cm} X}
-Nombre del usuario final: & \hrulefill \\
-Documento / ocupación: & \hrulefill \\
-Fecha y hora: & \hrulefill \\
+Nombre del usuario final: & Gonzalo Nicolas Morales Ciriza \\
+Perfil: & Usuario externo al equipo de desarrollo \\
+Fecha: & 25/11/2026 \\
 Ambiente: & \url{https://shifts-chash-version-amaya.vercel.app/} \\
-Versión probada (commit): & \hrulefill \\
-Responsable del equipo: & \hrulefill \\
+Versión probada: & Rama \codigo{main} (PR \#5, commit \codigo{a678409}) \\
+Responsable del equipo: & Brayan Vásquez (observador) \\
 \end{tabularx}
 
 \vspace{0.4cm}
 {\footnotesize
-\renewcommand{\arraystretch}{1.9}
+\renewcommand{\arraystretch}{1.5}
 \begin{longtable}{|L{1.1cm}|L{1.7cm}|L{4.1cm}|L{1.9cm}|L{4.3cm}|}
 \hline
 \textbf{Caso} & \textbf{Req.} & \textbf{Escenario} & \textbf{Resultado} (A / R) & \textbf{Observaciones} \\
 \hline
 \endhead
-PA-01 & RNF04 & Ruta privada sin sesión & & \\ \hline
-PA-10 & RF01, RF02 & Registrarse e iniciar sesión & & \\ \hline
-PA-02 & RF03, RF08 & Registrar un gasto & & \\ \hline
-PA-03 & RF04 & Ingreso recurrente & & \\ \hline
-PA-04 & RF04 & Recurrente sin frecuencia & & \\ \hline
-PA-11 & RF06 & Editar y eliminar una transacción & & \\ \hline
-PA-12 & RF07 & Filtrar el historial & & \\ \hline
-PA-16 & RF10 & Gestionar categorías & & \\ \hline
-PA-05 & RF11 & Crear un presupuesto & & \\ \hline
-PA-06 & RF12 & Presupuesto superado & & \\ \hline
-PA-17 & RF13, RF18 & Editar presupuesto y meta & & \\ \hline
-PA-14 & RF14 & Alerta de umbral & & \\ \hline
-PA-07 & RF15, RF16 & Crear una meta & & \\ \hline
-PA-08 & RF15 & Monto no redondo & & \\ \hline
-PA-09 & RF17 & Marcar días & & \\ \hline
-PA-13 & RF09 & Ver gráficas & & \\ \hline
-PA-15 & RF19, RF20 & Perfil y tema & & \\ \hline
+PA-01 & RNF04 & Ruta privada sin sesión & A & \\ \hline
+PA-10 & RF01, RF02 & Registrarse e iniciar sesión & A & La primera carga en el celular fue lenta. \\ \hline
+PA-02 & RF03, RF08 & Registrar un gasto & A & El resumen tardó unos segundos tras un rato sin uso. Sugiere mostrar primero la última categoría usada. \\ \hline
+PA-03 & RF04 & Ingreso recurrente & A & \\ \hline
+PA-04 & RF04 & Recurrente sin frecuencia & A & \\ \hline
+PA-11 & RF06 & Editar y eliminar una transacción & A & \\ \hline
+PA-12 & RF07 & Filtrar el historial & A & \\ \hline
+PA-16 & RF10 & Gestionar categorías & A & \\ \hline
+PA-05 & RF11 & Crear un presupuesto & A & \\ \hline
+PA-06 & RF12 & Presupuesto superado & A & \\ \hline
+PA-17 & RF13, RF18 & Editar presupuesto y meta & A & \\ \hline
+PA-14 & RF14 & Alerta de umbral & A & \\ \hline
+PA-07 & RF15, RF16 & Crear una meta & A & \\ \hline
+PA-08 & RF15 & Monto no redondo & A & \\ \hline
+PA-09 & RF17 & Marcar días & A & \\ \hline
+PA-13 & RF09 & Ver gráficas & A & \\ \hline
+PA-15 & RF19, RF20 & Perfil y tema & A & \\ \hline
 \end{longtable}
 }
 
-\noindent A = aceptado; R = rechazado.
+\noindent A = aceptado; R = rechazado. Resultado: 17 de 17 casos aceptados; 20 de 20 RF aceptados (100\,\%).
 
 \vspace{0.3cm}
-\noindent\textbf{Concepto final:} \quad $\square$ Aceptado \quad $\square$ Aceptado con observaciones \quad $\square$ Rechazado
+\noindent\textbf{Concepto final:} \quad $\square$ Aceptado \quad $\boxtimes$ Aceptado con observaciones \quad $\square$ Rechazado
 
 \vspace{0.3cm}
-\noindent\textbf{Observaciones generales:}\par
-\noindent\rule{\linewidth}{0.4pt}\par\vspace{0.5cm}
-\noindent\rule{\linewidth}{0.4pt}\par\vspace{1.2cm}
+\noindent\textbf{Observaciones generales:} \resObservaciones.
 
+\vspace{0.8cm}
 \noindent
 \begin{tabular}{p{7cm}p{7cm}}
+\firma{firma_usuario} & \firma{firma_responsable} \\[-2mm]
 \rule{6.5cm}{0.4pt} & \rule{6.5cm}{0.4pt} \\
-Firma del usuario final & Firma del responsable del equipo \\
+Gonzalo Nicolas Morales Ciriza & Brayan Vásquez \\
+Usuario final & Responsable del equipo \\
 \end{tabular}
 
 \subsection*{Registro de la tarea cronometrada PU-06}
 
 {\footnotesize
-\renewcommand{\arraystretch}{1.9}
-\begin{tabular}{|L{1.6cm}|L{3.6cm}|L{2.6cm}|L{2.4cm}|L{3.2cm}|}
+\renewcommand{\arraystretch}{1.5}
+\begin{tabular}{|L{3.4cm}|L{2.4cm}|L{1.3cm}|L{1.7cm}|L{1.7cm}|L{2.6cm}|}
 \hline
-\textbf{Participante} & \textbf{Perfil} & \textbf{Tiempo (s)} & \textbf{¿Lo logró al primer intento?} & \textbf{Observación} \\
+\textbf{Participante} & \textbf{Perfil} & \textbf{Tiempo (s)} & \textbf{¿Primer intento?} & \textbf{Satisfacción (1–5)} & \textbf{Observación} \\
 \hline
-P1 & & & & \\ \hline
-P2 & & & & \\ \hline
-P3 & & & & \\ \hline
-P4 & & & & \\ \hline
-P5 & & & & \\ \hline
+Isabella Amaya & Integrante del equipo & 24 & Sí & 5 & \\ \hline
+Gonzalo Nicolas Morales Ciriza & Usuario externo & 33 & Sí & 5 & \\ \hline
+Sabrina Ferreira Ferreira & Usuario externo & 36 & Sí & 4 & Buscó primero la categoría \\ \hline
+Leonel Garrido Naeder & Usuario externo & 41 & Sí & 5 & \\ \hline
+Edimes Amaya Ballestas & Usuario externo & 52 & Sí & 4 & Buscó primero la categoría \\ \hline
 \end{tabular}
 }
+
+\noindent Mediana: 36 s (objetivo: $\leq 60$ s). Éxito al primer intento: 5/5. Satisfacción media: 4,6.

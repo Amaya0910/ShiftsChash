@@ -81,3 +81,12 @@ docs/evidencias/zap/
 .github/hooks/
 .github/skills/
 .impeccable/
+docs/evidencias/en_vivo/
+
+# Material interno de docs/ (no hace parte de la entrega a la profesora)
+docs/GUIA_PRESENTACION.md
+docs/latex/pendientes.txt
+docs/ProyectoFinalShiftCash.pdf
+docs/ShiftCash_Complementos_Entrega_Final.docx
+docs/generar_complemento.py
+docs/diagramas/

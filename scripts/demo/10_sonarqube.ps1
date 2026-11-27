@@ -14,6 +14,10 @@ if (-not $Token) { Start-Process 'http://localhost:9000'; Write-Host 'Cree el to
 # Cobertura para el análisis
 Set-Location $Backend
 & $Python -m pytest -q -p no:warnings --cov=app --cov-report=xml | Out-Null
+# El escáner corre en Docker (proyecto en /usr/src): la ruta de Windows del informe no le sirve
+$xml = Join-Path $Backend 'coverage.xml'
+$texto = [IO.File]::ReadAllText($xml) -replace '<source>[^<]*</source>', '<source>/usr/src/backend/app</source>'
+[IO.File]::WriteAllText($xml, $texto)
 Set-Location $Raiz
 docker run --rm -e SONAR_HOST_URL=http://host.docker.internal:9000 -e SONAR_TOKEN=$Token `
     -v "${Raiz}:/usr/src" sonarsource/sonar-scanner-cli

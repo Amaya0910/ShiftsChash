@@ -14,5 +14,11 @@ if ($Desplegada) {
     $env:SC_PASS = 'Demo12345'
 }
 Remove-Item Env:\SC_HEADLESS -ErrorAction SilentlyContinue   # se ve el navegador
+# Las capturas de la demostración van aparte para no reemplazar las del documento
+$capturas = Join-Path $Evidencias 'en_vivo'
+New-Item -ItemType Directory -Force $capturas | Out-Null
+$env:SC_EVIDENCIAS = $capturas
 python (Join-Path $Raiz 'tests\aceptacion_selenium.py')
-Write-Host "Capturas en $Evidencias" -ForegroundColor Green
+Remove-Item Env:\SC_EVIDENCIAS -ErrorAction SilentlyContinue
+Write-Host "Capturas en $capturas" -ForegroundColor Green
+Start-Process $capturas

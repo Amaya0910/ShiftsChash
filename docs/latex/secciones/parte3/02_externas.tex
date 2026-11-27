@@ -71,13 +71,16 @@ Accesibilidad & Campos con etiqueta asociada en el formulario de contacto & RNF1
 Accesibilidad & Botones con nombre accesible en la portada & RNF14 & 1,00 & Menú sin nombre & 1,00 (\codigo{aria-label}) \\
 Operabilidad & Mediana del tiempo para registrar un gasto (PU-06) & RNF07 & $\leq 60$ s & No medido & \resPUMediana{} s \\
 Operabilidad & Tasa de éxito al primer intento (PU-06) & RNF07 & $\geq 0{,}90$ & No medido & \resPUExito \\
+Operabilidad & Clics para registrar un gasto (botón, dos campos, categoría, opción y guardar) & — & Mínimo & 6 & 6 \\
+Satisfacción & Satisfacción media después de PU-06 (escala de 1 a 5) & RNF07 & $\geq 4$ & No medido & 4,6 \\
 Protección frente a errores & Errores de validación de la API mostrados como texto legible & RNF05 & 1,00 & 0 (un 422 rompía el formulario, D-13) & 1,00 \\
 }{Lighthouse marca aún el contraste de un texto de la portada (\codigo{text-primary}). Fuente: elaboración propia.}
 
 \subsection{Fiabilidad}
 
 \metricas{Métricas de fiabilidad}{tab:me-fiabilidad}{%
-Madurez & Pruebas automatizadas sin fallos: $\frac{\text{aprobadas}}{\text{ejecutadas}}$ & — & 1,00 & 48/49 = 0,98 & 97/97 = 1,00 \\
+Madurez & Pruebas automatizadas sin fallos: $\frac{\text{aprobadas}}{\text{ejecutadas}}$ & — & 1,00 & 48/49 = 0,98 & 98/98 = 1,00 \\
+Madurez & Densidad de defectos: $\frac{\text{defectos conocidos}}{\text{tamaño}}$, con 15 defectos sobre 6,228 KLOC o 160,06 PF & — & Mínimo & 2,41 por KLOC; 0,094 por PF & 0 abiertos \\
 Disponibilidad & Tiempo operativo del frontend en la ventana de prueba & RNF10 & $\geq 0{,}99$ & 1,00 & 1,00 \\
 Disponibilidad & Tiempo operativo de la API en la ventana de prueba & RNF10 & $\geq 0{,}99$ & 0,00 (más de 7 min sin respuesta) & \resDisponibilidadApi \\
 Tolerancia a fallos & Entradas inválidas respondidas con 4xx: $\frac{\text{4xx}}{\text{entradas inválidas probadas}}$ & RNF05 & 1,00 & 4/6 = 0,67 & 5/5 = 1,00 (la meta sin fecha final ahora es una entrada válida) \\
@@ -100,7 +103,7 @@ Resistencia & Alertas de ZAP de riesgo alto / medio & RNF13 & 0 / 0 & 0 / 3 & \r
 
 \metricas{Métricas de mantenibilidad}{tab:me-mantenibilidad}{%
 Analizabilidad & Funciones con $V(G) \leq 10$: $\frac{A}{B}$ & RNF09 & 1,00 & 55/58 = 0,95 & 92/92 = 1,00 \\
-Analizabilidad & Densidad de comentarios del Python & — & — & 93/1\,657 = 0,056 & 57/1\,478 = 0,039 \\
+Analizabilidad & Densidad de comentarios del Python: $DC = \frac{CLOC}{NCLOC + CLOC}$ & — & — & 93/1\,379 = 0,067 & 57/1\,210 = 0,047 \\
 Modularidad & CBO medio de los routers & — & $\leq 6$ & 4,0 & 4,7 \\
 Reusabilidad & Construcciones de respuesta duplicadas & — & 0 & 6 & 0 \\
 Modificabilidad & Elementos de código muerto & — & 0 & 3 & 0 \\
@@ -113,7 +116,10 @@ Capacidad de prueba & Cobertura de líneas del backend & RNF09 & $\geq 0{,}80$ &
 Adaptabilidad & Resoluciones sin desbordamiento: $\frac{\text{correctas}}{\text{probadas}}$ & RNF06 & 1,00 & 2/2 & 2/2 \\
 Adaptabilidad & Navegadores verificados: $\frac{\text{correctos}}{4}$ (Chrome, Firefox, Edge, Safari) & RNF06 & 1,00 & 2/4 = 0,50 & \resNavegadores \\
 Instalabilidad & Pasos de instalación documentados: $\frac{\text{en el README}}{\text{necesarios}}$ & — & 1,00 & 3/6 = 0,50 & 6/6 = 1,00 \\
-}{Los seis pasos son: clonar, instalar y configurar el backend (\codigo{.env}), levantar la API, instalar el frontend, configurar \codigo{.env.local} y levantar el frontend. Fuente: elaboración propia.}
+Portabilidad & $1 - \frac{ET}{ER}$; $ET$: horas para llevar el sistema a otro entorno; $ER$: horas para crearlo & — & Cercano a 1 & $1 - \frac{8}{327} = 0{,}98$ & $1 - \frac{1}{327} = 0{,}997$ \\
+Coexistencia & $1 - \frac{A}{B}$; $A$: errores de incompatibilidad; $B$: pruebas con los servicios juntos & — & 1,00 & $1 - \frac{0}{8} = 1{,}00$ & $1 - \frac{0}{8} = 1{,}00$ \\
+Reemplazabilidad & $1 - \frac{A}{B}$; $A$: funciones que no logran su propósito al reemplazar el cuaderno o la hoja de cálculo; $B$: funciones ejecutadas & — & 1,00 & No medido & $1 - \frac{0}{17} = 1{,}00$ \\
+}{Portabilidad: $ER$ son las 327 horas del desarrollo (Cuarta parte); $ET$, el tiempo de instalar el sistema en un equipo nuevo, que bajó de unas 8 horas (sin guía, hubo que descubrir los pasos) a 1 hora con el README y los scripts de \codigo{scripts/demo}. Coexistencia: las 8 pruebas de Cypress ejecutan la SPA y la API a la vez. Reemplazabilidad: los 17 casos de aceptación (Tabla \ref{tab:eval-aceptacion}). Los seis pasos de instalación son: clonar, instalar y configurar el backend (\codigo{.env}), levantar la API, instalar el frontend, configurar \codigo{.env.local} y levantar el frontend. Fuente: elaboración propia.}
 
 \section{Conclusiones de la medición}
 

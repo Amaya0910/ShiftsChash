@@ -3,7 +3,7 @@
 % =====================================================================
 \section{Supuestos comunes}
 
-Para comparar los cinco modelos usamos los mismos supuestos. Todos los cálculos se reproducen con \codigo{docs/scripts/estimacion.py} (Apéndice \ref{ap:estimacion}).
+Para comparar los modelos usamos los mismos supuestos. Todos los cálculos se reproducen con \codigo{docs/scripts/estimacion.py} (Apéndice \ref{ap:estimacion}).
 
 \begin{itemize}
   \item Una persona-mes (PM) equivale a 160 horas.
@@ -66,6 +66,48 @@ E &= 160{,}06 \times 8\ \text{h/PF} = 1\,280\ \text{h} = 8{,}00\ \text{PM} & T &
 \end{align*}
 
 La productividad de 8 horas por punto de función es un supuesto típico para desarrollo web con lenguajes de alto nivel.
+
+\section{Puntos de función COSMIC}
+
+El método COSMIC (ISO/IEC 19761) mide el tamaño funcional contando los \textbf{movimientos de datos} de cada proceso funcional: entradas (E) y salidas (X) que cruzan la frontera con un usuario funcional, y lecturas (R) y escrituras (W) en el almacenamiento persistente. Cada movimiento vale 1 CFP (\emph{COSMIC Function Point}). Los usuarios funcionales son el usuario de la aplicación, el servicio de Google y el reloj del programador de tareas; los grupos de datos son usuario, categoría, presupuesto, transacción y meta. Contamos un movimiento por grupo de datos y una salida para los mensajes de confirmación o error de cada proceso.
+
+\begin{table}[H]
+\caption{Conteo COSMIC por proceso funcional}
+\label{tab:cosmic}
+\scriptsize
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\linewidth}{Y *{5}{c} | Y *{5}{c}}
+\toprule
+Proceso & E & X & R & W & CFP & Proceso & E & X & R & W & CFP \\
+\midrule
+Registrar usuario & 1 & 1 & 1 & 1 & 4 & Iniciar sesión & 1 & 2 & 1 & 0 & 4 \\
+Iniciar sesión con Google & 2 & 3 & 1 & 1 & 7 & Consultar perfil & 1 & 1 & 1 & 0 & 3 \\
+Editar perfil & 1 & 1 & 1 & 1 & 4 & Cambiar contraseña & 1 & 1 & 1 & 1 & 4 \\
+Cambiar moneda & 1 & 1 & 1 & 1 & 4 & Subir foto de perfil & 1 & 1 & 1 & 1 & 4 \\
+Eliminar foto de perfil & 1 & 1 & 1 & 1 & 4 & Eliminar cuenta y sus datos & 1 & 1 & 1 & 5 & 8 \\
+Listar categorías & 1 & 1 & 1 & 0 & 3 & Crear categoría & 1 & 1 & 1 & 1 & 4 \\
+Editar categoría & 1 & 1 & 1 & 1 & 4 & Eliminar categoría & 1 & 1 & 2 & 2 & 6 \\
+Registrar transacción & 1 & 1 & 1 & 1 & 4 & Consultar historial con filtros & 1 & 1 & 2 & 0 & 4 \\
+Editar transacción & 1 & 1 & 2 & 1 & 5 & Eliminar transacción & 1 & 1 & 1 & 1 & 4 \\
+Crear presupuesto & 1 & 1 & 1 & 1 & 4 & Consultar presupuestos con gasto & 1 & 1 & 3 & 0 & 5 \\
+Editar presupuesto & 1 & 1 & 2 & 1 & 5 & Eliminar presupuesto & 1 & 1 & 1 & 1 & 4 \\
+Crear meta con plan diario & 1 & 1 & 1 & 1 & 4 & Consultar metas y progreso & 1 & 1 & 1 & 0 & 3 \\
+Editar meta & 1 & 1 & 2 & 1 & 5 & Eliminar meta & 1 & 1 & 1 & 1 & 4 \\
+Marcar o desmarcar día & 1 & 1 & 1 & 1 & 4 & Ver resumen del mes & 1 & 1 & 2 & 0 & 4 \\
+Ver gráficas & 1 & 1 & 2 & 0 & 4 & Generar recurrentes (reloj) & 1 & 0 & 1 & 1 & 3 \\
+\midrule
+\multicolumn{6}{l|}{Totales: E = 31, X = 32, R = 39, W = 27} & \multicolumn{6}{l}{\textbf{Tamaño: 129 CFP}} \\
+\bottomrule
+\end{tabularx}
+\vspace{6pt}
+\tablenote{Los 30 procesos cubren los 20 RF. «Eliminar cuenta» escribe en los cinco grupos de datos por la eliminación en cascada (D-11); «Eliminar categoría» lee las transacciones para impedir el borrado (D-05). Fuente: elaboración propia.}
+\end{table}
+
+Para que la comparación con IFPUG dependa solo del tamaño, usamos la misma productividad supuesta, 8 horas por unidad:
+\[
+E = \frac{129 \times 8}{160} = 6{,}45\ \text{PM} \qquad T = 2{,}5 \times 6{,}45^{0{,}38} = 5{,}08\ \text{meses} \qquad P = \frac{6{,}45}{5{,}08} = 1{,}27
+\]
+con un costo de talento humano de $6{,}45 \times \$6\,646\,961 = \$42\,872\,896$. COSMIC da un tamaño menor que IFPUG (129 frente a 160 unidades) porque no pondera la complejidad de cada función ni aplica el factor de ajuste: cuenta solo movimientos de datos.
 
 \section{Puntos de casos de uso}
 
@@ -186,11 +228,45 @@ T_{DEV} &= 3{,}67 \times 19{,}03^{0{,}28 + 0{,}2(1{,}0997 - 0{,}91)} = 9{,}36\ \
 
 \begin{figure}[H]
 \centering
-\caption{Recálculo de los cinco modelos y del presupuesto con \codigo{estimacion.py}}
+\caption{Recálculo de los seis modelos paramétricos y del presupuesto con \codigo{estimacion.py}}
 \label{fig:estimacion-script}
 \includegraphics[width=\linewidth]{../evidencias/estimacion_salida.png}
 \figurenote{Fuente: elaboración propia.}
 \end{figure}
+
+\section{Estimación con una herramienta de inteligencia artificial}
+
+Usamos el asistente \textbf{Claude Opus 5.5} (Anthropic) el 26 de noviembre de 2026. Le dimos la descripción del proyecto y le pedimos una estimación de esfuerzo, tiempo y personas, sin mostrarle los resultados de los otros modelos.
+
+\paragraph{Instrucción (prompt).} «Estima el esfuerzo en personas-mes, la duración en meses y el número de personas para desarrollar esta aplicación web: frontend en React 19 con Vite y backend en FastAPI con SQLAlchemy y PostgreSQL; 20 requisitos funcionales (registro e inicio de sesión con correo y Google, transacciones con recurrencia, historial con filtros, resumen y gráficas, categorías propias, presupuestos con cuatro tipos de período y alertas, metas de ahorro con plan diario y días marcables, perfil, moneda y tema); 5 tablas; despliegue en Vercel, Render y Supabase; pruebas unitarias, de integración y de aceptación. Equipo de 3 estudiantes. Explica cómo llegas al resultado.»
+
+\paragraph{Respuesta resumida.} El asistente estimó por descomposición de tareas (ascendente), en horas de un desarrollador junior:
+
+\begin{table}[H]
+\caption{Estimación de la herramienta de IA por módulo}
+\label{tab:ia}
+\footnotesize
+\begin{tabularx}{\linewidth}{Y r}
+\toprule
+Módulo & Horas \\
+\midrule
+Autenticación (correo, Google, JWT) & 80 \\
+Transacciones, recurrencia e historial con filtros & 140 \\
+Categorías propias & 40 \\
+Presupuestos con períodos y alertas & 130 \\
+Metas de ahorro con plan diario & 120 \\
+Resumen y gráficas & 100 \\
+Perfil, moneda, foto y tema & 60 \\
+Despliegue y configuración & 50 \\
+Pruebas & 160 \\
+\midrule
+\textbf{Total} & \textbf{880 h = 5,5 PM} \\
+\bottomrule
+\end{tabularx}
+\tablenote{Fuente: respuesta de Claude Opus 5.5, organizada por el equipo.}
+\end{table}
+
+Propuso una duración de \textbf{2,5 meses}, con $P = 5{,}5 / 2{,}5 = 2{,}2$ personas a tiempo completo, y un costo de talento humano de $5{,}5 \times \$6\,646\,961 = \$36\,558\,284$. La herramienta advirtió que su estimación depende de la experiencia del equipo y que debe calibrarse con datos propios, igual que los modelos paramétricos.
 
 \section{Presupuesto}\label{sec:presupuesto}
 
@@ -225,6 +301,8 @@ Imprevistos & 10\,\% del subtotal & 4\,171\,014 & 1\,417\,178 \\
 \tablenote{Son valores estimados: el precio del portátil, el consumo de 65 W, el plan de internet completo (cota superior, porque el hogar también lo usa para otras cosas) y las 15 horas semanales son supuestos declarados. Fuente: elaboración propia con \codigo{estimacion.py}.}
 \end{table}
 
+\paragraph{Costeo por servicios.} Una empresa también puede cotizar por servicio o por unidad funcional en lugar de por horas. Con el costo real estimado (\$15\,588\,960) y el tamaño medido, cada punto de función IFPUG cuesta $15\,588\,960 / 160{,}06 = \$97\,395$ y cada CFP, $15\,588\,960 / 129 = \$120\,845$. Repartido en proporción a los puntos de historia (Tabla \ref{tab:ph}), el servicio de presupuestos (HU09 y HU10, 21 de 89 puntos) costaría \$3\,678\,294; el de metas de ahorro (HU11 y HU12, 18 puntos), \$3\,152\,823; y el de transacciones (HU02 a HU05, 21 puntos), \$3\,678\,294. Esta forma de cotizar permite presupuestar mejoras futuras por separado.
+
 \paragraph{Riesgo de costo.} El hosting cuesta \$0 porque se usan planes gratuitos, y es la causa del defecto D-09 (la API se suspende tras la inactividad). Mantener la API siempre disponible exige el plan Starter de Render, de USD 7 al mes \parencite{render2026}; la base de datos seguiría en Supabase sin costo.
 
 \section{Análisis comparativo}
@@ -237,11 +315,13 @@ Imprevistos & 10\,\% del subtotal & 4\,171\,014 & 1\,417\,178 \\
 \toprule
 Modelo & Tamaño & Esfuerzo (PM) & Tiempo (meses) & Personas & Talento (COP) \\
 \midrule
-Puntos de función & 160,06 PF & 8,00 & 5,51 & 1,45 & 53\,195\,626 \\
+Puntos de función (IFPUG) & 160,06 PF & 8,00 & 5,51 & 1,45 & 53\,195\,626 \\
+Puntos de función COSMIC & 129 CFP & 6,45 & 5,08 & 1,27 & 42\,872\,896 \\
 Puntos de casos de uso & 108,42 PCU & 13,55 & 6,73 & 2,01 & 90\,084\,554 \\
 Puntos de objeto & 90,4 NOP & 6,95 & 5,22 & 1,33 & 46\,221\,942 \\
 Puntos de historia & 89 PH & 6,16 & 2,05 & 3,00 & 40\,955\,504 \\
 COCOMO II & 6,228 KSLOC & 19,03 & 9,36 & 2,03 & 126\,487\,434 \\
+Herramienta de IA & 880 h & 5,50 & 2,50 & 2,20 & 36\,558\,284 \\
 \midrule
 \textbf{Real (estimado)} & — & \textbf{2,04} & \textbf{1,68} & \textbf{3} & \textbf{13\,583\,019} \\
 \bottomrule
@@ -254,14 +334,14 @@ COCOMO II & 6,228 KSLOC & 19,03 & 9,36 & 2,03 & 126\,487\,434 \\
 \caption{Tiempo estimado por modelo frente a la duración real}
 \label{fig:estimacion-barras}
 \begin{tikzpicture}[x=0.9cm, y=0.8cm, font=\footnotesize]
-\foreach \m/\v/\y in {Puntos de función/5.51/5, Casos de uso/6.73/4, Puntos de objeto/5.22/3, Puntos de historia/2.05/2, COCOMO II/9.36/1} {
+\foreach \m/\v/\y in {Puntos de función/5.51/7, COSMIC/5.08/6, Casos de uso/6.73/5, Puntos de objeto/5.22/4, Puntos de historia/2.05/3, Herramienta de IA/2.50/2, COCOMO II/9.36/1} {
   \node[anchor=east] at (-0.1,\y) {\m};
   \fill[gris] (0,\y-0.3) rectangle (\v,\y+0.3);
   \node[anchor=west] at (\v+0.1,\y) {\v};
 }
-\draw[acento, very thick, dashed] (1.68,0.4) -- (1.68,5.6);
-\node[acento, anchor=south] at (1.68,5.6) {Real: 1,68 meses};
-\draw[flecha] (0,0.4) -- (10.2,0.4) node[below left]{meses};
+\draw[acento, very thick, dashed] (1.68,0.4) -- (1.68,7.6);
+\node[acento, anchor=south] at (1.68,7.6) {Real: 1,68 meses};
+\draw[flecha] (0,0.4) -- (10.2,0.4) node[right]{meses};
 \foreach \x in {0,2,4,6,8,10} \node[below] at (\x,0.4) {\x};
 \end{tikzpicture}
 \figurenote{Fuente: elaboración propia.}
@@ -270,7 +350,8 @@ COCOMO II & 6,228 KSLOC & 19,03 & 9,36 & 2,03 & 126\,487\,434 \\
 \paragraph{Coherencia con el cronograma real.} El desarrollo del producto duró 1,68 meses con 3 personas (Figura \ref{fig:gantt}).
 \begin{itemize}
   \item Los \textbf{puntos de historia} son los únicos coherentes con esa duración: estiman 2,05 meses, un 22\,\% más que lo real. En esfuerzo, todos los modelos superan los 2,04 PM estimados, porque suponen dedicación de tiempo completo. Con la duración real, el equipo tuvo una velocidad de 24,5 puntos por sprint de 2 semanas, mayor que los 20 supuestos; con esa velocidad calibrada, el modelo reproduce la duración real.
-  \item \textbf{Puntos de función} y \textbf{puntos de objeto} coinciden entre sí (7 a 8 PM, unos 5 meses), pero triplican la duración real. Suponen un equipo de 1,3 a 1,5 personas a tiempo completo, mientras que el equipo real fue de 3 estudiantes que trabajaron en paralelo.
+  \item La \textbf{herramienta de IA} es la segunda más cercana: 2,5 meses, un 49\,\% más que lo real. Al estimar por módulos, como un equipo, llega a un esfuerzo parecido al de los puntos de historia (5,5 frente a 6,16 PM).
+  \item \textbf{Puntos de función} (IFPUG y COSMIC) y \textbf{puntos de objeto} coinciden entre sí (6,5 a 8 PM, unos 5 meses), pero triplican la duración real. Suponen un equipo de 1,3 a 1,5 personas a tiempo completo, mientras que el equipo real fue de 3 estudiantes que trabajaron en paralelo.
   \item \textbf{COCOMO II} y \textbf{puntos de casos de uso} sobrestiman más (13,6 a 19 PM y 6,7 a 9,4 meses) porque suponen un proceso industrial con documentación, gestión y pruebas formales. Parte de ese esfuerzo sí existió, pero después: la fase de calidad (pruebas, métricas y correcciones) se hizo entre agosto y noviembre de 2026 y no está en los 1,68 meses del desarrollo.
 \end{itemize}
 
@@ -279,7 +360,7 @@ COCOMO II & 6,228 KSLOC & 19,03 & 9,36 & 2,03 & 126\,487\,434 \\
 \section{Conclusiones de la estimación}
 
 \begin{itemize}
-  \item Los cinco modelos ubican el proyecto entre 6,2 y 19 PM y entre 2 y 9,4 meses; la dispersión muestra que toda estimación debe declarar sus supuestos y calibrarse con datos del propio equipo.
+  \item Las siete estimaciones ubican el proyecto entre 5,5 y 19 PM y entre 2 y 9,4 meses; la dispersión muestra que toda estimación debe declarar sus supuestos y calibrarse con datos del propio equipo.
   \item Los puntos de historia, recalculados con el equipo real de 3 personas, son los más cercanos a la duración real (2,05 frente a 1,68 meses). La velocidad real medida, 24,5 puntos por sprint, sirve para estimar proyectos futuros del mismo equipo.
   \item El equipo no gastó dinero (costo real desembolsado: \$0). Contratado a una tarifa justificada, el proyecto real habría costado unos \$15,6 millones y la estimación por puntos de historia da \$45,9 millones; en ambos casos el talento humano es más del 95\,\% del costo, porque la infraestructura usa planes gratuitos.
 \end{itemize}

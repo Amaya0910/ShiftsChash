@@ -401,7 +401,39 @@ Los diagramas muestran las tres funcionalidades centrales y un flujo de soporte.
 \end{figure}
 \end{landscape}
 
-\subsection{Modelo de datos e integridad}
+\subsection{Diagrama entidad-relación e integridad}
+
+La Figura \ref{fig:er} muestra el modelo entidad-relación de la base de datos (PostgreSQL en Supabase), con las cinco tablas de \codigo{models.py}, sus claves y la cardinalidad de cada relación.
+
+\begin{figure}[H]
+\centering
+\caption{Diagrama entidad-relación de ShiftCash}
+\label{fig:er}
+\begin{tikzpicture}[
+  ent/.style={draw, rectangle split, rectangle split parts=2, rectangle split part fill={gray!15,white},
+              font=\scriptsize, text width=3.55cm, inner sep=3pt, align=left},
+  rel/.style={thick},
+  card/.style={font=\scriptsize\bfseries, fill=white, inner sep=1pt}]
+\node[ent] (u) at (0,0) {\textbf{users}
+  \nodepart{second} \underline{user\_id} (PK)\\ username\\ email (único)\\ password (hash)\\ profile\_pic\\ currency\\ created\_at};
+\node[ent] (b) at (5.4,3.1) {\textbf{budget}
+  \nodepart{second} \underline{budget\_id} (PK)\\ user\_id (FK)\\ category\_id (FK)\\ name, amount\\ period\_type, month, year\\ start\_date, end\_date\\ is\_permanent};
+\node[ent] (t) at (5.4,-3.1) {\textbf{transactions}
+  \nodepart{second} \underline{trans\_id} (PK)\\ user\_id (FK)\\ category\_id (FK)\\ type, amount\\ description, trans\_date\\ is\_recurring, frequency};
+\node[ent] (c) at (10.8,0) {\textbf{category}
+  \nodepart{second} \underline{category\_id} (PK)\\ user\_id (FK, nulo si es predeterminada)\\ name\_cat, icon\\ type, is\_default};
+\node[ent] (g) at (0,-4.6) {\textbf{saving\_goal}
+  \nodepart{second} \underline{goal\_id} (PK)\\ user\_id (FK)\\ name, target\_amount\\ start\_date, end\_date\\ image\_url\\ completed\_days (JSON)\\ daily\_amounts (JSON)};
+\draw[rel] (u.east) -- node[card, pos=0.12]{1} node[card, pos=0.88]{N} (c.west);
+\draw[rel] (u.north east) -- node[card, pos=0.12]{1} node[card, pos=0.85]{N} (b.west);
+\draw[rel] (u.south east) -- node[card, pos=0.12]{1} node[card, pos=0.85]{N} (t.west);
+\draw[rel] (u.south) -- node[card, pos=0.2]{1} node[card, pos=0.8]{N} (g.north);
+\draw[rel] (c.north west) -- node[card, pos=0.12]{1} node[card, pos=0.85]{N} (b.east);
+\draw[rel] (c.south west) -- node[card, pos=0.12]{1} node[card, pos=0.85]{N} (t.east);
+\end{tikzpicture}
+\figurenote{Un usuario tiene muchas categorías, presupuestos, transacciones y metas; una categoría agrupa muchos presupuestos y muchas transacciones. Las categorías predeterminadas no tienen usuario (\codigo{user_id} nulo). Fuente: elaboración propia a partir de \codigo{models.py}.}
+\end{figure}
+
 
 El modelo físico se genera desde \codigo{models.py} con \codigo{Base.metadata.create_all}; sus tablas y columnas son las de la Figura \ref{fig:clases-entidades}. La Tabla \ref{tab:integridad} resume las reglas de borrado tras corregir D-05 y D-11.
 

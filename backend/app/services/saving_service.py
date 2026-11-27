@@ -176,6 +176,9 @@ def update_goal(db: Session, user: models.User, goal: models.SavingGoal,
                                                     Decimal(str(goal.target_amount)),
                                                     user.currency or DEFAULT_CURRENCY)
         flag_modified(goal, "daily_amounts")
+        # D-15: los días marcados que ya no existen en el plan nuevo dejan de contar
+        goal.completed_days = [d for d in _as_list(goal.completed_days) if str(d) in goal.daily_amounts]
+        flag_modified(goal, "completed_days")
 
     db.commit()
     db.refresh(goal)
@@ -184,6 +187,9 @@ def update_goal(db: Session, user: models.User, goal: models.SavingGoal,
 
 def toggle_day(db: Session, goal: models.SavingGoal, day_number: int) -> dict:
     """Marca o desmarca un día del plan y devuelve el progreso actualizado."""
+    # D-15: solo existen los días del plan (1..N); otro número inflaba el progreso
+    if str(day_number) not in _as_dict(goal.daily_amounts):
+        raise HTTPException(status_code=422, detail="Ese día no pertenece al plan de la meta")
     completed = list(_as_list(goal.completed_days))
     if day_number in completed:
         completed.remove(day_number)

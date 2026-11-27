@@ -240,6 +240,21 @@ def test_pi07_editar_meta_regenera_plan(client, auth):
     assert sum(r.json()["daily_amounts"].values()) == 200000
 
 
+def test_d15_marcar_dia_fuera_del_plan_422(client, auth):
+    """Tabla de valores del hilo H3: solo se marcan días que existen en el plan."""
+    fin = (date.today() + timedelta(days=4)).isoformat()
+    gid = client.post("/saving-goals/", headers=auth, json={"name": "Bici", "target_amount": 5000, "end_date": fin}).json()["goal_id"]
+    for dia in (0, -1, 6, 99):
+        r = client.post(f"/saving-goals/{gid}/toggle-day/{dia}", headers=auth)
+        assert r.status_code == 422, (dia, r.text)
+    r = client.post(f"/saving-goals/{gid}/toggle-day/5", headers=auth)
+    assert r.status_code == 200 and r.json()["progress"]["days_completed"] == 1
+    # Acortar la meta a 2 días deja fuera el día 5 marcado
+    corto = (date.today() + timedelta(days=1)).isoformat()
+    r = client.put(f"/saving-goals/{gid}", headers=auth, json={"end_date": corto})
+    assert r.json()["completed_days"] == [], r.text
+
+
 def test_meta_ajena_404(client, auth, auth_otro):
     gid = client.post("/saving-goals/", headers=auth, json={"name": "A", "target_amount": 1000}).json()["goal_id"]
     assert client.post(f"/saving-goals/{gid}/toggle-day/1", headers=auth_otro).status_code == 404

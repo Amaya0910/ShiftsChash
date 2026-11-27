@@ -4,7 +4,7 @@ param([switch]$Api)
 . "$PSScriptRoot\comun.ps1"
 Titulo 'OWASP ZAP'
 
-$salida = Join-Path $Evidencias 'zap'
+$salida = Join-Path $Evidencias 'en_vivo\zap'   # carpeta ignorada por git
 New-Item -ItemType Directory -Force $salida | Out-Null
 $volumen = "${salida}:/zap/wrk:rw"
 if ($Api) {

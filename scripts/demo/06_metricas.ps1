@@ -10,7 +10,8 @@ Titulo 'Tamaño con pygount'
 $archivos = git ls-files --cached --others --exclude-standard | Where-Object {
     $_ -match '\.(py|jsx|js|css|html|json|yml)$' -and $_ -notmatch '^(docs/|dist/|scripts/|backend/tests/|tests/|cypress/|cypress\.config\.js|package-lock\.json)'
 }
-python -m pygount --format=summary @archivos
+# pygount 3 no se ejecuta con "python -m": se llama a su función main
+python -c "import sys; from pygount.command import main; sys.argv = ['pygount'] + sys.argv[1:]; main()" --format=summary @archivos
 
 Titulo 'Complejidad ciclomática (McCabe)'
 python docs/scripts/metricas.py complejidad
