@@ -7,8 +7,9 @@ Para comparar los modelos usamos los mismos supuestos. Todos los cálculos se re
 
 \begin{itemize}
   \item Una persona-mes (PM) equivale a 160 horas.
-  \item Cuando el modelo no da el tiempo de desarrollo, se calcula con la ecuación de calendario de COCOMO, $T = 2{,}5 \cdot E^{0{,}38}$ meses, y el número de personas con $P = E/T$ \parencite{boehm2000}.
-  \item El costo de una persona-mes sale de una tarifa justificada (sección \ref{sec:presupuesto}): \$6\,646\,961.
+  \item En \textbf{puntos de función} (IFPUG y COSMIC) se usa el método visto en clase: 8 horas por punto, jornadas de 8 horas, un equipo de 3 personas, meses de 20 días hábiles y un sueldo de \$3\,500\,000 por persona al mes. Así, $E = \text{puntos} \times 8$ horas, $\text{días} = E / (8 \times 3)$, $T = \text{días} / 20$ meses y el costo es $T \times 3 \times \$3\,500\,000$.
+  \item En los demás modelos, cuando el modelo no da el tiempo de desarrollo, se calcula con la ecuación de calendario de COCOMO, $T = 2{,}5 \cdot E^{0{,}38}$ meses, y el número de personas con $P = E/T$ \parencite{boehm2000}.
+  \item En los demás modelos, el costo de una persona-mes sale de una tarifa justificada (sección \ref{sec:presupuesto}): \$6\,646\,961.
 \end{itemize}
 
 \section{Puntos de función}
@@ -61,11 +62,11 @@ Eficiencia del usuario final & 4 & Facilidad de cambio & 3 \\
 
 \begin{align*}
 VAF &= 0{,}65 + 0{,}01 \times 41 = 1{,}06 & PF &= 151 \times 1{,}06 = 160{,}06\\
-E &= 160{,}06 \times 8\ \text{h/PF} = 1\,280\ \text{h} = 8{,}00\ \text{PM} & T &= 2{,}5 \times 8{,}00^{0{,}38} = 5{,}51\ \text{meses}\\
-& & P &= 8{,}00 / 5{,}51 = 1{,}45
+E &= 160{,}06 \times 8\ \text{h/PF} = 1\,280\ \text{h} = 8{,}00\ \text{PM} & \text{días} &= \frac{1\,280}{8 \times 3} = 53{,}4\\
+T &= \frac{53{,}4}{20} = 2{,}67\ \text{meses con 3 personas} & \text{Costo} &= 2{,}67 \times 3 \times \$3\,500\,000 = \$28\,010\,500
 \end{align*}
 
-La productividad de 8 horas por punto de función es un supuesto típico para desarrollo web con lenguajes de alto nivel.
+La productividad de 8 horas por punto de función es la que se usa en clase y un supuesto típico para desarrollo web con lenguajes de alto nivel.
 
 \section{Puntos de función COSMIC}
 
@@ -103,11 +104,11 @@ Ver gráficas & 1 & 1 & 2 & 0 & 4 & Generar recurrentes (reloj) & 1 & 0 & 1 & 1 
 \tablenote{Los 30 procesos cubren los 20 RF. «Eliminar cuenta» escribe en los cinco grupos de datos por la eliminación en cascada (D-11); «Eliminar categoría» lee las transacciones para impedir el borrado (D-05). Fuente: elaboración propia.}
 \end{table}
 
-Para que la comparación con IFPUG dependa solo del tamaño, usamos la misma productividad supuesta, 8 horas por unidad:
+Para que la comparación con IFPUG dependa solo del tamaño, usamos el mismo método de clase (8 horas por unidad, jornadas de 8 horas, 3 personas y 20 días por mes):
 \[
-E = \frac{129 \times 8}{160} = 6{,}45\ \text{PM} \qquad T = 2{,}5 \times 6{,}45^{0{,}38} = 5{,}08\ \text{meses} \qquad P = \frac{6{,}45}{5{,}08} = 1{,}27
+E = 129 \times 8 = 1\,032\ \text{h} = 6{,}45\ \text{PM} \qquad \text{días} = \frac{1\,032}{8 \times 3} = 43 \qquad T = \frac{43}{20} = 2{,}15\ \text{meses}
 \]
-con un costo de talento humano de $6{,}45 \times \$6\,646\,961 = \$42\,872\,896$. COSMIC da un tamaño menor que IFPUG (129 frente a 160 unidades) porque no pondera la complejidad de cada función ni aplica el factor de ajuste: cuenta solo movimientos de datos.
+con un costo de $2{,}15 \times 3 \times \$3\,500\,000 = \$22\,575\,000$. COSMIC da un tamaño menor que IFPUG (129 frente a 160 unidades) porque no pondera la complejidad de cada función ni aplica el factor de ajuste: cuenta solo movimientos de datos.
 
 \section{Puntos de casos de uso}
 
@@ -315,8 +316,8 @@ Imprevistos & 10\,\% del subtotal & 4\,171\,014 & 1\,417\,178 \\
 \toprule
 Modelo & Tamaño & Esfuerzo (PM) & Tiempo (meses) & Personas & Talento (COP) \\
 \midrule
-Puntos de función (IFPUG) & 160,06 PF & 8,00 & 5,51 & 1,45 & 53\,195\,626 \\
-Puntos de función COSMIC & 129 CFP & 6,45 & 5,08 & 1,27 & 42\,872\,896 \\
+Puntos de función (IFPUG) & 160,06 PF & 8,00 & 2,67 & 3,00 & 28\,010\,500 \\
+Puntos de función COSMIC & 129 CFP & 6,45 & 2,15 & 3,00 & 22\,575\,000 \\
 Puntos de casos de uso & 108,42 PCU & 13,55 & 6,73 & 2,01 & 90\,084\,554 \\
 Puntos de objeto & 90,4 NOP & 6,95 & 5,22 & 1,33 & 46\,221\,942 \\
 Puntos de historia & 89 PH & 6,16 & 2,05 & 3,00 & 40\,955\,504 \\
@@ -334,7 +335,7 @@ Herramienta de IA & 880 h & 5,50 & 2,50 & 2,20 & 36\,558\,284 \\
 \caption{Tiempo estimado por modelo frente a la duración real}
 \label{fig:estimacion-barras}
 \begin{tikzpicture}[x=0.9cm, y=0.8cm, font=\footnotesize]
-\foreach \m/\v/\y in {Puntos de función/5.51/7, COSMIC/5.08/6, Casos de uso/6.73/5, Puntos de objeto/5.22/4, Puntos de historia/2.05/3, Herramienta de IA/2.50/2, COCOMO II/9.36/1} {
+\foreach \m/\v/\y in {Puntos de función/2.67/7, COSMIC/2.15/6, Casos de uso/6.73/5, Puntos de objeto/5.22/4, Puntos de historia/2.05/3, Herramienta de IA/2.50/2, COCOMO II/9.36/1} {
   \node[anchor=east] at (-0.1,\y) {\m};
   \fill[gris] (0,\y-0.3) rectangle (\v,\y+0.3);
   \node[anchor=west] at (\v+0.1,\y) {\v};
@@ -349,9 +350,10 @@ Herramienta de IA & 880 h & 5,50 & 2,50 & 2,20 & 36\,558\,284 \\
 
 \paragraph{Coherencia con el cronograma real.} El desarrollo del producto duró 1,68 meses con 3 personas (Figura \ref{fig:gantt}).
 \begin{itemize}
-  \item Los \textbf{puntos de historia} son los únicos coherentes con esa duración: estiman 2,05 meses, un 22\,\% más que lo real. En esfuerzo, todos los modelos superan los 2,04 PM estimados, porque suponen dedicación de tiempo completo. Con la duración real, el equipo tuvo una velocidad de 24,5 puntos por sprint de 2 semanas, mayor que los 20 supuestos; con esa velocidad calibrada, el modelo reproduce la duración real.
-  \item La \textbf{herramienta de IA} es la segunda más cercana: 2,5 meses, un 49\,\% más que lo real. Al estimar por módulos, como un equipo, llega a un esfuerzo parecido al de los puntos de historia (5,5 frente a 6,16 PM).
-  \item \textbf{Puntos de función} (IFPUG y COSMIC) y \textbf{puntos de objeto} coinciden entre sí (6,5 a 8 PM, unos 5 meses), pero triplican la duración real. Suponen un equipo de 1,3 a 1,5 personas a tiempo completo, mientras que el equipo real fue de 3 estudiantes que trabajaron en paralelo.
+  \item Los \textbf{puntos de historia} son los más cercanos a esa duración: estiman 2,05 meses, un 22\,\% más que lo real. En esfuerzo, todos los modelos superan los 2,04 PM estimados, porque suponen dedicación de tiempo completo. Con la duración real, el equipo tuvo una velocidad de 24,5 puntos por sprint de 2 semanas, mayor que los 20 supuestos; con esa velocidad calibrada, el modelo reproduce la duración real.
+  \item Los \textbf{puntos de función}, con el método de clase (3 personas a 8 horas diarias), quedan cerca: COSMIC da 2,15 meses (28\,\% más que lo real) e IFPUG 2,67 meses (59\,\% más). La diferencia entre los dos viene del tamaño: COSMIC no pondera la complejidad. Ambos suponen jornadas completas, mientras que cada estudiante dedicó unas 15 horas por semana.
+  \item La \textbf{herramienta de IA} da 2,5 meses, un 49\,\% más que lo real. Al estimar por módulos, como un equipo, llega a un esfuerzo parecido al de los puntos de historia (5,5 frente a 6,16 PM).
+  \item Los \textbf{puntos de objeto} (6,95 PM, 5,22 meses) triplican la duración real porque, con la ecuación de calendario de COCOMO, suponen un equipo de 1,3 personas a tiempo completo, mientras que el equipo real fue de 3 estudiantes que trabajaron en paralelo.
   \item \textbf{COCOMO II} y \textbf{puntos de casos de uso} sobrestiman más (13,6 a 19 PM y 6,7 a 9,4 meses) porque suponen un proceso industrial con documentación, gestión y pruebas formales. Parte de ese esfuerzo sí existió, pero después: la fase de calidad (pruebas, métricas y correcciones) se hizo entre agosto y noviembre de 2026 y no está en los 1,68 meses del desarrollo.
 \end{itemize}
 

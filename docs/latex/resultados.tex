@@ -31,11 +31,11 @@
 % 3. Herramientas que se pueden repetir en vivo (por defecto, el texto
 %    dice que no se repitieron; si las corren, reemplazar por el resultado)
 % ---------------------------------------------------------------------
-\newcommand{\resZapApi}{no se repitió el escaneo; queda la medición del 25/10/2026}
-\newcommand{\resZapFrontend}{no se repitió el escaneo; queda la medición del 25/10/2026}
-\newcommand{\resZapResumen}{0 / 3 (25/10/2026; no repetido)}
-\newcommand{\resSonar}{no se repitió el análisis; queda el del 25/10/2026}
-\newcommand{\resSonarLoc}{No repetido}
+\newcommand{\resZapApi}{26/11/2026: 0 altas, 1 media (respuesta 500 con contraseñas de más de 72 bytes, límite de bcrypt; hallazgo abierto), 4 bajas, 116 reglas superadas}
+\newcommand{\resZapFrontend}{26/11/2026: 0 altas; las 3 medias iniciales quedaron corregidas y aparecen 6 medias que piden endurecer la CSP (\codigo{unsafe-inline}, comodín), SRI y CORS; 4 bajas; 57 reglas superadas}
+\newcommand{\resZapResumen}{0 / 6 (26/11/2026)}
+\newcommand{\resSonar}{26/11/2026, Community 26.11: Quality Gate aprobado; seguridad A (0), mantenibilidad A (63), fiabilidad D (110: 103 del frontend, sobre todo reglas de accesibilidad y estilo); cobertura 95,4\,\% en \codigo{backend} y 0\,\% en \codigo{frontend/src} (37,8\,\% global); duplicación 0,5\,\%}
+\newcommand{\resSonarLoc}{11\,000 aprox. (26/11/2026)}
 \newcommand{\resJmeterRender}{no se ejecutó contra Render porque la API no respondía el 21/11/2026}
 \newcommand{\resLambdaEscritorio}{no verificados (se agotaron las sesiones gratuitas de LambdaTest)}
 \newcommand{\resLambdaMovil}{no verificados en dispositivos reales}
