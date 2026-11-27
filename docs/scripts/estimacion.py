@@ -11,6 +11,22 @@ EQUIPO = 3                     # desarrolladores reales (Primera parte)
 DURACION_REAL_MESES = 51 / (365 / 12)   # 21/04/2026 a 10/06/2026
 
 
+# Método de clase para PF y COSMIC: 8 h por punto, jornadas de 8 h, 3 personas,
+# meses de 20 días hábiles y un sueldo de 3 500 000 COP por persona al mes.
+HORAS_POR_PUNTO = 8
+HORAS_DIA = 8
+DIAS_MES = 20
+SUELDO_CLASE = 3_500_000
+
+
+def metodo_clase(puntos: float) -> dict:
+    """Horas = puntos × 8; días = horas / (8 h × 3 personas); meses = días / 20."""
+    horas = puntos * HORAS_POR_PUNTO
+    dias = horas / (HORAS_DIA * EQUIPO)
+    return {"pm": horas / (HORAS_DIA * DIAS_MES), "meses": dias / DIAS_MES, "costo_pm": SUELDO_CLASE,
+            "horas": horas, "dias": dias}
+
+
 def calendario(pm: float) -> float:
     """Ecuación de calendario de COCOMO 81 orgánico: T = 2,5 · E^0,38."""
     return 2.5 * pm ** 0.38
@@ -26,8 +42,9 @@ def puntos_funcion() -> dict:
     gsc = [4, 3, 2, 2, 2, 5, 4, 4, 2, 2, 2, 3, 3, 3]   # 14 características generales
     vaf = 0.65 + 0.01 * sum(gsc)
     pf = pfna * vaf
-    pm = pf * 8 / HORAS_PM                              # 8 h/PF
-    return {"tamano": f"{pf:.2f} PF", "pm": pm, "detalle": f"PFNA={pfna}, TDI={sum(gsc)}, VAF={vaf:.2f}"}
+    clase = metodo_clase(pf)
+    return {"tamano": f"{pf:.2f} PF", **clase,
+            "detalle": f"PFNA={pfna}, VAF={vaf:.2f}, {clase['horas']:.0f} h, {clase['dias']:.1f} días"}
 
 
 # ── Puntos de función COSMIC (ISO/IEC 19761) ─────────────────────────────────
@@ -44,8 +61,9 @@ PROCESOS_COSMIC = [
 def puntos_cosmic() -> dict:
     e, x, r, w = (sum(p[i] for p in PROCESOS_COSMIC) for i in range(4))
     cfp = e + x + r + w
-    return {"tamano": f"{cfp} CFP", "pm": cfp * 8 / HORAS_PM,       # 8 h/CFP, igual que IFPUG
-            "detalle": f"E={e}, X={x}, R={r}, W={w}"}
+    clase = metodo_clase(cfp)
+    return {"tamano": f"{cfp} CFP", **clase,
+            "detalle": f"E={e}, X={x}, R={r}, W={w}, {clase['horas']:.0f} h, {clase['dias']:.1f} días"}
 
 
 # ── Puntos de casos de uso (Karner) ──────────────────────────────────────────
@@ -136,6 +154,8 @@ def main() -> None:
         "Puntos de historia": puntos_historia(),
         "COCOMO II": cocomo(),
     }
+    print(f"PF y COSMIC (método de clase): {HORAS_POR_PUNTO} h por punto, jornadas de {HORAS_DIA} h, {EQUIPO} personas, "
+          f"{DIAS_MES} días por mes y sueldo de {SUELDO_CLASE:,.0f} COP")
     print(f"Costo de una persona-mes: {COSTO_PM:,.0f} COP (salario {SALARIO_BASE:,.0f} "
           f"+ {sum(PRESTACIONES):.2f} % de prestaciones)\n")
     print(f"{'Modelo':24} {'Tamaño':>13} {'PM':>7} {'Meses':>6} {'Personas':>8} {'Talento (COP)':>15}  Detalle")
@@ -143,7 +163,7 @@ def main() -> None:
         meses = m.get("meses") or calendario(m["pm"])
         m["meses"] = meses
         print(f"{nombre:24} {m['tamano']:>13} {m['pm']:7.2f} {meses:6.2f} {m['pm'] / meses:8.2f} "
-              f"{m['pm'] * COSTO_PM:15,.0f}  {m['detalle']}")
+              f"{m['pm'] * m.get('costo_pm', COSTO_PM):15,.0f}  {m['detalle']}")
 
     elegido = modelos["Puntos de historia"]
     real_pm = DURACION_REAL_MESES * SEMANAS_MES * HORAS_SEMANA * EQUIPO / HORAS_PM

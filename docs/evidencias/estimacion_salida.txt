@@ -1,7 +1,9 @@
+PF y COSMIC (método de clase): 8 h por punto, jornadas de 8 h, 3 personas, 20 días por mes y sueldo de 3,500,000 COP
 Costo de una persona-mes: 6,646,961 COP (salario 4,377,262 + 51.85 % de prestaciones)
 
 Modelo                          Tamaño      PM  Meses Personas   Talento (COP)  Detalle
-Puntos de función            160.06 PF    8.00   5.51     1.45      53,195,626  PFNA=151, TDI=41, VAF=1.06
+Puntos de función            160.06 PF    8.00   2.67     3.00      28,010,500  PFNA=151, VAF=1.06, 1280 h, 53.4 días
+Puntos de función COSMIC       129 CFP    6.45   2.15     3.00      22,575,000  E=31, X=32, R=39, W=27, 1032 h, 43.0 días
 Puntos de casos de uso      108.42 PCU   13.55   6.73     2.01      90,084,554  UUCP=141, TCF=0.91, ECF=0.845
 Puntos de objeto              90.4 NOP    6.95   5.22     1.33      46,221,942  PO=113, PROD=13
 Puntos de historia               89 PH    6.16   2.05     3.00      40,955,504  4.45 sprints de 2 semanas a 20 PH
