@@ -18,7 +18,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select, WebDriverWait
 
 BASE = os.environ.get("SC_BASE_URL", "https://shifts-chash-version-amaya.vercel.app")
-EVIDENCIAS = pathlib.Path(__file__).resolve().parents[1] / "docs" / "evidencias"
+EVIDENCIAS = pathlib.Path(os.environ.get(
+    "SC_EVIDENCIAS", pathlib.Path(__file__).resolve().parents[1] / "docs" / "evidencias"))
 ESPERA_S = 120  # la API en Render puede tardar en despertar (D-09)
 
 

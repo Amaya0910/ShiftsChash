@@ -106,6 +106,5 @@ así que ni Render suspende la API ni Supabase pausa la base.
 ## 🎤 Demostración y presentación
 
 Los scripts de `scripts/demo/` levantan la app con datos de prueba y ejecutan cada herramienta
-(pytest, Cypress, Selenium, JMeter, métricas, Lighthouse, ZAP y SonarQube). La guía paso a paso,
-con la prueba de aceptación y el orden de la demostración, está en
-[docs/GUIA_PRESENTACION.md](docs/GUIA_PRESENTACION.md).
+(pytest, Cypress, Selenium, JMeter, métricas, Lighthouse, ZAP y SonarQube). El menú
+`scripts/demo/pruebas_en_vivo.ps1` reúne todas las pruebas en un solo lugar.
